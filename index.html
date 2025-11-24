@@ -7,69 +7,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     * { box-sizing: border-box; }
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #0b1220;
+      --bg-card: #0f172a;
+      --bg-card-soft: #020617;
+      --border-subtle: #1e293b;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.14);
+      --accent-strong: #1d4ed8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.65);
+      --radius-lg: 18px;
+      --radius-md: 999px;
+    }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background: #f5f5f7;
-      color: #222;
+      background: radial-gradient(circle at top left, #1d4ed8 0, #0b1120 40%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
     }
     header {
-      background: #111827;
-      color: #fff;
-      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(to right, rgba(15,23,42,0.96), rgba(15,23,42,0.94));
+      border-bottom: 1px solid rgba(37, 99, 235, 0.35);
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
     header h1 {
-      font-size: 18px;
-      margin: 0;
+      font-size: 20px;
+      margin: 0 0 2px 0;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    header h1 span.logo-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #93c5fd, #1d4ed8);
+      box-shadow: 0 0 18px rgba(59,130,246,0.9);
+      flex-shrink: 0;
     }
     header small {
       font-size: 11px;
-      opacity: 0.8;
+      color: var(--text-muted);
     }
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 16px;
     }
     nav {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
     nav button {
       border: none;
       padding: 8px 14px;
-      border-radius: 999px;
-      background: #e5e7eb;
+      border-radius: var(--radius-md);
+      background: rgba(15,23,42,0.85);
       cursor: pointer;
       font-size: 13px;
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    nav button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: transparent;
     }
     nav button.active {
-      background: #111827;
-      color: #fff;
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.55), rgba(15,23,42,0.9));
+      color: #f9fafb;
+      border-color: rgba(59,130,246,0.8);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.8);
+    }
+    nav button.active span.dot {
+      background: #60a5fa;
     }
     .card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
-      margin-bottom: 16px;
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
+      border-radius: var(--radius-lg);
+      padding: 18px 16px 16px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      margin-bottom: 18px;
     }
     .card h2 {
       margin-top: 0;
       font-size: 18px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+      letter-spacing: 0.01em;
     }
     .subtitle {
       font-size: 12px;
-      color: #6b7280;
+      color: var(--text-muted);
       margin-bottom: 12px;
     }
     .row {
@@ -82,93 +134,155 @@
       flex: 1 1 auto;
     }
     label {
-      font-size: 12px;
-      color: #374151;
+      font-size: 11px;
+      color: #cbd5f5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 3px;
     }
     input[type="number"],
     input[type="text"],
     select,
     textarea {
       width: 100%;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
       font-size: 13px;
-      margin-top: 2px;
+      margin-top: 0;
+      background: rgba(15,23,42,0.9);
+      color: var(--text-main);
+      outline: none;
+    }
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: rgba(59,130,246,0.9);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.3);
     }
     textarea {
       min-height: 60px;
+      resize: vertical;
+    }
+    button.primary,
+    button.secondary,
+    button.danger {
+      border-radius: var(--radius-md);
+      border: none;
+      font-size: 12px;
+      padding: 7px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
     }
     button.primary {
-      background: #2563eb;
-      color: #fff;
+      background: linear-gradient(to right, var(--accent), var(--accent-strong));
+      color: #f9fafb;
+      box-shadow: 0 12px 30px rgba(37,99,235,0.5);
     }
     button.primary:hover {
-      background: #1d4ed8;
+      background: linear-gradient(to right, var(--accent-strong), #1e40af);
     }
     button.secondary {
-      background: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: var(--text-main);
+    }
+    button.secondary:hover {
+      border-color: rgba(148, 163, 184, 0.9);
     }
     button.danger {
-      background: #dc2626;
-      color: #fff;
+      background: linear-gradient(to right, #ef4444, #b91c1c);
+      color: #f9fafb;
     }
     button.small {
-      padding: 4px 8px;
+      padding: 4px 9px;
       font-size: 11px;
-      border-radius: 999px;
+      border-radius: var(--radius-md);
     }
     button:disabled {
-      opacity: 0.6;
+      opacity: 0.55;
       cursor: default;
+      box-shadow: none;
     }
     .tag {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--radius-md);
+      background: rgba(15,23,42,0.9);
       font-size: 11px;
       margin-right: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-muted);
+    }
+    .tag strong {
+      color: #e5e7eb;
     }
     .tag.good {
-      background: #dcfce7;
-      color: #166534;
+      background: rgba(22,163,74,0.09);
+      border-color: rgba(22,163,74,0.7);
+      color: #bbf7d0;
     }
     .tag.bad {
-      background: #fee2e2;
-      color: #b91c1c;
+      background: rgba(248,113,113,0.08);
+      border-color: rgba(239,68,68,0.8);
+      color: #fecaca;
     }
     .question-main {
       font-size: 16px;
-      margin: 10px 0;
+      margin: 10px 0 6px 0;
     }
     .question-main span.label {
-      font-weight: 600;
-      color: #4b5563;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-right: 6px;
     }
     .question-main span.value {
       font-weight: 600;
+      color: #bfdbfe;
     }
     .pronoun {
       font-weight: 600;
       margin-right: 4px;
+      padding: 2px 8px;
+      border-radius: var(--radius-md);
+      background: rgba(17,24,39,0.9);
+      border: 1px solid rgba(59,130,246,0.5);
+      font-size: 13px;
+      color: #dbeafe;
     }
     .answer-row {
       margin-top: 12px;
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
     }
     .feedback {
       margin-top: 8px;
       font-size: 13px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.35);
+      color: var(--text-muted);
     }
     .feedback.correct {
-      color: #15803d;
+      border-color: rgba(34,197,94,0.85);
+      background: rgba(22,163,74,0.08);
+      color: #bbf7d0;
     }
     .feedback.incorrect {
-      color: #b91c1c;
+      border-color: rgba(248,113,113,0.9);
+      background: rgba(127,29,29,0.55);
+      color: #fee2e2;
     }
     table {
       width: 100%;
@@ -177,22 +291,41 @@
     }
     th, td {
       padding: 6px 8px;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid rgba(30,64,175,0.4);
       text-align: left;
     }
     th {
-      background: #f3f4f6;
+      background: rgba(15,23,42,0.95);
       font-weight: 600;
+      color: #c7d2fe;
+      position: sticky;
+      top: 0;
+      z-index: 1;
     }
     .tense-grid {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
       padding: 8px;
       margin-bottom: 8px;
+      background: rgba(15,23,42,0.8);
     }
     .tense-grid h4 {
       margin: 0 0 6px 0;
       font-size: 13px;
+      color: #bfdbfe;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tense-grid h4 span.label-chip {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.9);
+      border-radius: var(--radius-md);
+      padding: 2px 6px;
+      border: 1px solid rgba(148,163,184,0.4);
     }
     .tense-grid-row {
       display: grid;
@@ -204,6 +337,9 @@
     .tense-grid-row label {
       margin: 0;
       font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--text-muted);
     }
     .pill-group {
       display: flex;
@@ -213,26 +349,30 @@
     }
     .pill-group button {
       font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: none;
+      padding: 5px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.45);
       cursor: pointer;
-      background: #e5e7eb;
+      background: rgba(15,23,42,0.8);
+      color: var(--text-muted);
     }
     .pill-group button.active {
-      background: #2563eb;
-      color: #fff;
+      background: rgba(37,99,235,0.2);
+      color: #e5edff;
+      border-color: rgba(59,130,246,0.85);
+      box-shadow: 0 8px 22px rgba(37,99,235,0.65);
     }
     .small-muted {
       font-size: 11px;
-      color: #6b7280;
+      color: var(--text-muted);
     }
     .verb-list {
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
       padding: 8px;
+      background: rgba(15,23,42,0.8);
     }
     .verb-list-item {
       display: flex;
@@ -240,17 +380,76 @@
       align-items: center;
       font-size: 13px;
       padding: 4px 0;
-      border-bottom: 1px solid #f3f4f6;
+      border-bottom: 1px solid rgba(30,64,175,0.5);
     }
     .verb-list-item:last-child {
       border-bottom: none;
     }
     .muted {
-      color: #6b7280;
+      color: var(--text-muted);
       font-size: 12px;
     }
-    @media (max-width: 600px) {
+    .chip {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+    .guide-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
+      gap: 12px;
+    }
+    .guide-block {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(30,64,175,0.7);
+    }
+    .guide-block h3 {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      color: #dbeafe;
+    }
+    .guide-block p {
+      margin: 4px 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .code {
+      font-family: ui-monospace, Menlo, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      background: rgba(15,23,42,0.85);
+      border-radius: 8px;
+      padding: 4px 6px;
+      border: 1px solid rgba(30,64,175,0.8);
+      display: inline-block;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.9);
+    }
+    .badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #60a5fa;
+    }
+    @media (max-width: 700px) {
       header {
+        flex-direction: column;
         align-items: flex-start;
       }
       .answer-row {
@@ -260,29 +459,33 @@
       .row > * {
         flex: 1 1 100%;
       }
+      .guide-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
     }
   </style>
 </head>
 <body>
 <header>
   <div>
-    <h1>French Verb Conjugation Trainer</h1>
-    <small>B1-focused · works fully offline · progress saved on this device</small>
+    <h1><span class="logo-dot"></span>French Verb Trainer</h1>
+    <small>B1-focused · offline · your verbs, your pace · bleu-powered</small>
   </div>
 </header>
 
 <div class="container">
   <nav>
-    <button id="tab-trainer" class="active">Trainer</button>
-    <button id="tab-review">Review & History</button>
-    <button id="tab-manage">Verbs & Settings</button>
+    <button id="tab-trainer" class="active"><span class="dot"></span>Trainer</button>
+    <button id="tab-review"><span class="dot"></span>Review & History</button>
+    <button id="tab-manage"><span class="dot"></span>Verbs & Settings</button>
+    <button id="tab-guide"><span class="dot"></span>Tense Guide</button>
   </nav>
 
   <!-- Trainer tab -->
   <section id="view-trainer" class="card">
     <h2>Daily session</h2>
     <div class="subtitle">
-      Choose your number of new verbs per day and practise them in random order, mixed with older verbs for review.
+      Choose how many new verbs you want to unlock today. The trainer mixes new verbs with older ones for spaced repetition.
     </div>
 
     <div class="row" style="margin-bottom: 10px;">
@@ -292,12 +495,15 @@
           <button id="mode-mixed" class="active">Mixed (new + review)</button>
           <button id="mode-reviewOnly">Review only</button>
         </div>
+        <div class="small-muted">
+          Mixed mode introduces new verbs until you hit your daily target, then switches to pure review.
+        </div>
       </div>
       <div>
         <label for="dailyTarget">New verbs target / day</label>
         <div class="row">
-          <input type="number" id="dailyTarget" min="1" max="200" value="20" style="max-width:120px;">
-          <button id="saveSettingsBtn" class="small secondary">Save</button>
+          <input type="number" id="dailyTarget" min="1" max="500" value="20" style="max-width:120px;">
+          <button id="saveSettingsBtn" class="small secondary">Save target</button>
         </div>
         <div class="small-muted" id="targetInfo"></div>
       </div>
@@ -305,27 +511,27 @@
 
     <div class="row" style="margin-bottom: 10px;">
       <div>
-        <label>Tenses to include</label>
+        <label>Tenses to include in questions</label>
         <div id="tenseToggles" class="pill-group"></div>
-        <div class="small-muted">Toggle which tenses appear in questions. All selected by default.</div>
+        <div class="small-muted">
+          You can, for example, start with Présent + Passé composé, then gradually add Imparfait, Futur, Conditionnel and Subjonctif présent.
+        </div>
       </div>
     </div>
 
-    <hr style="border:none;border-top:1px solid #e5e7eb;margin:12px 0;">
+    <hr style="border:none;border-top:1px solid rgba(30,64,175,0.7);margin:12px 0;">
 
-    <div id="statsBar" style="margin-bottom: 8px;">
-      <!-- Populated by JS -->
-    </div>
+    <div id="statsBar" style="margin-bottom: 8px;"></div>
 
-    <div id="questionCard" class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+    <div id="questionCard" class="card" style="background:radial-gradient(circle at top left, rgba(30,64,175,0.60), rgba(15,23,42,0.98));box-shadow:none;border:1px solid rgba(59,130,246,0.9);">
       <div id="questionMeta" class="small-muted"></div>
       <div class="question-main" id="questionText"></div>
       <div class="answer-row">
         <div style="flex:1 1 auto;">
-          <label for="answerInput">Your answer (verb part)</label>
-          <div class="row" style="gap:4px;align-items:center;">
+          <label for="answerInput">Your answer (verb form only)</label>
+          <div class="row" style="gap:6px;align-items:center;">
             <span id="pronounDisplay" class="pronoun"></span>
-            <input type="text" id="answerInput" placeholder="type the conjugated form">
+            <input type="text" id="answerInput" placeholder="type the conjugated form (without the pronoun)">
           </div>
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
@@ -335,9 +541,9 @@
         </div>
       </div>
       <div id="feedback" class="feedback"></div>
-    </div>
-    <div class="small-muted">
-      Tip: focus on accuracy, not speed. If accents are hard on your phone keyboard, you can enable a French keyboard layout in your OS settings.
+      <div class="small-muted" style="margin-top:6px;">
+        Note: for <strong>passé composé</strong>, type the auxiliary + past participle (e.g. <span class="code">ai parlé</span>). For <strong>subjonctif</strong>, we practise the verb form without the <em>que</em>.
+      </div>
     </div>
   </section>
 
@@ -345,22 +551,21 @@
   <section id="view-review" class="card" style="display:none;">
     <h2>Review & daily history</h2>
     <div class="subtitle">
-      See what you’ve covered so far and how many verbs you’ve practised each day.
+      Track how many new verbs and review questions you’ve done and see how each verb is going over time.
     </div>
 
-    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);">
       <h3 style="margin-top:0;font-size:15px;">Daily tracker</h3>
       <p class="small-muted">
-        Counts are based on how many <strong>new verbs</strong> were introduced for the first time that day, and how many
-        <strong>review questions</strong> were asked using verbs you had already seen before.
+        Each day, the trainer logs how many <strong>new verbs</strong> you met for the first time and how many <strong>review questions</strong> you answered.
       </p>
       <div id="historyTableWrapper"></div>
     </div>
 
-    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;margin-top:12px;">
-      <h3 style="margin-top:0;font-size:15px;">Your verbs so far</h3>
+    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);margin-top:12px;">
+      <h3 style="margin-top:0;font-size:15px;">Verb-by-verb progress</h3>
       <p class="small-muted">
-        This is a quick overview of all verbs stored on this device, with basic progress stats.
+        Accuracy is a rough indicator; don’t worry about perfection. The goal is to keep revisiting verbs over time.
       </p>
       <div id="verbsProgressTableWrapper"></div>
     </div>
@@ -370,14 +575,13 @@
   <section id="view-manage" class="card" style="display:none;">
     <h2>Verbs & settings</h2>
     <div class="subtitle">
-      Add new verbs (with the tenses you care about), remove verbs, and adjust configuration.
+      Add new verbs (including irregular verbs), remove verbs, and curate the exact list you want to practise for B1.
     </div>
 
-    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);">
       <h3 style="margin-top:0;font-size:15px;">Add / update verb</h3>
       <p class="small-muted">
-        Start with the most common verbs you need for B1 (être, avoir, aller, faire, etc.), then grow your list over time.
-        All data is stored locally on this device.
+        This system does <strong>no automatic conjugation</strong>. Whatever you type here is what the trainer uses, so irregular verbs are fully supported.
       </p>
 
       <div class="row" style="margin-bottom:8px;">
@@ -397,25 +601,114 @@
         <button id="saveVerbBtn" class="primary">Save verb</button>
         <button id="clearVerbFormBtn" class="secondary">Clear form</button>
       </div>
-      <div id="verbFormFeedback" class="feedback"></div>
+      <div id="verbFormFeedback" class="feedback" style="margin-top:8px;"></div>
     </div>
 
-    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;margin-top:12px;">
+    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);margin-top:12px;">
       <h3 style="margin-top:0;font-size:15px;">Current verb list</h3>
       <p class="small-muted">
-        These verbs are available for training on this device. Removing a verb also removes its progress stats.
+        These verbs live on this device and are available for training. Deleting a verb also removes its progress stats.
       </p>
       <div id="verbList" class="verb-list"></div>
-      <div class="small-muted" style="margin-top:4px;">
-        Your goal can be, for example, to grow this list until you have at least <strong>774 verbs</strong> stored.
+      <div class="small-muted" style="margin-top:6px;">
+        Long-term goal: build this up towards a few hundred high-frequency verbs (you can aim for ~<strong>700+</strong> to feel very comfortable at B1 and beyond).
       </div>
+    </div>
+  </section>
+
+  <!-- Tense Guide tab -->
+  <section id="view-guide" class="card" style="display:none;">
+    <h2>Tense guide (B1 focus)</h2>
+    <div class="subtitle">
+      Short, practical explanations for each tense you can train here, with patterns and examples. Think “cheat sheet” rather than formal grammar book.
+    </div>
+
+    <div class="guide-grid">
+      <div class="guide-block">
+        <h3>Présent</h3>
+        <p><strong>Use it for:</strong> habits, facts, feelings, what’s happening now, near future with context.</p>
+        <p><strong>Regular -er pattern (parler):</strong></p>
+        <p class="code">je parle, tu parles, il parle, nous parlons, vous parlez, ils parlent</p>
+        <p><strong>Examples:</strong></p>
+        <p>Je travaille à Vancouver. <span class="small-muted">(I work in Vancouver.)</span></p>
+        <p>On se voit demain ? <span class="small-muted">(Are we seeing each other tomorrow?)</span></p>
+      </div>
+
+      <div class="guide-block">
+        <h3>Passé composé</h3>
+        <p><strong>Use it for:</strong> completed events in the past, “what happened”, often with a clear time.</p>
+        <p><strong>Structure:</strong> present of avoir/être + past participle</p>
+        <p class="code">j'ai parlé, tu as parlé, il a parlé, nous avons parlé...</p>
+        <p><strong>Examples:</strong></p>
+        <p>J'ai fini le projet hier. <span class="small-muted">(I finished the project yesterday.)</span></p>
+        <p>Elle est arrivée en retard. <span class="small-muted">(She arrived late.)</span></p>
+      </div>
+    </div>
+
+    <div class="guide-grid" style="margin-top:10px;">
+      <div class="guide-block">
+        <h3>Imparfait</h3>
+        <p><strong>Use it for:</strong> background, descriptions, habits in the past, “was doing / used to”.</p>
+        <p><strong>Formation:</strong> nous form in présent (sans ons) + endings</p>
+        <p class="code">parler → parl- + ais, ais, ait, ions, iez, aient</p>
+        <p><strong>Examples:</strong></p>
+        <p>Quand j'étais enfant, je jouais au foot tous les jours. <span class="small-muted">(When I was a child, I used to play football every day.)</span></p>
+        <p>Il faisait froid et il pleuvait. <span class="small-muted">(It was cold and it was raining.)</span></p>
+      </div>
+
+      <div class="guide-block">
+        <h3>Futur proche & Futur simple</h3>
+        <p><strong>Futur proche:</strong> near future, something already planned.</p>
+        <p class="code">je vais parler, tu vas parler...</p>
+        <p><strong>Futur simple:</strong> future in general, predictions, promises.</p>
+        <p class="code">parler → parler- + ai, as, a, ons, ez, ont</p>
+        <p><strong>Examples:</strong></p>
+        <p>Je vais prendre le train à 18h. <span class="small-muted">(I’m going to take the train at 6 p.m.)</span></p>
+        <p>On se reverra bientôt. <span class="small-muted">(We will see each other again soon.)</span></p>
+      </div>
+    </div>
+
+    <div class="guide-grid" style="margin-top:10px;">
+      <div class="guide-block">
+        <h3>Conditionnel présent</h3>
+        <p><strong>Use it for:</strong> politeness, wishes, hypotheses (“would”), advice.</p>
+        <p><strong>Formation:</strong> futur simple stem + imparfait endings</p>
+        <p class="code">parler → parler- + ais, ais, ait, ions, iez, aient</p>
+        <p><strong>Examples:</strong></p>
+        <p>Je voudrais un café, s'il vous plaît. <span class="small-muted">(I’d like a coffee, please.)</span></p>
+        <p>Si j'avais plus de temps, je ferais plus de sport. <span class="small-muted">(If I had more time, I would do more sport.)</span></p>
+      </div>
+
+      <div class="guide-block">
+        <h3>Subjonctif présent</h3>
+        <p><strong>Use it for:</strong> after certain expressions of doubt, necessity, emotion, desire.</p>
+        <p><strong>Common triggers:</strong> il faut que, je veux que, bien que, pour que, avant que...</p>
+        <p><strong>Pattern (parler):</strong></p>
+        <p class="code">que je parle, que tu parles, qu'il parle, que nous parlions, que vous parliez, qu'ils parlent</p>
+        <p><strong>Examples:</strong></p>
+        <p>Il faut que tu finisses ce travail. <span class="small-muted">(You have to finish this work.)</span></p>
+        <p>Je suis content que tu sois ici. <span class="small-muted">(I’m happy that you’re here.)</span></p>
+      </div>
+    </div>
+
+    <div class="card" style="background:rgba(15,23,42,0.96);box-shadow:none;border:1px solid rgba(30,64,175,0.8);margin-top:12px;">
+      <div class="badge"><span class="dot"></span>How this app uses these tenses</div>
+      <p class="small-muted" style="margin-top:6px;">
+        In the trainer, you always see the <strong>subject</strong> (je, tu, nous, etc.) and you type only the <strong>verb part</strong>.
+        For composé forms, you type the auxiliary + participle (for example <span class="code">ai parlé</span>, <span class="code">suis allé</span>).
+        For the subjonctif, we practise the conjugated form without writing <em>que</em> in front.
+      </p>
+      <p class="small-muted">
+        If you’re rusty with grammar labels, don’t stress. Just associate each tense with a <strong>time / feeling</strong> (now, habit in the past,
+        completed event, hypothesis, etc.) and keep practising until it feels natural.
+      </p>
     </div>
   </section>
 </div>
 
 <script>
 (function() {
-  const STORAGE_KEY = 'frenchVerbTrainer_v1';
+  const STORAGE_KEY = 'frenchVerbTrainer_v1'; // same key so your existing data is kept
 
   const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
   const TENSES = [
@@ -424,11 +717,11 @@
     { id: "imparfait", label: "Imparfait" },
     { id: "futur_proche", label: "Futur proche" },
     { id: "futur_simple", label: "Futur simple" },
-    { id: "conditionnel_present", label: "Conditionnel présent" }
+    { id: "conditionnel_present", label: "Conditionnel présent" },
+    { id: "subjonctif_present", label: "Subjonctif présent" }
   ];
 
   const SEED_VERBS = [
-    // Minimal starter pack with several key tenses filled.
     {
       inf: "être",
       en: "to be",
@@ -472,6 +765,14 @@
           "nous": "serions",
           "vous": "seriez",
           "ils/elles": "seraient"
+        },
+        subjonctif_present: {
+          "je": "sois",
+          "tu": "sois",
+          "il/elle": "soit",
+          "nous": "soyons",
+          "vous": "soyez",
+          "ils/elles": "soient"
         }
       }
     },
@@ -518,6 +819,14 @@
           "nous": "aurions",
           "vous": "auriez",
           "ils/elles": "auraient"
+        },
+        subjonctif_present: {
+          "je": "aie",
+          "tu": "aies",
+          "il/elle": "ait",
+          "nous": "ayons",
+          "vous": "ayez",
+          "ils/elles": "aient"
         }
       }
     },
@@ -534,7 +843,6 @@
           "ils/elles": "vont"
         },
         passe_compose: {
-          // Masculine singular; adjust in your head for agreement.
           "je": "suis allé",
           "tu": "es allé",
           "il/elle": "est allé",
@@ -573,6 +881,14 @@
           "nous": "irions",
           "vous": "iriez",
           "ils/elles": "iraient"
+        },
+        subjonctif_present: {
+          "je": "aille",
+          "tu": "ailles",
+          "il/elle": "aille",
+          "nous": "allions",
+          "vous": "alliez",
+          "ils/elles": "aillent"
         }
       }
     },
@@ -619,6 +935,14 @@
           "nous": "ferions",
           "vous": "feriez",
           "ils/elles": "feraient"
+        },
+        subjonctif_present: {
+          "je": "fasse",
+          "tu": "fasses",
+          "il/elle": "fasse",
+          "nous": "fassions",
+          "vous": "fassiez",
+          "ils/elles": "fassent"
         }
       }
     },
@@ -673,6 +997,14 @@
           "nous": "parlerions",
           "vous": "parleriez",
           "ils/elles": "parleraient"
+        },
+        subjonctif_present: {
+          "je": "parle",
+          "tu": "parles",
+          "il/elle": "parle",
+          "nous": "parlions",
+          "vous": "parliez",
+          "ils/elles": "parlent"
         }
       }
     },
@@ -719,6 +1051,14 @@
           "nous": "finirions",
           "vous": "finiriez",
           "ils/elles": "finiraient"
+        },
+        subjonctif_present: {
+          "je": "finisse",
+          "tu": "finisses",
+          "il/elle": "finisse",
+          "nous": "finissions",
+          "vous": "finissiez",
+          "ils/elles": "finissent"
         }
       }
     }
@@ -767,7 +1107,6 @@
         };
       }
     }
-    // Ensure structure
     if (!state.data) state.data = { verbs: {} };
     if (!state.data.verbs) state.data.verbs = {};
     if (!state.progress) state.progress = { statsByVerb: {}, historyByDate: {} };
@@ -796,7 +1135,6 @@
   let state = loadState();
   const TODAY = todayStr();
 
-  // Seed verbs if first time
   function seedVerbsIfEmpty() {
     if (Object.keys(state.data.verbs).length === 0) {
       SEED_VERBS.forEach(v => {
@@ -845,7 +1183,6 @@
     return TENSES.filter(t => state.settings.activeTenses.includes(t.id));
   }
 
-  // Question handling
   let currentQuestion = null;
   let lastAnswered = null;
 
@@ -854,12 +1191,8 @@
     const activeTenses = getActiveTenses();
     const statsByVerb = state.progress.statsByVerb;
 
-    if (!verbs.length) {
-      return null;
-    }
-    if (!activeTenses.length) {
-      return null;
-    }
+    if (!verbs.length) return null;
+    if (!activeTenses.length) return null;
 
     const unseen = verbs.filter(v => !statsByVerb[v.inf] || statsByVerb[v.inf].timesSeen === 0);
     const seen = verbs.filter(v => statsByVerb[v.inf] && statsByVerb[v.inf].timesSeen > 0);
@@ -884,17 +1217,12 @@
     }
 
     let verb = randomChoice(candidateVerbs);
-    if (!verb) {
-      verb = randomChoice(verbs);
-    }
+    if (!verb) verb = randomChoice(verbs);
 
     const availableTenses = activeTenses.filter(t => verb.tenses && verb.tenses[t.id]);
     if (!availableTenses.length) {
-      // fallback: any tense defined
       const verbTenseIds = Object.keys(verb.tenses || {});
-      if (!verbTenseIds.length) {
-        return null;
-      }
+      if (!verbTenseIds.length) return null;
       const tId = randomChoice(verbTenseIds);
       const tenseDef = TENSES.find(t => t.id === tId) || { id: tId, label: tId };
       const persons = Object.keys(verb.tenses[tId]);
@@ -933,14 +1261,15 @@
     return (str || "").trim().toLowerCase();
   }
 
-  // UI references
   const tabTrainerBtn = document.getElementById("tab-trainer");
   const tabReviewBtn = document.getElementById("tab-review");
   const tabManageBtn = document.getElementById("tab-manage");
+  const tabGuideBtn = document.getElementById("tab-guide");
 
   const viewTrainer = document.getElementById("view-trainer");
   const viewReview = document.getElementById("view-review");
   const viewManage = document.getElementById("view-manage");
+  const viewGuide = document.getElementById("view-guide");
 
   const dailyTargetInput = document.getElementById("dailyTarget");
   const saveSettingsBtn = document.getElementById("saveSettingsBtn");
@@ -976,7 +1305,8 @@
     const tabs = [
       { btn: tabTrainerBtn, view: viewTrainer, id: "trainer" },
       { btn: tabReviewBtn, view: viewReview, id: "review" },
-      { btn: tabManageBtn, view: viewManage, id: "manage" }
+      { btn: tabManageBtn, view: viewManage, id: "manage" },
+      { btn: tabGuideBtn, view: viewGuide, id: "guide" }
     ];
     tabs.forEach(t => {
       const active = (t.id === tab);
@@ -995,8 +1325,8 @@
   tabTrainerBtn.addEventListener("click", () => switchTab("trainer"));
   tabReviewBtn.addEventListener("click", () => switchTab("review"));
   tabManageBtn.addEventListener("click", () => switchTab("manage"));
+  tabGuideBtn.addEventListener("click", () => switchTab("guide"));
 
-  // Tense toggles
   function renderTenseToggles() {
     tenseTogglesContainer.innerHTML = "";
     TENSES.forEach(t => {
@@ -1018,7 +1348,6 @@
     });
   }
 
-  // Stats bar
   function renderStatsBar() {
     const historyToday = getHistoryFor(TODAY);
     const verbs = getAllVerbs();
@@ -1031,13 +1360,12 @@
       <span class="tag">Total verbs stored: <strong>${verbs.length}</strong></span>
       <span class="tag">Verbs seen at least once: <strong>${seenCount}</strong></span>
     `;
-    targetInfo.textContent = `Target of ${state.settings.dailyNewTarget} new verbs per day. You can change this anytime.`;
+    targetInfo.textContent = `Aim: ${state.settings.dailyNewTarget} new verbs unlocked today. Adjust this to match your energy.`;
   }
 
-  // Question rendering
   function renderQuestion() {
     if (!currentQuestion) {
-      questionMeta.textContent = "No question available. Add some verbs with tenses first in the Verbs tab.";
+      questionMeta.textContent = "No question available. Add some verbs with at least one tense in the Verbs & Settings tab.";
       questionText.textContent = "";
       pronounDisplay.textContent = "";
       feedbackEl.textContent = "";
@@ -1072,7 +1400,6 @@
     renderQuestion();
   }
 
-  // Check answer
   function handleCheck(showOnly) {
     if (!currentQuestion) return;
     const userAns = answerInput.value;
@@ -1081,7 +1408,7 @@
     const stats = getStatsForVerb(currentQuestion.verbInf);
     const history = getHistoryFor(TODAY);
 
-    const wasNewIntro = !stats.firstSeen;
+    const wasFirst = !stats.firstSeen;
     stats.timesSeen += 1;
     stats.lastSeen = TODAY;
     if (!stats.firstSeen) {
@@ -1138,12 +1465,11 @@
     }
   });
 
-  // Settings
   dailyTargetInput.value = state.settings.dailyNewTarget;
   saveSettingsBtn.addEventListener("click", () => {
     const val = parseInt(dailyTargetInput.value, 10);
     if (!isFinite(val) || val <= 0) {
-      alert("Please enter a positive number for daily target.");
+      alert("Please enter a positive number for the daily target.");
       return;
     }
     state.settings.dailyNewTarget = val;
@@ -1151,7 +1477,6 @@
     renderStatsBar();
   });
 
-  // Mode
   function updateModeButtons() {
     const mode = state.settings.mode;
     modeMixedBtn.classList.toggle("active", mode === "mixed");
@@ -1170,14 +1495,13 @@
     newQuestion();
   });
 
-  // History table
   function renderHistory() {
     const entries = Object.entries(state.progress.historyByDate);
     if (!entries.length) {
       historyTableWrapper.innerHTML = "<p class='muted'>No history yet. Start a session in the Trainer tab.</p>";
       return;
     }
-    entries.sort((a, b) => a[0] < b[0] ? 1 : -1); // newest first
+    entries.sort((a, b) => a[0] < b[0] ? 1 : -1);
     const rows = entries.map(([date, h]) => `
       <tr>
         <td>${date}</td>
@@ -1186,20 +1510,21 @@
       </tr>
     `).join("");
     historyTableWrapper.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>New verbs introduced</th>
-            <th>Review questions</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div style="max-height:220px;overflow:auto;border-radius:10px;border:1px solid rgba(30,64,175,0.7);">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>New verbs introduced</th>
+              <th>Review questions</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     `;
   }
 
-  // Verb progress table
   function renderVerbsProgress() {
     const verbs = getAllVerbs();
     if (!verbs.length) {
@@ -1223,24 +1548,25 @@
       `;
     }).join("");
     verbsProgressTableWrapper.innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            <th>Verb</th>
-            <th>First seen</th>
-            <th>Last seen</th>
-            <th>Times asked</th>
-            <th>Correct</th>
-            <th>Wrong</th>
-            <th>Accuracy</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div style="max-height:220px;overflow:auto;border-radius:10px;border:1px solid rgba(30,64,175,0.7);">
+        <table>
+          <thead>
+            <tr>
+              <th>Verb</th>
+              <th>First seen</th>
+              <th>Last seen</th>
+              <th>Times asked</th>
+              <th>Correct</th>
+              <th>Wrong</th>
+              <th>Accuracy</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
     `;
   }
 
-  // Verb editor
   function renderTensesEditor() {
     tensesEditorContainer.innerHTML = "";
     TENSES.forEach(t => {
@@ -1249,7 +1575,7 @@
       wrapper.dataset.tenseId = t.id;
 
       const title = document.createElement("h4");
-      title.textContent = t.label;
+      title.innerHTML = `${t.label} <span class="label-chip">Optional</span>`;
       wrapper.appendChild(title);
 
       PRONOUNS.forEach(p => {
@@ -1259,7 +1585,7 @@
         lab.textContent = p;
         const inp = document.createElement("input");
         inp.type = "text";
-        inp.placeholder = "leave blank if you don’t want to practise this form";
+        inp.placeholder = "leave blank if you don’t want this form";
         inp.dataset.tenseId = t.id;
         inp.dataset.pronoun = p;
         row.appendChild(lab);
@@ -1318,7 +1644,7 @@
     };
     saveState();
     renderVerbList();
-    verbFormFeedback.textContent = `Saved "${inf}". It will now be available in training.`;
+    verbFormFeedback.textContent = `Saved "${inf}". It is now available in the trainer.`;
     verbFormFeedback.className = "feedback correct";
   }
 
@@ -1357,7 +1683,6 @@
     });
   }
 
-  // Initial render
   renderTenseToggles();
   renderStatsBar();
   renderTensesEditor();
