@@ -1,0 +1,1370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>French Verb Conjugation Trainer (B1)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f7;
+      color: #222;
+    }
+    header {
+      background: #111827;
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+    header small {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    nav button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    nav button.active {
+      background: #111827;
+      color: #fff;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+      margin-bottom: 16px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .row > * {
+      flex: 1 1 auto;
+    }
+    label {
+      font-size: 12px;
+      color: #374151;
+    }
+    input[type="number"],
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+    textarea {
+      min-height: 60px;
+    }
+    button.primary {
+      background: #2563eb;
+      color: #fff;
+    }
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+    button.secondary {
+      background: #e5e7eb;
+    }
+    button.danger {
+      background: #dc2626;
+      color: #fff;
+    }
+    button.small {
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 999px;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      font-size: 11px;
+      margin-right: 4px;
+    }
+    .tag.good {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .tag.bad {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .question-main {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    .question-main span.label {
+      font-weight: 600;
+      color: #4b5563;
+    }
+    .question-main span.value {
+      font-weight: 600;
+    }
+    .pronoun {
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .answer-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .feedback {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    .feedback.correct {
+      color: #15803d;
+    }
+    .feedback.incorrect {
+      color: #b91c1c;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+    }
+    .tense-grid {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+    }
+    .tense-grid h4 {
+      margin: 0 0 6px 0;
+      font-size: 13px;
+    }
+    .tense-grid-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 4px 8px;
+      margin-bottom: 4px;
+      align-items: center;
+    }
+    .tense-grid-row label {
+      margin: 0;
+      font-size: 12px;
+    }
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .pill-group button {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: #e5e7eb;
+    }
+    .pill-group button.active {
+      background: #2563eb;
+      color: #fff;
+    }
+    .small-muted {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .verb-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .verb-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      padding: 4px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .verb-list-item:last-child {
+      border-bottom: none;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 12px;
+    }
+    @media (max-width: 600px) {
+      header {
+        align-items: flex-start;
+      }
+      .answer-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .row > * {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>French Verb Conjugation Trainer</h1>
+    <small>B1-focused · works fully offline · progress saved on this device</small>
+  </div>
+</header>
+
+<div class="container">
+  <nav>
+    <button id="tab-trainer" class="active">Trainer</button>
+    <button id="tab-review">Review & History</button>
+    <button id="tab-manage">Verbs & Settings</button>
+  </nav>
+
+  <!-- Trainer tab -->
+  <section id="view-trainer" class="card">
+    <h2>Daily session</h2>
+    <div class="subtitle">
+      Choose your number of new verbs per day and practise them in random order, mixed with older verbs for review.
+    </div>
+
+    <div class="row" style="margin-bottom: 10px;">
+      <div>
+        <label>Mode</label>
+        <div class="pill-group">
+          <button id="mode-mixed" class="active">Mixed (new + review)</button>
+          <button id="mode-reviewOnly">Review only</button>
+        </div>
+      </div>
+      <div>
+        <label for="dailyTarget">New verbs target / day</label>
+        <div class="row">
+          <input type="number" id="dailyTarget" min="1" max="200" value="20" style="max-width:120px;">
+          <button id="saveSettingsBtn" class="small secondary">Save</button>
+        </div>
+        <div class="small-muted" id="targetInfo"></div>
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 10px;">
+      <div>
+        <label>Tenses to include</label>
+        <div id="tenseToggles" class="pill-group"></div>
+        <div class="small-muted">Toggle which tenses appear in questions. All selected by default.</div>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #e5e7eb;margin:12px 0;">
+
+    <div id="statsBar" style="margin-bottom: 8px;">
+      <!-- Populated by JS -->
+    </div>
+
+    <div id="questionCard" class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+      <div id="questionMeta" class="small-muted"></div>
+      <div class="question-main" id="questionText"></div>
+      <div class="answer-row">
+        <div style="flex:1 1 auto;">
+          <label for="answerInput">Your answer (verb part)</label>
+          <div class="row" style="gap:4px;align-items:center;">
+            <span id="pronounDisplay" class="pronoun"></span>
+            <input type="text" id="answerInput" placeholder="type the conjugated form">
+          </div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button id="checkBtn" class="primary">Check</button>
+          <button id="showBtn" class="secondary">Show answer</button>
+          <button id="nextBtn" class="secondary" disabled>Next →</button>
+        </div>
+      </div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+    <div class="small-muted">
+      Tip: focus on accuracy, not speed. If accents are hard on your phone keyboard, you can enable a French keyboard layout in your OS settings.
+    </div>
+  </section>
+
+  <!-- Review tab -->
+  <section id="view-review" class="card" style="display:none;">
+    <h2>Review & daily history</h2>
+    <div class="subtitle">
+      See what you’ve covered so far and how many verbs you’ve practised each day.
+    </div>
+
+    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+      <h3 style="margin-top:0;font-size:15px;">Daily tracker</h3>
+      <p class="small-muted">
+        Counts are based on how many <strong>new verbs</strong> were introduced for the first time that day, and how many
+        <strong>review questions</strong> were asked using verbs you had already seen before.
+      </p>
+      <div id="historyTableWrapper"></div>
+    </div>
+
+    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;margin-top:12px;">
+      <h3 style="margin-top:0;font-size:15px;">Your verbs so far</h3>
+      <p class="small-muted">
+        This is a quick overview of all verbs stored on this device, with basic progress stats.
+      </p>
+      <div id="verbsProgressTableWrapper"></div>
+    </div>
+  </section>
+
+  <!-- Manage tab -->
+  <section id="view-manage" class="card" style="display:none;">
+    <h2>Verbs & settings</h2>
+    <div class="subtitle">
+      Add new verbs (with the tenses you care about), remove verbs, and adjust configuration.
+    </div>
+
+    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;">
+      <h3 style="margin-top:0;font-size:15px;">Add / update verb</h3>
+      <p class="small-muted">
+        Start with the most common verbs you need for B1 (être, avoir, aller, faire, etc.), then grow your list over time.
+        All data is stored locally on this device.
+      </p>
+
+      <div class="row" style="margin-bottom:8px;">
+        <div>
+          <label for="verbInfInput">Infinitive (Fr)</label>
+          <input type="text" id="verbInfInput" placeholder="parler">
+        </div>
+        <div>
+          <label for="verbEnInput">Meaning (EN, optional)</label>
+          <input type="text" id="verbEnInput" placeholder="to speak">
+        </div>
+      </div>
+
+      <div id="tensesEditorContainer"></div>
+
+      <div class="row" style="margin-top:8px;">
+        <button id="saveVerbBtn" class="primary">Save verb</button>
+        <button id="clearVerbFormBtn" class="secondary">Clear form</button>
+      </div>
+      <div id="verbFormFeedback" class="feedback"></div>
+    </div>
+
+    <div class="card" style="background:#f9fafb;box-shadow:none;border:1px solid #e5e7eb;margin-top:12px;">
+      <h3 style="margin-top:0;font-size:15px;">Current verb list</h3>
+      <p class="small-muted">
+        These verbs are available for training on this device. Removing a verb also removes its progress stats.
+      </p>
+      <div id="verbList" class="verb-list"></div>
+      <div class="small-muted" style="margin-top:4px;">
+        Your goal can be, for example, to grow this list until you have at least <strong>774 verbs</strong> stored.
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'frenchVerbTrainer_v1';
+
+  const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
+  const TENSES = [
+    { id: "present", label: "Présent" },
+    { id: "passe_compose", label: "Passé composé" },
+    { id: "imparfait", label: "Imparfait" },
+    { id: "futur_proche", label: "Futur proche" },
+    { id: "futur_simple", label: "Futur simple" },
+    { id: "conditionnel_present", label: "Conditionnel présent" }
+  ];
+
+  const SEED_VERBS = [
+    // Minimal starter pack with several key tenses filled.
+    {
+      inf: "être",
+      en: "to be",
+      tenses: {
+        present: {
+          "je": "suis",
+          "tu": "es",
+          "il/elle": "est",
+          "nous": "sommes",
+          "vous": "êtes",
+          "ils/elles": "sont"
+        },
+        passe_compose: {
+          "je": "ai été",
+          "tu": "as été",
+          "il/elle": "a été",
+          "nous": "avons été",
+          "vous": "avez été",
+          "ils/elles": "ont été"
+        },
+        imparfait: {
+          "je": "étais",
+          "tu": "étais",
+          "il/elle": "était",
+          "nous": "étions",
+          "vous": "étiez",
+          "ils/elles": "étaient"
+        },
+        futur_simple: {
+          "je": "serai",
+          "tu": "seras",
+          "il/elle": "sera",
+          "nous": "serons",
+          "vous": "serez",
+          "ils/elles": "seront"
+        },
+        conditionnel_present: {
+          "je": "serais",
+          "tu": "serais",
+          "il/elle": "serait",
+          "nous": "serions",
+          "vous": "seriez",
+          "ils/elles": "seraient"
+        }
+      }
+    },
+    {
+      inf: "avoir",
+      en: "to have",
+      tenses: {
+        present: {
+          "je": "ai",
+          "tu": "as",
+          "il/elle": "a",
+          "nous": "avons",
+          "vous": "avez",
+          "ils/elles": "ont"
+        },
+        passe_compose: {
+          "je": "ai eu",
+          "tu": "as eu",
+          "il/elle": "a eu",
+          "nous": "avons eu",
+          "vous": "avez eu",
+          "ils/elles": "ont eu"
+        },
+        imparfait: {
+          "je": "avais",
+          "tu": "avais",
+          "il/elle": "avait",
+          "nous": "avions",
+          "vous": "aviez",
+          "ils/elles": "avaient"
+        },
+        futur_simple: {
+          "je": "aurai",
+          "tu": "auras",
+          "il/elle": "aura",
+          "nous": "aurons",
+          "vous": "aurez",
+          "ils/elles": "auront"
+        },
+        conditionnel_present: {
+          "je": "aurais",
+          "tu": "aurais",
+          "il/elle": "aurait",
+          "nous": "aurions",
+          "vous": "auriez",
+          "ils/elles": "auraient"
+        }
+      }
+    },
+    {
+      inf: "aller",
+      en: "to go",
+      tenses: {
+        present: {
+          "je": "vais",
+          "tu": "vas",
+          "il/elle": "va",
+          "nous": "allons",
+          "vous": "allez",
+          "ils/elles": "vont"
+        },
+        passe_compose: {
+          // Masculine singular; adjust in your head for agreement.
+          "je": "suis allé",
+          "tu": "es allé",
+          "il/elle": "est allé",
+          "nous": "sommes allés",
+          "vous": "êtes allés",
+          "ils/elles": "sont allés"
+        },
+        imparfait: {
+          "je": "allais",
+          "tu": "allais",
+          "il/elle": "allait",
+          "nous": "allions",
+          "vous": "alliez",
+          "ils/elles": "allaient"
+        },
+        futur_proche: {
+          "je": "vais aller",
+          "tu": "vas aller",
+          "il/elle": "va aller",
+          "nous": "allons aller",
+          "vous": "allez aller",
+          "ils/elles": "vont aller"
+        },
+        futur_simple: {
+          "je": "irai",
+          "tu": "iras",
+          "il/elle": "ira",
+          "nous": "irons",
+          "vous": "irez",
+          "ils/elles": "iront"
+        },
+        conditionnel_present: {
+          "je": "irais",
+          "tu": "irais",
+          "il/elle": "irait",
+          "nous": "irions",
+          "vous": "iriez",
+          "ils/elles": "iraient"
+        }
+      }
+    },
+    {
+      inf: "faire",
+      en: "to do / to make",
+      tenses: {
+        present: {
+          "je": "fais",
+          "tu": "fais",
+          "il/elle": "fait",
+          "nous": "faisons",
+          "vous": "faites",
+          "ils/elles": "font"
+        },
+        passe_compose: {
+          "je": "ai fait",
+          "tu": "as fait",
+          "il/elle": "a fait",
+          "nous": "avons fait",
+          "vous": "avez fait",
+          "ils/elles": "ont fait"
+        },
+        imparfait: {
+          "je": "faisais",
+          "tu": "faisais",
+          "il/elle": "faisait",
+          "nous": "faisions",
+          "vous": "faisiez",
+          "ils/elles": "faisaient"
+        },
+        futur_simple: {
+          "je": "ferai",
+          "tu": "feras",
+          "il/elle": "fera",
+          "nous": "ferons",
+          "vous": "ferez",
+          "ils/elles": "feront"
+        },
+        conditionnel_present: {
+          "je": "ferais",
+          "tu": "ferais",
+          "il/elle": "ferait",
+          "nous": "ferions",
+          "vous": "feriez",
+          "ils/elles": "feraient"
+        }
+      }
+    },
+    {
+      inf: "parler",
+      en: "to speak",
+      tenses: {
+        present: {
+          "je": "parle",
+          "tu": "parles",
+          "il/elle": "parle",
+          "nous": "parlons",
+          "vous": "parlez",
+          "ils/elles": "parlent"
+        },
+        passe_compose: {
+          "je": "ai parlé",
+          "tu": "as parlé",
+          "il/elle": "a parlé",
+          "nous": "avons parlé",
+          "vous": "avez parlé",
+          "ils/elles": "ont parlé"
+        },
+        imparfait: {
+          "je": "parlais",
+          "tu": "parlais",
+          "il/elle": "parlait",
+          "nous": "parlions",
+          "vous": "parliez",
+          "ils/elles": "parlaient"
+        },
+        futur_proche: {
+          "je": "vais parler",
+          "tu": "vas parler",
+          "il/elle": "va parler",
+          "nous": "allons parler",
+          "vous": "allez parler",
+          "ils/elles": "vont parler"
+        },
+        futur_simple: {
+          "je": "parlerai",
+          "tu": "parleras",
+          "il/elle": "parlera",
+          "nous": "parlerons",
+          "vous": "parlerez",
+          "ils/elles": "parleront"
+        },
+        conditionnel_present: {
+          "je": "parlerais",
+          "tu": "parlerais",
+          "il/elle": "parlerait",
+          "nous": "parlerions",
+          "vous": "parleriez",
+          "ils/elles": "parleraient"
+        }
+      }
+    },
+    {
+      inf: "finir",
+      en: "to finish",
+      tenses: {
+        present: {
+          "je": "finis",
+          "tu": "finis",
+          "il/elle": "finit",
+          "nous": "finissons",
+          "vous": "finissez",
+          "ils/elles": "finissent"
+        },
+        passe_compose: {
+          "je": "ai fini",
+          "tu": "as fini",
+          "il/elle": "a fini",
+          "nous": "avons fini",
+          "vous": "avez fini",
+          "ils/elles": "ont fini"
+        },
+        imparfait: {
+          "je": "finissais",
+          "tu": "finissais",
+          "il/elle": "finissait",
+          "nous": "finissions",
+          "vous": "finissiez",
+          "ils/elles": "finissaient"
+        },
+        futur_simple: {
+          "je": "finirai",
+          "tu": "finiras",
+          "il/elle": "finira",
+          "nous": "finirons",
+          "vous": "finirez",
+          "ils/elles": "finiront"
+        },
+        conditionnel_present: {
+          "je": "finirais",
+          "tu": "finirais",
+          "il/elle": "finirait",
+          "nous": "finirions",
+          "vous": "finiriez",
+          "ils/elles": "finiraient"
+        }
+      }
+    }
+  ];
+
+  function todayStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    let state;
+    if (!raw) {
+      state = {
+        data: { verbs: {} },
+        progress: {
+          statsByVerb: {},
+          historyByDate: {}
+        },
+        settings: {
+          dailyNewTarget: 20,
+          activeTenses: TENSES.map(t => t.id),
+          mode: "mixed"
+        }
+      };
+    } else {
+      try {
+        state = JSON.parse(raw);
+      } catch (e) {
+        console.warn("Failed to parse saved state, resetting.", e);
+        state = {
+          data: { verbs: {} },
+          progress: {
+            statsByVerb: {},
+            historyByDate: {}
+          },
+          settings: {
+            dailyNewTarget: 20,
+            activeTenses: TENSES.map(t => t.id),
+            mode: "mixed"
+          }
+        };
+      }
+    }
+    // Ensure structure
+    if (!state.data) state.data = { verbs: {} };
+    if (!state.data.verbs) state.data.verbs = {};
+    if (!state.progress) state.progress = { statsByVerb: {}, historyByDate: {} };
+    if (!state.progress.statsByVerb) state.progress.statsByVerb = {};
+    if (!state.progress.historyByDate) state.progress.historyByDate = {};
+    if (!state.settings) state.settings = {
+      dailyNewTarget: 20,
+      activeTenses: TENSES.map(t => t.id),
+      mode: "mixed"
+    };
+    if (!Array.isArray(state.settings.activeTenses)) {
+      state.settings.activeTenses = TENSES.map(t => t.id);
+    }
+    if (!state.settings.mode) state.settings.mode = "mixed";
+    return state;
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.error("Failed to save state:", e);
+    }
+  }
+
+  let state = loadState();
+  const TODAY = todayStr();
+
+  // Seed verbs if first time
+  function seedVerbsIfEmpty() {
+    if (Object.keys(state.data.verbs).length === 0) {
+      SEED_VERBS.forEach(v => {
+        state.data.verbs[v.inf] = v;
+      });
+      saveState();
+    }
+  }
+
+  seedVerbsIfEmpty();
+
+  function getAllVerbs() {
+    return Object.values(state.data.verbs);
+  }
+
+  function getHistoryFor(dateStr) {
+    if (!state.progress.historyByDate[dateStr]) {
+      state.progress.historyByDate[dateStr] = {
+        newCount: 0,
+        reviewCount: 0
+      };
+    }
+    return state.progress.historyByDate[dateStr];
+  }
+
+  function getStatsForVerb(inf) {
+    if (!state.progress.statsByVerb[inf]) {
+      state.progress.statsByVerb[inf] = {
+        firstSeen: null,
+        lastSeen: null,
+        timesSeen: 0,
+        correct: 0,
+        wrong: 0
+      };
+    }
+    return state.progress.statsByVerb[inf];
+  }
+
+  function randomChoice(arr) {
+    if (!arr.length) return null;
+    const idx = Math.floor(Math.random() * arr.length);
+    return arr[idx];
+  }
+
+  function getActiveTenses() {
+    return TENSES.filter(t => state.settings.activeTenses.includes(t.id));
+  }
+
+  // Question handling
+  let currentQuestion = null;
+  let lastAnswered = null;
+
+  function buildQuestion() {
+    const verbs = getAllVerbs();
+    const activeTenses = getActiveTenses();
+    const statsByVerb = state.progress.statsByVerb;
+
+    if (!verbs.length) {
+      return null;
+    }
+    if (!activeTenses.length) {
+      return null;
+    }
+
+    const unseen = verbs.filter(v => !statsByVerb[v.inf] || statsByVerb[v.inf].timesSeen === 0);
+    const seen = verbs.filter(v => statsByVerb[v.inf] && statsByVerb[v.inf].timesSeen > 0);
+
+    const historyToday = getHistoryFor(TODAY);
+    const canIntroduceNew = (historyToday.newCount < state.settings.dailyNewTarget) && unseen.length > 0;
+
+    let candidateVerbs = [];
+
+    if (state.settings.mode === "reviewOnly") {
+      candidateVerbs = seen.length ? seen : verbs;
+    } else {
+      if (canIntroduceNew) {
+        if (Math.random() < 0.5 || seen.length === 0) {
+          candidateVerbs = unseen;
+        } else {
+          candidateVerbs = seen;
+        }
+      } else {
+        candidateVerbs = seen.length ? seen : verbs;
+      }
+    }
+
+    let verb = randomChoice(candidateVerbs);
+    if (!verb) {
+      verb = randomChoice(verbs);
+    }
+
+    const availableTenses = activeTenses.filter(t => verb.tenses && verb.tenses[t.id]);
+    if (!availableTenses.length) {
+      // fallback: any tense defined
+      const verbTenseIds = Object.keys(verb.tenses || {});
+      if (!verbTenseIds.length) {
+        return null;
+      }
+      const tId = randomChoice(verbTenseIds);
+      const tenseDef = TENSES.find(t => t.id === tId) || { id: tId, label: tId };
+      const persons = Object.keys(verb.tenses[tId]);
+      const pronoun = randomChoice(persons);
+      const correct = verb.tenses[tId][pronoun];
+      return {
+        verbInf: verb.inf,
+        verbEn: verb.en || "",
+        tenseId: tId,
+        tenseLabel: tenseDef.label,
+        pronoun: pronoun,
+        answer: correct,
+        isNewVerb: !statsByVerb[verb.inf] || statsByVerb[verb.inf].timesSeen === 0,
+        isReviewVerb: statsByVerb[verb.inf] && statsByVerb[verb.inf].timesSeen > 0
+      };
+    }
+
+    const tense = randomChoice(availableTenses);
+    const persons = Object.keys(verb.tenses[tense.id]);
+    const pronoun = randomChoice(persons);
+    const correct = verb.tenses[tense.id][pronoun];
+
+    return {
+      verbInf: verb.inf,
+      verbEn: verb.en || "",
+      tenseId: tense.id,
+      tenseLabel: tense.label,
+      pronoun: pronoun,
+      answer: correct,
+      isNewVerb: !statsByVerb[verb.inf] || statsByVerb[verb.inf].timesSeen === 0,
+      isReviewVerb: statsByVerb[verb.inf] && statsByVerb[verb.inf].timesSeen > 0
+    };
+  }
+
+  function normaliseAnswer(str) {
+    return (str || "").trim().toLowerCase();
+  }
+
+  // UI references
+  const tabTrainerBtn = document.getElementById("tab-trainer");
+  const tabReviewBtn = document.getElementById("tab-review");
+  const tabManageBtn = document.getElementById("tab-manage");
+
+  const viewTrainer = document.getElementById("view-trainer");
+  const viewReview = document.getElementById("view-review");
+  const viewManage = document.getElementById("view-manage");
+
+  const dailyTargetInput = document.getElementById("dailyTarget");
+  const saveSettingsBtn = document.getElementById("saveSettingsBtn");
+  const targetInfo = document.getElementById("targetInfo");
+
+  const tenseTogglesContainer = document.getElementById("tenseToggles");
+
+  const statsBar = document.getElementById("statsBar");
+  const questionMeta = document.getElementById("questionMeta");
+  const questionText = document.getElementById("questionText");
+  const pronounDisplay = document.getElementById("pronounDisplay");
+  const answerInput = document.getElementById("answerInput");
+  const checkBtn = document.getElementById("checkBtn");
+  const showBtn = document.getElementById("showBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const feedbackEl = document.getElementById("feedback");
+
+  const historyTableWrapper = document.getElementById("historyTableWrapper");
+  const verbsProgressTableWrapper = document.getElementById("verbsProgressTableWrapper");
+
+  const modeMixedBtn = document.getElementById("mode-mixed");
+  const modeReviewOnlyBtn = document.getElementById("mode-reviewOnly");
+
+  const tensesEditorContainer = document.getElementById("tensesEditorContainer");
+  const verbInfInput = document.getElementById("verbInfInput");
+  const verbEnInput = document.getElementById("verbEnInput");
+  const saveVerbBtn = document.getElementById("saveVerbBtn");
+  const clearVerbFormBtn = document.getElementById("clearVerbFormBtn");
+  const verbFormFeedback = document.getElementById("verbFormFeedback");
+  const verbListDiv = document.getElementById("verbList");
+
+  function switchTab(tab) {
+    const tabs = [
+      { btn: tabTrainerBtn, view: viewTrainer, id: "trainer" },
+      { btn: tabReviewBtn, view: viewReview, id: "review" },
+      { btn: tabManageBtn, view: viewManage, id: "manage" }
+    ];
+    tabs.forEach(t => {
+      const active = (t.id === tab);
+      t.btn.classList.toggle("active", active);
+      t.view.style.display = active ? "block" : "none";
+    });
+    if (tab === "review") {
+      renderHistory();
+      renderVerbsProgress();
+    }
+    if (tab === "manage") {
+      renderVerbList();
+    }
+  }
+
+  tabTrainerBtn.addEventListener("click", () => switchTab("trainer"));
+  tabReviewBtn.addEventListener("click", () => switchTab("review"));
+  tabManageBtn.addEventListener("click", () => switchTab("manage"));
+
+  // Tense toggles
+  function renderTenseToggles() {
+    tenseTogglesContainer.innerHTML = "";
+    TENSES.forEach(t => {
+      const btn = document.createElement("button");
+      btn.textContent = t.label;
+      btn.type = "button";
+      btn.className = state.settings.activeTenses.includes(t.id) ? "active" : "";
+      btn.addEventListener("click", () => {
+        const idx = state.settings.activeTenses.indexOf(t.id);
+        if (idx >= 0) {
+          state.settings.activeTenses.splice(idx, 1);
+        } else {
+          state.settings.activeTenses.push(t.id);
+        }
+        saveState();
+        renderTenseToggles();
+      });
+      tenseTogglesContainer.appendChild(btn);
+    });
+  }
+
+  // Stats bar
+  function renderStatsBar() {
+    const historyToday = getHistoryFor(TODAY);
+    const verbs = getAllVerbs();
+    const seenCount = Object.values(state.progress.statsByVerb).filter(s => s.timesSeen > 0).length;
+
+    statsBar.innerHTML = `
+      <span class="tag">Today: <strong>${TODAY}</strong></span>
+      <span class="tag good">New verbs today: <strong>${historyToday.newCount}</strong> / ${state.settings.dailyNewTarget}</span>
+      <span class="tag">Review questions today: <strong>${historyToday.reviewCount}</strong></span>
+      <span class="tag">Total verbs stored: <strong>${verbs.length}</strong></span>
+      <span class="tag">Verbs seen at least once: <strong>${seenCount}</strong></span>
+    `;
+    targetInfo.textContent = `Target of ${state.settings.dailyNewTarget} new verbs per day. You can change this anytime.`;
+  }
+
+  // Question rendering
+  function renderQuestion() {
+    if (!currentQuestion) {
+      questionMeta.textContent = "No question available. Add some verbs with tenses first in the Verbs tab.";
+      questionText.textContent = "";
+      pronounDisplay.textContent = "";
+      feedbackEl.textContent = "";
+      feedbackEl.className = "feedback";
+      checkBtn.disabled = true;
+      showBtn.disabled = true;
+      nextBtn.disabled = false;
+      return;
+    }
+    questionMeta.innerHTML = `
+      Infinitive: <strong>${currentQuestion.verbInf}</strong>
+      ${currentQuestion.verbEn ? ` · Meaning: <strong>${currentQuestion.verbEn}</strong>` : ""}
+      · Tense: <strong>${currentQuestion.tenseLabel}</strong>
+    `;
+    questionText.innerHTML = `
+      <span class="label">Conjugate for:</span>
+      <span class="value">${currentQuestion.pronoun}</span>
+    `;
+    pronounDisplay.textContent = currentQuestion.pronoun;
+    answerInput.value = "";
+    answerInput.focus();
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+    checkBtn.disabled = false;
+    showBtn.disabled = false;
+    nextBtn.disabled = true;
+  }
+
+  function newQuestion() {
+    currentQuestion = buildQuestion();
+    renderStatsBar();
+    renderQuestion();
+  }
+
+  // Check answer
+  function handleCheck(showOnly) {
+    if (!currentQuestion) return;
+    const userAns = answerInput.value;
+    const correctAns = currentQuestion.answer;
+
+    const stats = getStatsForVerb(currentQuestion.verbInf);
+    const history = getHistoryFor(TODAY);
+
+    const wasNewIntro = !stats.firstSeen;
+    stats.timesSeen += 1;
+    stats.lastSeen = TODAY;
+    if (!stats.firstSeen) {
+      stats.firstSeen = TODAY;
+      history.newCount += 1;
+    } else {
+      history.reviewCount += 1;
+    }
+
+    saveState();
+    renderStatsBar();
+
+    if (showOnly) {
+      feedbackEl.textContent = `Answer: ${currentQuestion.pronoun} ${correctAns}`;
+      feedbackEl.className = "feedback";
+      checkBtn.disabled = true;
+      showBtn.disabled = true;
+      nextBtn.disabled = false;
+      lastAnswered = { correct: null };
+      return;
+    }
+
+    const ok = normaliseAnswer(userAns) === normaliseAnswer(correctAns);
+    if (ok) {
+      stats.correct += 1;
+      feedbackEl.textContent = `Correct ✔  ${currentQuestion.pronoun} ${correctAns}`;
+      feedbackEl.className = "feedback correct";
+    } else {
+      stats.wrong += 1;
+      feedbackEl.textContent = `Not quite ✘  Your answer: "${userAns || "—"}" · Correct: ${currentQuestion.pronoun} ${correctAns}`;
+      feedbackEl.className = "feedback incorrect";
+    }
+    saveState();
+    lastAnswered = { correct: ok };
+    checkBtn.disabled = true;
+    showBtn.disabled = true;
+    nextBtn.disabled = false;
+  }
+
+  checkBtn.addEventListener("click", () => handleCheck(false));
+  showBtn.addEventListener("click", () => handleCheck(true));
+  nextBtn.addEventListener("click", () => {
+    newQuestion();
+  });
+
+  answerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!checkBtn.disabled) {
+        handleCheck(false);
+      } else if (!nextBtn.disabled) {
+        newQuestion();
+      }
+    }
+  });
+
+  // Settings
+  dailyTargetInput.value = state.settings.dailyNewTarget;
+  saveSettingsBtn.addEventListener("click", () => {
+    const val = parseInt(dailyTargetInput.value, 10);
+    if (!isFinite(val) || val <= 0) {
+      alert("Please enter a positive number for daily target.");
+      return;
+    }
+    state.settings.dailyNewTarget = val;
+    saveState();
+    renderStatsBar();
+  });
+
+  // Mode
+  function updateModeButtons() {
+    const mode = state.settings.mode;
+    modeMixedBtn.classList.toggle("active", mode === "mixed");
+    modeReviewOnlyBtn.classList.toggle("active", mode === "reviewOnly");
+  }
+  modeMixedBtn.addEventListener("click", () => {
+    state.settings.mode = "mixed";
+    saveState();
+    updateModeButtons();
+    newQuestion();
+  });
+  modeReviewOnlyBtn.addEventListener("click", () => {
+    state.settings.mode = "reviewOnly";
+    saveState();
+    updateModeButtons();
+    newQuestion();
+  });
+
+  // History table
+  function renderHistory() {
+    const entries = Object.entries(state.progress.historyByDate);
+    if (!entries.length) {
+      historyTableWrapper.innerHTML = "<p class='muted'>No history yet. Start a session in the Trainer tab.</p>";
+      return;
+    }
+    entries.sort((a, b) => a[0] < b[0] ? 1 : -1); // newest first
+    const rows = entries.map(([date, h]) => `
+      <tr>
+        <td>${date}</td>
+        <td>${h.newCount}</td>
+        <td>${h.reviewCount}</td>
+      </tr>
+    `).join("");
+    historyTableWrapper.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>New verbs introduced</th>
+            <th>Review questions</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  // Verb progress table
+  function renderVerbsProgress() {
+    const verbs = getAllVerbs();
+    if (!verbs.length) {
+      verbsProgressTableWrapper.innerHTML = "<p class='muted'>No verbs stored yet.</p>";
+      return;
+    }
+    const rows = verbs.map(v => {
+      const st = state.progress.statsByVerb[v.inf] || { firstSeen: null, lastSeen: null, timesSeen: 0, correct: 0, wrong: 0 };
+      const total = st.correct + st.wrong;
+      const acc = total ? Math.round(st.correct * 100 / total) : 0;
+      return `
+        <tr>
+          <td>${v.inf}${v.en ? ` <span class="small-muted">(${v.en})</span>` : ""}</td>
+          <td>${st.firstSeen || "—"}</td>
+          <td>${st.lastSeen || "—"}</td>
+          <td>${st.timesSeen}</td>
+          <td>${st.correct}</td>
+          <td>${st.wrong}</td>
+          <td>${total ? acc + "%" : "—"}</td>
+        </tr>
+      `;
+    }).join("");
+    verbsProgressTableWrapper.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Verb</th>
+            <th>First seen</th>
+            <th>Last seen</th>
+            <th>Times asked</th>
+            <th>Correct</th>
+            <th>Wrong</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  }
+
+  // Verb editor
+  function renderTensesEditor() {
+    tensesEditorContainer.innerHTML = "";
+    TENSES.forEach(t => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "tense-grid";
+      wrapper.dataset.tenseId = t.id;
+
+      const title = document.createElement("h4");
+      title.textContent = t.label;
+      wrapper.appendChild(title);
+
+      PRONOUNS.forEach(p => {
+        const row = document.createElement("div");
+        row.className = "tense-grid-row";
+        const lab = document.createElement("label");
+        lab.textContent = p;
+        const inp = document.createElement("input");
+        inp.type = "text";
+        inp.placeholder = "leave blank if you don’t want to practise this form";
+        inp.dataset.tenseId = t.id;
+        inp.dataset.pronoun = p;
+        row.appendChild(lab);
+        row.appendChild(inp);
+        wrapper.appendChild(row);
+      });
+
+      tensesEditorContainer.appendChild(wrapper);
+    });
+  }
+
+  function clearVerbForm() {
+    verbInfInput.value = "";
+    verbEnInput.value = "";
+    const inputs = tensesEditorContainer.querySelectorAll("input[type='text']");
+    inputs.forEach(inp => {
+      if (inp !== verbInfInput && inp !== verbEnInput) {
+        inp.value = "";
+      }
+    });
+    verbFormFeedback.textContent = "";
+    verbFormFeedback.className = "feedback";
+  }
+
+  function saveVerbFromForm() {
+    const inf = verbInfInput.value.trim();
+    if (!inf) {
+      verbFormFeedback.textContent = "Please enter at least the infinitive.";
+      verbFormFeedback.className = "feedback incorrect";
+      return;
+    }
+    const en = verbEnInput.value.trim();
+
+    const tenseInputs = tensesEditorContainer.querySelectorAll("input[data-tense-id]");
+    const tenses = {};
+    tenseInputs.forEach(inp => {
+      const val = inp.value.trim();
+      const tid = inp.dataset.tenseId;
+      const p = inp.dataset.pronoun;
+      if (val) {
+        if (!tenses[tid]) tenses[tid] = {};
+        tenses[tid][p] = val;
+      }
+    });
+
+    if (Object.keys(tenses).length === 0) {
+      verbFormFeedback.textContent = "You didn’t fill any conjugations. Add at least one tense/person so it can be used in training.";
+      verbFormFeedback.className = "feedback incorrect";
+      return;
+    }
+
+    state.data.verbs[inf] = {
+      inf,
+      en,
+      tenses
+    };
+    saveState();
+    renderVerbList();
+    verbFormFeedback.textContent = `Saved "${inf}". It will now be available in training.`;
+    verbFormFeedback.className = "feedback correct";
+  }
+
+  saveVerbBtn.addEventListener("click", saveVerbFromForm);
+  clearVerbFormBtn.addEventListener("click", clearVerbForm);
+
+  function renderVerbList() {
+    const verbs = getAllVerbs().sort((a, b) => a.inf.localeCompare(b.inf));
+    if (!verbs.length) {
+      verbListDiv.innerHTML = "<p class='muted'>No verbs stored yet. Add your first verbs above.</p>";
+      return;
+    }
+    verbListDiv.innerHTML = "";
+    verbs.forEach(v => {
+      const item = document.createElement("div");
+      item.className = "verb-list-item";
+      const left = document.createElement("div");
+      left.innerHTML = `<strong>${v.inf}</strong>${v.en ? ` <span class="small-muted">(${v.en})</span>` : ""}`;
+      const right = document.createElement("div");
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.className = "small danger";
+      delBtn.addEventListener("click", () => {
+        if (confirm(`Remove verb "${v.inf}" and its progress?`)) {
+          delete state.data.verbs[v.inf];
+          delete state.progress.statsByVerb[v.inf];
+          saveState();
+          renderVerbList();
+          renderStatsBar();
+        }
+      });
+      right.appendChild(delBtn);
+      item.appendChild(left);
+      item.appendChild(right);
+      verbListDiv.appendChild(item);
+    });
+  }
+
+  // Initial render
+  renderTenseToggles();
+  renderStatsBar();
+  renderTensesEditor();
+  renderVerbList();
+  updateModeButtons();
+  newQuestion();
+})();
+</script>
+</body>
+</html>
