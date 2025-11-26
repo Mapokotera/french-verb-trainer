@@ -1573,18 +1573,28 @@ keepBtn.addEventListener("click", () => {
   saveState();
 });
 
-learnRow.addEventListener("click", () => startTrainer("learn"));
-reviewRow.addEventListener("click", () => startTrainer("review"));
-mixedRow.addEventListener("click", () => startTrainer("mixed"));
+if (learnRow) {
+  learnRow.addEventListener("click", function() { startTrainer("learn"); });
+}
+if (reviewRow) {
+  reviewRow.addEventListener("click", function() { startTrainer("review"); });
+}
+if (mixedRow) {
+  mixedRow.addEventListener("click", function() { startTrainer("mixed"); });
+}
 
-openGuideBtn.addEventListener("click", () => {
-  guideModal.classList.add("show");
-});
-guideCloseBtn.addEventListener("click", () => {
-  guideModal.classList.remove("show");
-});
+if (openGuideBtn && guideModal) {
+  openGuideBtn.addEventListener("click", function() {
+    guideModal.classList.add("show");
+  });
+}
+if (guideCloseBtn && guideModal) {
+  guideCloseBtn.addEventListener("click", function() {
+    guideModal.classList.remove("show");
+  });
+}
 
-openSettingsBtn.addEventListener("click", () => {
+if (openSettingsBtn) openSettingsBtn.addEventListener("click", function() {
   const current = state.settings.dailyTarget || 20;
   const val = prompt("Daily goal – how many new verbs per day?", String(current));
   if (!val) return;
