@@ -19,7 +19,7 @@
       --border: #e5e7eb;
       --radius-lg: 18px;
       --radius-md: 12px;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+      --shadow-soft: 0 16px 40px rgba(15, 23, 42, 0.18);
     }
     * { box-sizing: border-box; }
     html, body {
@@ -36,10 +36,10 @@
     }
     .app {
       width: 100%;
-      max-width: 480px;
+      max-width: 430px;
       min-height: 100vh;
       background: linear-gradient(to bottom, #eef2ff 0, #f9fafb 80%);
-      padding-bottom: 72px;
+      padding-bottom: env(safe-area-inset-bottom, 16px);
     }
     header {
       padding: 18px 20px 10px 20px;
@@ -235,6 +235,7 @@
       font-size: 11px;
       color: var(--text-muted);
       cursor: pointer;
+      background: transparent;
     }
     .chart-tab.active {
       border-color: #c7d2fe;
@@ -256,11 +257,24 @@
       align-items: center;
       gap: 3px;
     }
-    .bar {
+    .bar-stack {
       width: 14px;
-      border-radius: 999px 999px 4px 4px;
-      background: linear-gradient(to top, #f97316, #fde68a);
+      height: 100%;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .bar-seg {
+      width: 100%;
       transition: height 0.2s ease;
+    }
+    .bar-new {
+      background: linear-gradient(to top, #f97316, #fde68a);
+    }
+    .bar-review {
+      background: linear-gradient(to top, #60a5fa, #bfdbfe);
     }
     .bar-label {
       font-size: 10px;
@@ -312,7 +326,7 @@
     }
     .trainer-sheet {
       width: 100%;
-      max-width: 480px;
+      max-width: 430px;
       height: 100vh;
       background: #f9fafb;
       border-radius: 0;
@@ -412,6 +426,12 @@
       border-color: #2563eb;
       box-shadow: 0 0 0 1px #bfdbfe;
     }
+    .answer-controls {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
     .btn {
       border-radius: 999px;
       border: none;
@@ -428,6 +448,10 @@
     .btn-secondary {
       background: #e5e7eb;
       color: #111827;
+    }
+    .btn-ghost {
+      background: #eff6ff;
+      color: #1d4ed8;
     }
     .btn:disabled {
       opacity: 0.6;
@@ -458,6 +482,26 @@
       color: var(--text-muted);
       margin-top: 6px;
     }
+    .mastery-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+    .mastery-row button {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .mastery-row button:first-child {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
     .trainer-footer {
       padding: 8px 14px 10px 14px;
       border-top: 1px solid #e5e7eb;
@@ -484,7 +528,7 @@
     }
     .guide-sheet {
       width: 100%;
-      max-width: 480px;
+      max-width: 430px;
       height: 100vh;
       background: #ffffff;
       border-radius: 0;
@@ -549,7 +593,7 @@
       color: var(--text-muted);
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 430px) {
       .app {
         border-radius: 0;
       }
@@ -560,7 +604,7 @@
 <div class="app">
   <header>
     <h1>French Verbs</h1>
-    <small>Present first · unlock new tenses as you go</small>
+    <small>Présent first · unlock more tenses later</small>
   </header>
   <main>
     <div class="section-title">Spaced repetition</div>
@@ -575,7 +619,7 @@
           <div class="mode-icon">＋</div>
           <div>
             <div class="mode-text-title">Learn new verbs</div>
-            <div class="mode-text-sub" id="learnSub">Unlock your daily quota of new verbs.</div>
+            <div class="mode-text-sub" id="learnSub">Up to your daily quota of new verbs.</div>
           </div>
         </div>
         <div class="mode-chevron">›</div>
@@ -667,11 +711,18 @@
         <div class="trainer-q-sub" id="questionSub"></div>
         <div class="answer-row">
           <input type="text" id="answerInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type the conjugated form (verb only)">
+        </div>
+        <div class="answer-controls">
           <button class="btn btn-primary" id="checkBtn">Check</button>
           <button class="btn btn-secondary" id="showBtn">Show</button>
+          <button class="btn btn-ghost" id="nextBtn">Next</button>
         </div>
         <div id="feedback" class="feedback" style="display:none;"></div>
         <div class="tense-note" id="tenseNote"></div>
+        <div class="mastery-row" id="masteryRow" style="display:none;">
+          <button id="memorizeBtn">I've memorized this verb</button>
+          <button id="keepBtn">Keep seeing this verb</button>
+        </div>
       </div>
     </div>
     <div class="trainer-footer">
@@ -760,7 +811,7 @@
 
       <p class="small-muted">
         In the trainer you always see the subject (je, tu, nous, etc.) and you type only the <strong>verb form</strong>.
-        For composé forms, type the auxiliary + past participle (for example <span class="code">ai parlé</span>).
+        For composed forms, type the auxiliary + past participle (for example <span class="code">ai parlé</span>).
         For the subjonctif, we practise the conjugated form without writing <em>que</em>.
       </p>
     </div>
@@ -769,281 +820,208 @@
 
 <script>
 const INITIAL_VERBS = [
-  { inf: 'accepter', en: 'to accept', group: 'er' },
-  { inf: 'accompagner', en: 'to accompany', group: 'er' },
-  { inf: 'accomplir', en: 'to accomplish', group: 'ir' },
-  { inf: 'acheter', en: 'to buy', group: 'er' },
-  { inf: 'adorer', en: 'to adore', group: 'er' },
-  { inf: 'afficher', en: 'to display', group: 'er' },
-  { inf: 'agir', en: 'to act', group: 'ir' },
-  { inf: 'aider', en: 'to help', group: 'er' },
-  { inf: 'aimer', en: 'to like / to love', group: 'er' },
-  { inf: 'aller', en: 'to go', group: 'irreg' },
-  { inf: 'améliorer', en: 'to improve', group: 'er' },
-  { inf: 'annoncer', en: 'to announce', group: 'er' },
-  { inf: 'annuler', en: 'to cancel', group: 'er' },
-  { inf: 'apparaître', en: 'to appear', group: 'irreg' },
-  { inf: 'appeler', en: 'to call (on the phone)', group: 'er' },
-  { inf: 'apporter', en: 'to bring (a thing)', group: 'er' },
-  { inf: 'apprendre', en: 'to learn', group: 'irreg' },
-  { inf: 'approcher', en: 'to approach', group: 'er' },
-  { inf: 'apprécier', en: 'to appreciate', group: 'er' },
-  { inf: 'arranger', en: 'to arrange', group: 'er' },
-  { inf: 'arriver', en: 'to arrive', group: 'er' },
-  { inf: 'arrêter', en: 'to stop', group: 'er' },
-  { inf: 'assister', en: 'to attend', group: 'er' },
-  { inf: 'atteindre', en: 'to reach', group: 'irreg' },
-  { inf: 'attendre', en: 'to wait', group: 're' },
-  { inf: 'attirer', en: 'to attract', group: 'er' },
-  { inf: 'avancer', en: 'to advance', group: 'er' },
+  { inf: 'être', en: 'to be', group: 'irreg' },
   { inf: 'avoir', en: 'to have', group: 'irreg' },
-  { inf: 'baisser', en: 'to lower', group: 'er' },
-  { inf: 'bavarder', en: 'to chat', group: 'er' },
-  { inf: 'boire', en: 'to drink', group: 'irreg' },
-  { inf: 'bouger', en: 'to move', group: 'er' },
-  { inf: 'brancher', en: 'to plug in', group: 'er' },
-  { inf: 'briller', en: 'to shine', group: 'er' },
-  { inf: 'brûler', en: 'to burn', group: 'er' },
-  { inf: 'casser', en: 'to break', group: 'er' },
-  { inf: 'changer', en: 'to change', group: 'er' },
-  { inf: 'chanter', en: 'to sing', group: 'er' },
-  { inf: 'charger', en: 'to load / to charge', group: 'er' },
-  { inf: 'chercher', en: 'to look for', group: 'er' },
-  { inf: 'choisir', en: 'to choose', group: 'ir' },
-  { inf: 'classer', en: 'to classify', group: 'er' },
-  { inf: 'cliquer', en: 'to click', group: 'er' },
-  { inf: 'collaborer', en: 'to collaborate', group: 'er' },
-  { inf: 'coller', en: 'to stick / to paste', group: 'er' },
-  { inf: 'commencer', en: 'to begin', group: 'er' },
-  { inf: 'comparer', en: 'to compare', group: 'er' },
-  { inf: 'compter', en: 'to count', group: 'er' },
-  { inf: 'conduire', en: 'to drive', group: 'irreg' },
-  { inf: 'confirmer', en: 'to confirm', group: 'er' },
-  { inf: 'confondre', en: 'to confuse', group: 're' },
-  { inf: 'connaître', en: 'to know (someone / place)', group: 'irreg' },
-  { inf: 'connecter', en: 'to connect', group: 'er' },
-  { inf: 'conseiller', en: 'to advise', group: 'er' },
-  { inf: 'construire', en: 'to build', group: 'irreg' },
-  { inf: 'continuer', en: 'to continue', group: 'er' },
-  { inf: 'coordonner', en: 'to coordinate', group: 'er' },
-  { inf: 'correspondre', en: 'to correspond', group: 're' },
-  { inf: 'corriger', en: 'to correct', group: 'er' },
-  { inf: 'coûter', en: 'to cost', group: 'er' },
-  { inf: 'croire', en: 'to believe', group: 'irreg' },
-  { inf: 'créer', en: 'to create', group: 'er' },
-  { inf: 'cuisiner', en: 'to cook', group: 'er' },
-  { inf: 'danser', en: 'to dance', group: 'er' },
-  { inf: 'demander', en: 'to ask', group: 'er' },
-  { inf: 'descendre', en: 'to go down / to descend', group: 're' },
-  { inf: 'dessiner', en: 'to draw', group: 'er' },
-  { inf: 'devenir', en: 'to become', group: 'irreg' },
-  { inf: 'devoir', en: 'to have to / must', group: 'irreg' },
-  { inf: 'dire', en: 'to say / to tell', group: 'irreg' },
-  { inf: 'diriger', en: 'to lead / to manage', group: 'er' },
-  { inf: 'discuter', en: 'to discuss', group: 'er' },
-  { inf: 'disparaître', en: 'to disappear', group: 'irreg' },
-  { inf: 'donner', en: 'to give', group: 'er' },
-  { inf: 'dormir', en: 'to sleep', group: 'irreg' },
-  { inf: 'durer', en: 'to last', group: 'er' },
-  { inf: 'débrancher', en: 'to unplug', group: 'er' },
-  { inf: 'décider', en: 'to decide', group: 'er' },
-  { inf: 'découvrir', en: 'to discover', group: 'irreg' },
-  { inf: 'détester', en: 'to hate', group: 'er' },
-  { inf: 'développer', en: 'to develop', group: 'er' },
-  { inf: 'emmener', en: 'to take (someone)', group: 'er' },
-  { inf: 'emprunter', en: 'to borrow', group: 'er' },
-  { inf: 'empêcher', en: 'to prevent', group: 'er' },
-  { inf: 'enlever', en: 'to remove', group: 'er' },
-  { inf: 'enseigner', en: 'to teach', group: 'er' },
-  { inf: 'entendre', en: 'to hear', group: 're' },
-  { inf: 'entrainer', en: 'to train / to coach', group: 'er' },
-  { inf: 'entrer', en: 'to enter', group: 'er' },
-  { inf: 'envoyer', en: 'to send', group: 'er' },
-  { inf: 'espérer', en: 'to hope', group: 'er' },
-  { inf: 'essayer', en: 'to try', group: 'er' },
-  { inf: 'examiner', en: 'to examine', group: 'er' },
-  { inf: 'exister', en: 'to exist', group: 'er' },
-  { inf: 'expliquer', en: 'to explain', group: 'er' },
-  { inf: 'exprimer', en: 'to express', group: 'er' },
+  { inf: 'aller', en: 'to go', group: 'irreg' },
   { inf: 'faire', en: 'to do / to make', group: 'irreg' },
-  { inf: 'fermer', en: 'to close', group: 'er' },
-  { inf: 'filmer', en: 'to film', group: 'er' },
-  { inf: 'finir', en: 'to finish', group: 'ir' },
-  { inf: 'fondre', en: 'to melt', group: 're' },
-  { inf: 'former', en: 'to train / to form', group: 'er' },
-  { inf: 'fumer', en: 'to smoke', group: 'er' },
-  { inf: 'gagner', en: 'to win / to earn', group: 'er' },
-  { inf: 'garder', en: 'to keep', group: 'er' },
-  { inf: 'grandir', en: 'to grow', group: 'ir' },
-  { inf: 'grossir', en: 'to gain weight', group: 'ir' },
-  { inf: 'gérer', en: 'to manage', group: 'er' },
-  { inf: 'habiter', en: 'to live (somewhere)', group: 'er' },
-  { inf: 'imaginer', en: 'to imagine', group: 'er' },
-  { inf: 'imposer', en: 'to impose', group: 'er' },
-  { inf: 'imprimer', en: 'to print', group: 'er' },
-  { inf: 'indiquer', en: 'to indicate', group: 'er' },
-  { inf: 'informer', en: 'to inform', group: 'er' },
-  { inf: 'installer', en: 'to install', group: 'er' },
-  { inf: 'invite', en: 'to invite', group: 'er' },
-  { inf: 'inviter', en: 'to invite', group: 'er' },
-  { inf: 'joindre', en: 'to attach / join', group: 'irreg' },
-  { inf: 'jouer', en: 'to play', group: 'er' },
-  { inf: 'lancer', en: 'to launch / to throw', group: 'er' },
-  { inf: 'laver', en: 'to wash', group: 'er' },
-  { inf: 'limiter', en: 'to limit', group: 'er' },
-  { inf: 'lire', en: 'to read', group: 'irreg' },
-  { inf: 'maigrir', en: 'to lose weight', group: 'ir' },
-  { inf: 'manger', en: 'to eat', group: 'er' },
-  { inf: 'manquer', en: 'to miss', group: 'er' },
-  { inf: 'marcher', en: 'to walk', group: 'er' },
-  { inf: 'mesurer', en: 'to measure', group: 'er' },
-  { inf: 'mettre', en: 'to put / to place', group: 'irreg' },
-  { inf: 'monter', en: 'to go up / to climb', group: 'er' },
-  { inf: 'montrer', en: 'to show', group: 'er' },
-  { inf: 'mourir', en: 'to die', group: 'irreg' },
-  { inf: 'nager', en: 'to swim', group: 'er' },
-  { inf: 'naître', en: 'to be born', group: 'irreg' },
-  { inf: 'nettoyer', en: 'to clean', group: 'er' },
-  { inf: 'noter', en: 'to note / to grade', group: 'er' },
-  { inf: 'obéir', en: 'to obey', group: 'ir' },
-  { inf: 'offrir', en: 'to offer', group: 'irreg' },
-  { inf: 'organiser', en: 'to organize', group: 'er' },
-  { inf: 'oublier', en: 'to forget', group: 'er' },
-  { inf: 'ouvrir', en: 'to open', group: 'irreg' },
-  { inf: 'pardonner', en: 'to forgive', group: 'er' },
-  { inf: 'parler', en: 'to speak', group: 'er' },
-  { inf: 'participer', en: 'to take part', group: 'er' },
-  { inf: 'partir', en: 'to leave', group: 'irreg' },
-  { inf: 'passer', en: 'to pass / to spend (time)', group: 'er' },
-  { inf: 'payer', en: 'to pay', group: 'er' },
-  { inf: 'penser', en: 'to think', group: 'er' },
-  { inf: 'perdre', en: 'to lose', group: 're' },
-  { inf: 'permettre', en: 'to allow', group: 'irreg' },
-  { inf: 'plaisanter', en: 'to joke', group: 'er' },
-  { inf: 'planifier', en: 'to plan', group: 'er' },
-  { inf: 'plier', en: 'to fold', group: 'er' },
-  { inf: 'pointer', en: 'to point', group: 'er' },
-  { inf: 'porter', en: 'to wear / to carry', group: 'er' },
-  { inf: 'poser', en: 'to put down / to pose', group: 'er' },
-  { inf: 'pousser', en: 'to push', group: 'er' },
+  { inf: 'dire', en: 'to say / to tell', group: 'irreg' },
   { inf: 'pouvoir', en: 'to be able to / can', group: 'irreg' },
+  { inf: 'vouloir', en: 'to want', group: 'irreg' },
+  { inf: 'devoir', en: 'to have to / must', group: 'irreg' },
+  { inf: 'savoir', en: 'to know (a fact)', group: 'irreg' },
+  { inf: 'connaître', en: 'to know (someone / place)', group: 'irreg' },
+  { inf: 'venir', en: 'to come', group: 'irreg' },
+  { inf: 'revenir', en: 'to come back', group: 'irreg' },
+  { inf: 'devenir', en: 'to become', group: 'irreg' },
   { inf: 'prendre', en: 'to take', group: 'irreg' },
-  { inf: 'produire', en: 'to produce', group: 'irreg' },
-  { inf: 'progresser', en: 'to progress', group: 'er' },
-  { inf: 'prolonger', en: 'to extend / to prolong', group: 'er' },
+  { inf: 'apprendre', en: 'to learn', group: 'irreg' },
+  { inf: 'comprendre', en: 'to understand', group: 'irreg' },
+  { inf: 'mettre', en: 'to put / to place', group: 'irreg' },
+  { inf: 'permettre', en: 'to allow', group: 'irreg' },
   { inf: 'promettre', en: 'to promise', group: 'irreg' },
-  { inf: 'proposer', en: 'to propose / to suggest', group: 'er' },
-  { inf: 'protéger', en: 'to protect', group: 'er' },
-  { inf: 'préparer', en: 'to prepare', group: 'er' },
-  { inf: 'prévenir', en: 'to warn', group: 'irreg' },
-  { inf: 'prévoir', en: 'to plan / to foresee', group: 'irreg' },
-  { inf: 'prêter', en: 'to lend', group: 'er' },
-  { inf: 'publier', en: 'to publish', group: 'er' },
-  { inf: 'punir', en: 'to punish', group: 'ir' },
-  { inf: 'raconter', en: 'to tell (a story)', group: 'er' },
-  { inf: 'ranger', en: 'to tidy / to put away', group: 'er' },
+  { inf: 'voir', en: 'to see', group: 'irreg' },
+  { inf: 'revoir', en: 'to see again', group: 'irreg' },
+  { inf: 'croire', en: 'to believe', group: 'irreg' },
+  { inf: 'suivre', en: 'to follow', group: 'irreg' },
+  { inf: 'vivre', en: 'to live', group: 'irreg' },
+  { inf: 'sortir', en: 'to go out', group: 'irreg' },
+  { inf: 'partir', en: 'to leave', group: 'irreg' },
+  { inf: 'dormir', en: 'to sleep', group: 'irreg' },
+  { inf: 'servir', en: 'to serve', group: 'irreg' },
+  { inf: 'sentir', en: 'to feel / to smell', group: 'irreg' },
+  { inf: 'écrire', en: 'to write', group: 'irreg' },
+  { inf: 'décrire', en: 'to describe', group: 'irreg' },
+  { inf: 'lire', en: 'to read', group: 'irreg' },
+  { inf: 'boire', en: 'to drink', group: 'irreg' },
+  { inf: 'ouvrir', en: 'to open', group: 'irreg' },
+  { inf: 'offrir', en: 'to offer', group: 'irreg' },
+  { inf: 'souffrir', en: 'to suffer', group: 'irreg' },
   { inf: 'recevoir', en: 'to receive', group: 'irreg' },
-  { inf: 'reconnaître', en: 'to recognize', group: 'irreg' },
-  { inf: 'refuser', en: 'to refuse', group: 'er' },
-  { inf: 'regarder', en: 'to look at', group: 'er' },
-  { inf: 'rejoindre', en: 'to join', group: 'irreg' },
-  { inf: 'relier', en: 'to link', group: 'er' },
-  { inf: 'remarquer', en: 'to notice', group: 'er' },
+  { inf: 'apercevoir', en: 'to notice', group: 'irreg' },
+  { inf: 's'asseoir', en: 'to sit down', group: 'irreg' },
+  { inf: 'rire', en: 'to laugh', group: 'irreg' },
+  { inf: 'sourire', en: 'to smile', group: 'irreg' },
+  { inf: 'conduire', en: 'to drive', group: 'irreg' },
+  { inf: 'construire', en: 'to build', group: 'irreg' },
+  { inf: 'produire', en: 'to produce', group: 'irreg' },
+  { inf: 'traduire', en: 'to translate', group: 'irreg' },
+  { inf: 'mettre', en: 'to put / to place', group: 'irreg' },
   { inf: 'remettre', en: 'to put back', group: 'irreg' },
-  { inf: 'remonter', en: 'to go back up', group: 'er' },
-  { inf: 'remplacer', en: 'to replace', group: 'er' },
-  { inf: 'remplir', en: 'to fill', group: 'ir' },
-  { inf: 'rencontrer', en: 'to meet', group: 'er' },
-  { inf: 'rendre', en: 'to give back', group: 're' },
-  { inf: 'rentrer', en: 'to return (home)', group: 'er' },
-  { inf: 'renvoyer', en: 'to send back', group: 'er' },
-  { inf: 'respecter', en: 'to respect', group: 'er' },
-  { inf: 'respirer', en: 'to breathe', group: 'er' },
+  { inf: 'tenir', en: 'to hold', group: 'irreg' },
+  { inf: 'obtenir', en: 'to obtain', group: 'irreg' },
+  { inf: 'naître', en: 'to be born', group: 'irreg' },
+  { inf: 'mourir', en: 'to die', group: 'irreg' },
+  { inf: 'falloir', en: 'to be necessary', group: 'irreg' },
+  { inf: 'pleuvoir', en: 'to rain', group: 'irreg' },
+  { inf: 'soutenir', en: 'to support', group: 'irreg' },
+  { inf: 'prévoir', en: 'to plan / to foresee', group: 'irreg' },
+  { inf: 'prévenir', en: 'to warn', group: 'irreg' },
+  { inf: 'parler', en: 'to speak', group: 'er' },
+  { inf: 'aimer', en: 'to like / to love', group: 'er' },
+  { inf: 'regarder', en: 'to watch / to look at', group: 'er' },
+  { inf: 'écouter', en: 'to listen', group: 'er' },
+  { inf: 'travailler', en: 'to work', group: 'er' },
+  { inf: 'étudier', en: 'to study', group: 'er' },
+  { inf: 'habiter', en: 'to live (somewhere)', group: 'er' },
+  { inf: 'penser', en: 'to think', group: 'er' },
+  { inf: 'trouver', en: 'to find', group: 'er' },
+  { inf: 'donner', en: 'to give', group: 'er' },
+  { inf: 'demander', en: 'to ask', group: 'er' },
+  { inf: 'jouer', en: 'to play', group: 'er' },
+  { inf: 'manger', en: 'to eat', group: 'er' },
+  { inf: 'payer', en: 'to pay', group: 'er' },
+  { inf: 'acheter', en: 'to buy', group: 'er' },
+  { inf: 'porter', en: 'to wear / to carry', group: 'er' },
+  { inf: 'arriver', en: 'to arrive / to happen', group: 'er' },
+  { inf: 'entrer', en: 'to enter', group: 'er' },
+  { inf: 'tomber', en: 'to fall', group: 'er' },
   { inf: 'rester', en: 'to stay', group: 'er' },
   { inf: 'retourner', en: 'to return', group: 'er' },
-  { inf: 'revenir', en: 'to come back', group: 'irreg' },
-  { inf: 'rire', en: 'to laugh', group: 'irreg' },
-  { inf: 'réagir', en: 'to react', group: 'ir' },
-  { inf: 'réfléchir', en: 'to think / to reflect', group: 'ir' },
-  { inf: 'réparer', en: 'to repair', group: 'er' },
-  { inf: 'répondre', en: 'to answer', group: 're' },
-  { inf: 'réserver', en: 'to book / to reserve', group: 'er' },
-  { inf: 'réussir', en: 'to succeed', group: 'ir' },
-  { inf: 'rêver', en: 'to dream', group: 'er' },
-  { inf: 'sauter', en: 'to jump', group: 'er' },
-  { inf: 'sauver', en: 'to save', group: 'er' },
-  { inf: 'savoir', en: 'to know (a fact)', group: 'irreg' },
-  { inf: 'se coucher', en: 'to go to bed', group: 'er' },
-  { inf: 'se dépêcher', en: 'to hurry', group: 'er' },
-  { inf: 'se laver', en: 'to wash oneself', group: 'er' },
-  { inf: 'se lever', en: 'to get up', group: 'er' },
-  { inf: 'se promener', en: 'to go for a walk', group: 'er' },
-  { inf: 'se préparer', en: 'to get ready', group: 'er' },
-  { inf: 'se rappeler', en: 'to remember', group: 'er' },
-  { inf: 'se reposer', en: 'to rest', group: 'er' },
-  { inf: 'se souvenir', en: 'to remember', group: 'irreg' },
-  { inf: 'servir', en: 'to serve', group: 'irreg' },
-  { inf: 'signaler', en: 'to signal / to report', group: 'er' },
-  { inf: 'signer', en: 'to sign', group: 'er' },
-  { inf: 'sortir', en: 'to go out', group: 'irreg' },
-  { inf: 'souhaiter', en: 'to wish', group: 'er' },
-  { inf: 'sourire', en: 'to smile', group: 'irreg' },
-  { inf: 'soutenir', en: 'to support', group: 'irreg' },
-  { inf: 'souvenir', en: 'to remember', group: 'irreg' },
-  { inf: 'suggérer', en: 'to suggest', group: 'er' },
-  { inf: 'supporter', en: 'to support', group: 'er' },
-  { inf: 'sélectionner', en: 'to select', group: 'er' },
-  { inf: 'séparer', en: 'to separate', group: 'er' },
-  { inf: 's’amuser', en: 'to have fun', group: 'er' },
-  { inf: 'terminer', en: 'to finish', group: 'er' },
-  { inf: 'tester', en: 'to test', group: 'er' },
-  { inf: 'tirer', en: 'to pull / to shoot', group: 'er' },
-  { inf: 'tomber', en: 'to fall', group: 'er' },
-  { inf: 'toucher', en: 'to touch', group: 'er' },
-  { inf: 'tourner', en: 'to turn', group: 'er' },
-  { inf: 'traduire', en: 'to translate', group: 'irreg' },
-  { inf: 'travailler', en: 'to work', group: 'er' },
-  { inf: 'trouver', en: 'to find', group: 'er' },
-  { inf: 'télécharger', en: 'to download', group: 'er' },
+  { inf: 'rentrer', en: 'to go back (home)', group: 'er' },
+  { inf: 'montrer', en: 'to show', group: 'er' },
+  { inf: 'fermer', en: 'to close', group: 'er' },
+  { inf: 'ouvrir', en: 'to open', group: 'irreg' },
+  { inf: 'accepter', en: 'to accept', group: 'er' },
+  { inf: 'refuser', en: 'to refuse', group: 'er' },
+  { inf: 'continuer', en: 'to continue', group: 'er' },
+  { inf: 'arrêter', en: 'to stop', group: 'er' },
   { inf: 'utiliser', en: 'to use', group: 'er' },
-  { inf: 'vendre', en: 'to sell', group: 're' },
-  { inf: 'venir', en: 'to come', group: 'irreg' },
+  { inf: 'changer', en: 'to change', group: 'er' },
+  { inf: 'garder', en: 'to keep', group: 'er' },
+  { inf: 'oublier', en: 'to forget', group: 'er' },
+  { inf: 'chercher', en: 'to look for', group: 'er' },
+  { inf: 'travailler', en: 'to work', group: 'er' },
+  { inf: 'aider', en: 'to help', group: 'er' },
+  { inf: 'marcher', en: 'to walk', group: 'er' },
+  { inf: 'rêver', en: 'to dream', group: 'er' },
+  { inf: 'chanter', en: 'to sing', group: 'er' },
+  { inf: 'danser', en: 'to dance', group: 'er' },
+  { inf: 'nager', en: 'to swim', group: 'er' },
+  { inf: 'visiter', en: 'to visit (a place)', group: 'er' },
+  { inf: 'préparer', en: 'to prepare', group: 'er' },
+  { inf: 'cuisiner', en: 'to cook', group: 'er' },
+  { inf: 'laver', en: 'to wash', group: 'er' },
+  { inf: 'nettoyer', en: 'to clean', group: 'er' },
+  { inf: 'adorer', en: 'to adore', group: 'er' },
+  { inf: 'détester', en: 'to hate', group: 'er' },
+  { inf: 'espérer', en: 'to hope', group: 'er' },
+  { inf: 'rencontrer', en: 'to meet', group: 'er' },
+  { inf: 'accompagner', en: 'to go with / to accompany', group: 'er' },
+  { inf: 'organiser', en: 'to organize', group: 'er' },
+  { inf: 'participer', en: 'to take part', group: 'er' },
+  { inf: 'inviter', en: 'to invite', group: 'er' },
+  { inf: 'raconter', en: 'to tell (a story)', group: 'er' },
+  { inf: 'expliquer', en: 'to explain', group: 'er' },
+  { inf: 'monter', en: 'to go up / climb', group: 'er' },
+  { inf: 'descendre', en: 'to go down', group: 're' },
+  { inf: 'passer', en: 'to pass / spend (time)', group: 'er' },
+  { inf: 'penser', en: 'to think', group: 'er' },
+  { inf: 'noter', en: 'to note / write down', group: 'er' },
+  { inf: 'appeler', en: 'to call (on the phone)', group: 'er' },
+  { inf: 'rappeler', en: 'to call back / remind', group: 'er' },
+  { inf: 'essayer', en: 'to try', group: 'er' },
+  { inf: 's'arrêter', en: 'to stop (oneself)', group: 'er' },
+  { inf: 'se lever', en: 'to get up', group: 'er' },
+  { inf: 'se coucher', en: 'to go to bed', group: 'er' },
+  { inf: 'se laver', en: 'to wash oneself', group: 'er' },
+  { inf: 'se préparer', en: 'to get ready', group: 'er' },
+  { inf: 'se promener', en: 'to go for a walk', group: 'er' },
+  { inf: 's'amuser', en: 'to have fun', group: 'er' },
+  { inf: 'se rappeler', en: 'to remember', group: 'er' },
+  { inf: 'travailler', en: 'to work', group: 'er' },
+  { inf: 'réparer', en: 'to repair', group: 'er' },
+  { inf: 'installer', en: 'to install / set up', group: 'er' },
+  { inf: 'brancher', en: 'to plug in', group: 'er' },
+  { inf: 'débrancher', en: 'to unplug', group: 'er' },
+  { inf: 'tester', en: 'to test', group: 'er' },
+  { inf: 'corriger', en: 'to correct', group: 'er' },
+  { inf: 'améliorer', en: 'to improve', group: 'er' },
+  { inf: 'proposer', en: 'to suggest', group: 'er' },
+  { inf: 'conseiller', en: 'to advise', group: 'er' },
+  { inf: 'informer', en: 'to inform', group: 'er' },
+  { inf: 'prévenir', en: 'to warn', group: 'irreg' },
+  { inf: 'signer', en: 'to sign', group: 'er' },
+  { inf: 'téléphoner', en: 'to phone', group: 'er' },
+  { inf: 'envoyer', en: 'to send', group: 'er' },
+  { inf: 'cliquer', en: 'to click', group: 'er' },
+  { inf: 'télécharger', en: 'to download', group: 'er' },
+  { inf: 'imprimer', en: 'to print', group: 'er' },
+  { inf: 'sauvegarder', en: 'to save (a file)', group: 'er' },
+  { inf: 'garder', en: 'to keep', group: 'er' },
+  { inf: 'sauver', en: 'to save (a person)', group: 'er' },
+  { inf: 'protéger', en: 'to protect', group: 'er' },
+  { inf: 'planifier', en: 'to plan', group: 'er' },
+  { inf: 'diriger', en: 'to lead / manage', group: 'er' },
+  { inf: 'gérer', en: 'to manage', group: 'er' },
+  { inf: 'organiser', en: 'to organize', group: 'er' },
   { inf: 'visiter', en: 'to visit', group: 'er' },
-  { inf: 'voir', en: 'to see', group: 'irreg' },
-  { inf: 'voler', en: 'to steal / to fly', group: 'er' },
-  { inf: 'vouloir', en: 'to want', group: 'irreg' },
-  { inf: 'vérifier', en: 'to check', group: 'er' },
-  { inf: 'économiser', en: 'to save (money)', group: 'er' },
-  { inf: 'écouter', en: 'to listen', group: 'er' },
-  { inf: 'écrire', en: 'to write', group: 'irreg' },
-  { inf: 'étudier', en: 'to study', group: 'er' },
+  { inf: 'supporter', en: 'to support / tolerate', group: 'er' },
+  { inf: 'respecter', en: 'to respect', group: 'er' },
+  { inf: 'toucher', en: 'to touch', group: 'er' },
   { inf: 'éviter', en: 'to avoid', group: 'er' },
-  { inf: 'être', en: 'to be', group: 'irreg' },
+  { inf: 'bouger', en: 'to move', group: 'er' },
+  { inf: 'tirer', en: 'to pull / shoot', group: 'er' },
+  { inf: 'pousser', en: 'to push', group: 'er' },
+  { inf: 'casser', en: 'to break', group: 'er' },
+  { inf: 'tourner', en: 'to turn / to film', group: 'er' },
+  { inf: 'plier', en: 'to fold', group: 'er' },
+  { inf: 'poser', en: 'to put down / pose', group: 'er' },
+  { inf: 'compter', en: 'to count', group: 'er' },
+  { inf: 'examiner', en: 'to examine', group: 'er' },
+  { inf: 'joindre', en: 'to attach / join', group: 'irreg' },
+  { inf: 'attirer', en: 'to attract', group: 'er' },
+  { inf: 'limiter', en: 'to limit', group: 'er' },
+  { inf: 'mesurer', en: 'to measure', group: 'er' },
+  { inf: 'publier', en: 'to publish', group: 'er' },
+  { inf: 'terminer', en: 'to finish / end', group: 'er' },
+  { inf: 'apprécier', en: 'to appreciate', group: 'er' },
+  { inf: 'bavarder', en: 'to chat', group: 'er' },
+  { inf: 'choisir', en: 'to choose', group: 'ir' },
+  { inf: 'finir', en: 'to finish', group: 'ir' },
+  { inf: 'réussir', en: 'to succeed', group: 'ir' },
+  { inf: 'grandir', en: 'to grow', group: 'ir' },
+  { inf: 'maigrir', en: 'to lose weight', group: 'ir' },
+  { inf: 'grossir', en: 'to gain weight', group: 'ir' },
+  { inf: 'réfléchir', en: 'to think / reflect', group: 'ir' },
+  { inf: 'obéir', en: 'to obey', group: 'ir' },
+  { inf: 'punir', en: 'to punish', group: 'ir' },
+  { inf: 'remplir', en: 'to fill', group: 'ir' },
+  { inf: 'agir', en: 'to act', group: 'ir' },
+  { inf: 'vendre', en: 'to sell', group: 're' },
+  { inf: 'attendre', en: 'to wait', group: 're' },
+  { inf: 'répondre', en: 'to answer', group: 're' },
+  { inf: 'entendre', en: 'to hear', group: 're' },
+  { inf: 'perdre', en: 'to lose', group: 're' },
+  { inf: 'rendre', en: 'to give back', group: 're' },
+  { inf: 'confondre', en: 'to confuse', group: 're' },
+  { inf: 'fondre', en: 'to melt', group: 're' },
 ];
 
-const STORAGE_KEY = 'frenchVerbApp_v1';
+const STORAGE_KEY = 'frenchVerbApp_overhaul_v2';
 
 const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
 const DAY_LABELS = ["S","M","T","W","T","F","S"];
 
-const TENSES = [
-  { id: "present", label: "Présent" },
-  { id: "passe_compose", label: "Passé composé" },
-  { id: "imparfait", label: "Imparfait" },
-  { id: "futur_simple", label: "Futur simple" },
-  { id: "conditionnel_present", label: "Conditionnel présent" },
-  { id: "subjonctif_present", label: "Subjonctif présent" }
-];
-
-const TENSE_UNLOCK_RULES = {
-  passe_compose: { require: "present", minQuestions: 80, minAccuracy: 0.8 },
-  imparfait: { require: "passe_compose", minQuestions: 80, minAccuracy: 0.8 },
-  futur_simple: { require: "imparfait", minQuestions: 60, minAccuracy: 0.8 },
-  conditionnel_present: { require: "futur_simple", minQuestions: 60, minAccuracy: 0.8 },
-  subjonctif_present: { require: "conditionnel_present", minQuestions: 60, minAccuracy: 0.75 }
-};
-
-// irregular present forms for key verbs
 const IRREGULAR_PRESENT = {
   "être": { "je":"suis","tu":"es","il/elle":"est","nous":"sommes","vous":"êtes","ils/elles":"sont" },
   "avoir": { "je":"ai","tu":"as","il/elle":"a","nous":"avons","vous":"avez","ils/elles":"ont" },
@@ -1056,45 +1034,50 @@ const IRREGULAR_PRESENT = {
   "savoir": { "je":"sais","tu":"sais","il/elle":"sait","nous":"savons","vous":"savez","ils/elles":"savent" },
   "connaître": { "je":"connais","tu":"connais","il/elle":"connaît","nous":"connaissons","vous":"connaissez","ils/elles":"connaissent" },
   "venir": { "je":"viens","tu":"viens","il/elle":"vient","nous":"venons","vous":"venez","ils/elles":"viennent" },
+  "revenir": { "je":"reviens","tu":"reviens","il/elle":"revient","nous":"revenons","vous":"revenez","ils/elles":"reviennent" },
+  "devenir": { "je":"deviens","tu":"deviens","il/elle":"devient","nous":"devenons","vous":"devenez","ils/elles":"deviennent" },
   "prendre": { "je":"prends","tu":"prends","il/elle":"prend","nous":"prenons","vous":"prenez","ils/elles":"prennent" },
+  "apprendre": { "je":"apprends","tu":"apprends","il/elle":"apprend","nous":"apprenons","vous":"apprenez","ils/elles":"apprennent" },
+  "comprendre": { "je":"comprends","tu":"comprends","il/elle":"comprend","nous":"comprenons","vous":"comprenez","ils/elles":"comprennent" },
   "mettre": { "je":"mets","tu":"mets","il/elle":"met","nous":"mettons","vous":"mettez","ils/elles":"mettent" },
+  "permettre": { "je":"permets","tu":"permets","il/elle":"permet","nous":"permettons","vous":"permettez","ils/elles":"permettent" },
+  "promettre": { "je":"promets","tu":"promets","il/elle":"promet","nous":"promettons","vous":"promettez","ils/elles":"promettent" },
   "voir": { "je":"vois","tu":"vois","il/elle":"voit","nous":"voyons","vous":"voyez","ils/elles":"voient" },
+  "revoir": { "je":"revois","tu":"revois","il/elle":"revoit","nous":"revoyons","vous":"revoyez","ils/elles":"revoient" },
   "croire": { "je":"crois","tu":"crois","il/elle":"croit","nous":"croyons","vous":"croyez","ils/elles":"croient" },
+  "suivre": { "je":"suis","tu":"suis","il/elle":"suit","nous":"suivons","vous":"suivez","ils/elles":"suivent" },
+  "vivre": { "je":"vis","tu":"vis","il/elle":"vit","nous":"vivons","vous":"vivez","ils/elles":"vivent" },
   "sortir": { "je":"sors","tu":"sors","il/elle":"sort","nous":"sortons","vous":"sortez","ils/elles":"sortent" },
   "partir": { "je":"pars","tu":"pars","il/elle":"part","nous":"partons","vous":"partez","ils/elles":"partent" },
   "dormir": { "je":"dors","tu":"dors","il/elle":"dort","nous":"dormons","vous":"dormez","ils/elles":"dorment" },
   "servir": { "je":"sers","tu":"sers","il/elle":"sert","nous":"servons","vous":"servez","ils/elles":"servent" },
+  "sentir": { "je":"sens","tu":"sens","il/elle":"sent","nous":"sentons","vous":"sentez","ils/elles":"sentent" },
   "écrire": { "je":"écris","tu":"écris","il/elle":"écrit","nous":"écrivons","vous":"écrivez","ils/elles":"écrivent" },
+  "décrire": { "je":"décris","tu":"décris","il/elle":"décrit","nous":"décrivons","vous":"décrivez","ils/elles":"décrivent" },
   "lire": { "je":"lis","tu":"lis","il/elle":"lit","nous":"lisons","vous":"lisez","ils/elles":"lisent" },
   "boire": { "je":"bois","tu":"bois","il/elle":"boit","nous":"buvons","vous":"buvez","ils/elles":"boivent" },
   "ouvrir": { "je":"ouvre","tu":"ouvres","il/elle":"ouvre","nous":"ouvrons","vous":"ouvrez","ils/elles":"ouvrent" },
   "offrir": { "je":"offre","tu":"offres","il/elle":"offre","nous":"offrons","vous":"offrez","ils/elles":"offrent" },
+  "souffrir": { "je":"souffre","tu":"souffres","il/elle":"souffre","nous":"souffrons","vous":"souffrez","ils/elles":"souffrent" },
   "recevoir": { "je":"reçois","tu":"reçois","il/elle":"reçoit","nous":"recevons","vous":"recevez","ils/elles":"reçoivent" },
-  "naître": { "je":"nais","tu":"nais","il/elle":"naît","nous":"naissons","vous":"naissez","ils/elles":"naissent" },
-  "mourir": { "je":"meurs","tu":"meurs","il/elle":"meurt","nous":"mourons","vous":"mourez","ils/elles":"meurent" },
-  "devenir": { "je":"deviens","tu":"deviens","il/elle":"devient","nous":"devenons","vous":"devenez","ils/elles":"deviennent" },
+  "apercevoir": { "je":"aperçois","tu":"aperçois","il/elle":"aperçoit","nous":"apercevons","vous":"apercevez","ils/elles":"aperçoivent" },
+  "s'asseoir": { "je":"m'assieds","tu":"t'assieds","il/elle":"s'assied","nous":"nous asseyons","vous":"vous asseyez","ils/elles":"s'asseyent" },
   "rire": { "je":"ris","tu":"ris","il/elle":"rit","nous":"rions","vous":"riez","ils/elles":"rient" },
   "sourire": { "je":"souris","tu":"souris","il/elle":"sourit","nous":"sourions","vous":"souriez","ils/elles":"sourient" },
   "conduire": { "je":"conduis","tu":"conduis","il/elle":"conduit","nous":"conduisons","vous":"conduisez","ils/elles":"conduisent" },
   "construire": { "je":"construis","tu":"construis","il/elle":"construit","nous":"construisons","vous":"construisez","ils/elles":"construisent" },
   "produire": { "je":"produis","tu":"produis","il/elle":"produit","nous":"produisons","vous":"produisez","ils/elles":"produisent" },
   "traduire": { "je":"traduis","tu":"traduis","il/elle":"traduit","nous":"traduisons","vous":"traduisez","ils/elles":"traduisent" },
-  "joindre": { "je":"joins","tu":"joins","il/elle":"joint","nous":"joignons","vous":"joignez","ils/elles":"joignent" },
-  "rejoindre": { "je":"rejoins","tu":"rejoins","il/elle":"rejoint","nous":"rejoignons","vous":"rejoignez","ils/elles":"rejoignent" },
-  "reconnaître": { "je":"reconnais","tu":"reconnais","il/elle":"reconnaît","nous":"reconnaissons","vous":"reconnaissez","ils/elles":"reconnaissent" },
-  "apparaître": { "je":"apparais","tu":"apparais","il/elle":"apparaît","nous":"apparaissons","vous":"apparaissez","ils/elles":"apparaissent" },
-  "disparaître": { "je":"disparais","tu":"disparais","il/elle":"disparaît","nous":"disparaissons","vous":"disparaissez","ils/elles":"disparaissent" },
-  "atteindre": { "je":"atteins","tu":"atteins","il/elle":"atteint","nous":"atteignons","vous":"atteignez","ils/elles":"atteignent" },
-  "apprendre": { "je":"apprends","tu":"apprends","il/elle":"apprend","nous":"apprenons","vous":"apprenez","ils/elles":"apprennent" },
-  "promettre": { "je":"promets","tu":"promets","il/elle":"promet","nous":"promettons","vous":"promettez","ils/elles":"promettent" },
-  "permettre": { "je":"permets","tu":"permets","il/elle":"permet","nous":"permettons","vous":"permettez","ils/elles":"permettent" },
-  "remettre": { "je":"remets","tu":"remets","il/elle":"remet","nous":"remettons","vous":"remettez","ils/elles":"remettent" },
-  "prévenir": { "je":"préviens","tu":"préviens","il/elle":"prévient","nous":"prévenons","vous":"prévenez","ils/elles":"préviennent" },
-  "prévoir": { "je":"prévois","tu":"prévois","il/elle":"prévoit","nous":"prévoyons","vous":"prévoyez","ils/elles":"prévoient" }
+  "tenir": { "je":"tiens","tu":"tiens","il/elle":"tient","nous":"tenons","vous":"tenez","ils/elles":"tiennent" },
+  "obtenir": { "je":"obtiens","tu":"obtiens","il/elle":"obtient","nous":"obtenons","vous":"obtenez","ils/elles":"obtiennent" },
+  "naître": { "je":"nais","tu":"nais","il/elle":"naît","nous":"naissons","vous":"naissez","ils/elles":"naissent" },
+  "mourir": { "je":"meurs","tu":"meurs","il/elle":"meurt","nous":"mourons","vous":"mourez","ils/elles":"meurent" },
+  "falloir": { "il/elle":"faut" },
+  "pleuvoir": { "il/elle":"pleut" },
+  "soutenir": { "je":"soutiens","tu":"soutiens","il/elle":"soutient","nous":"soutenons","vous":"soutenez","ils/elles":"soutiennent" },
+  "prévoir": { "je":"prévois","tu":"prévois","il/elle":"prévoit","nous":"prévoyons","vous":"prévoyez","ils/elles":"prévoient" },
+  "prévenir": { "je":"préviens","tu":"préviens","il/elle":"prévient","nous":"prévenons","vous":"prévenez","ils/elles":"préviennent" }
 };
-
-// NOTE: some irregulars above (prévenir / prévoir) may not be perfect in every form;
-// if a form looks strange, you can correct it by adding your own verb entry later.
 
 function todayStr() {
   const d = new Date();
@@ -1112,24 +1095,18 @@ function loadState() {
       progress: {
         perVerb: {},
         historyByDate: {},
-        tenseStats: {},
-        streak: { current: 0, best: 0, lastDate: null },
-        unlockedTenses: ["present"]
+        streak: { current: 0, best: 0, lastDate: null }
       },
-      settings: {
-        dailyTarget: 20
-      }
+      settings: { dailyTarget: 20 }
     };
   }
   try {
     const parsed = JSON.parse(raw);
     if (!parsed.verbs) parsed.verbs = INITIAL_VERBS;
-    if (!parsed.progress) parsed.progress = { perVerb:{}, historyByDate:{}, tenseStats:{}, streak:{current:0,best:0,lastDate:null}, unlockedTenses:["present"] };
+    if (!parsed.progress) parsed.progress = { perVerb:{}, historyByDate:{}, streak:{current:0,best:0,lastDate:null} };
     if (!parsed.progress.perVerb) parsed.progress.perVerb = {};
     if (!parsed.progress.historyByDate) parsed.progress.historyByDate = {};
-    if (!parsed.progress.tenseStats) parsed.progress.tenseStats = {};
     if (!parsed.progress.streak) parsed.progress.streak = { current:0,best:0,lastDate:null };
-    if (!parsed.progress.unlockedTenses) parsed.progress.unlockedTenses = ["present"];
     if (!parsed.settings) parsed.settings = { dailyTarget: 20 };
     return parsed;
   } catch (e) {
@@ -1139,19 +1116,16 @@ function loadState() {
       progress: {
         perVerb: {},
         historyByDate: {},
-        tenseStats: {},
-        streak: { current: 0, best: 0, lastDate: null },
-        unlockedTenses: ["present"]
+        streak: { current: 0, best: 0, lastDate: null }
       },
-      settings: {
-        dailyTarget: 20
-      }
+      settings: { dailyTarget: 20 }
     };
   }
 }
 
 let state = loadState();
 const TODAY = todayStr();
+let currentChartRange = 7;
 
 function saveState() {
   try {
@@ -1173,16 +1147,17 @@ function getHistory(dateStr) {
   return state.progress.historyByDate[dateStr];
 }
 
-function getTenseStats(tenseId) {
-  if (!state.progress.tenseStats[tenseId]) {
-    state.progress.tenseStats[tenseId] = { asked: 0, correct: 0, wrong: 0 };
-  }
-  return state.progress.tenseStats[tenseId];
-}
-
 function getVerbStats(inf) {
   if (!state.progress.perVerb[inf]) {
-    state.progress.perVerb[inf] = { timesSeen: 0, correct: 0, wrong: 0, firstSeen: null, lastSeen: null };
+    state.progress.perVerb[inf] = {
+      timesSeen: 0,
+      correct: 0,
+      wrong: 0,
+      firstSeen: null,
+      lastSeen: null,
+      mastered: false,
+      needExtra: false
+    };
   }
   return state.progress.perVerb[inf];
 }
@@ -1191,9 +1166,7 @@ function updateStreak() {
   const streak = state.progress.streak;
   const last = streak.lastDate;
   const today = TODAY;
-  if (last === today) {
-    return;
-  }
+  if (last === today) return;
   if (!last) {
     streak.current = 1;
   } else {
@@ -1212,16 +1185,18 @@ function updateStreak() {
 
 function conjugatePresent(verb, pronoun) {
   const inf = verb.inf;
-  if (IRREGULAR_PRESENT[inf]) {
-    return IRREGULAR_PRESENT[inf][pronoun] || null;
+  // ignore reflexive for now in auto rules
+  if (inf.startsWith("se ") || inf.startsWith("s'") || inf.startsWith("s’") || inf.startsWith("s ")) {
+    return null;
   }
-  // ignore reflexive verbs for now
-  if (inf.startsWith("se ") || inf.startsWith("s'") || inf.startsWith("s’")) {
+  if (IRREGULAR_PRESENT[inf]) {
+    const m = IRREGULAR_PRESENT[inf];
+    if (m[pronoun]) return m[pronoun];
+    if (pronoun === "il/elle" && m["il"]) return m["il"];
     return null;
   }
   const group = verb.group;
   if (group === "er") {
-    // remove -er
     const stem = inf.slice(0, -2);
     if (pronoun === "je") return stem + "e";
     if (pronoun === "tu") return stem + "es";
@@ -1230,7 +1205,6 @@ function conjugatePresent(verb, pronoun) {
     if (pronoun === "vous") return stem + "ez";
     if (pronoun === "ils/elles") return stem + "ent";
   } else if (group === "ir") {
-    // finir-type
     const stem = inf.slice(0, -2);
     if (pronoun === "je") return stem + "is";
     if (pronoun === "tu") return stem + "is";
@@ -1250,17 +1224,8 @@ function conjugatePresent(verb, pronoun) {
   return null;
 }
 
-// For now we only actually ask Présent questions; future tenses can be added later
-function getConjugation(verb, tenseId, pronoun) {
-  if (tenseId === "present") {
-    return conjugatePresent(verb, pronoun);
-  }
-  // other tenses can be added gradually here
-  return null;
-}
-
-function availableTenses() {
-  return state.progress.unlockedTenses.slice();
+function getConjugation(verb, pronoun) {
+  return conjugatePresent(verb, pronoun);
 }
 
 function randomChoice(arr) {
@@ -1271,40 +1236,59 @@ function randomChoice(arr) {
 
 function buildQuestion(mode) {
   const verbs = state.verbs;
-  const unlocked = availableTenses();
-  if (!unlocked.length) return null;
-  // for now, pick only present even if more unlocked,
-  // but structure already supports future tenses
-  const tenseId = "present";
-  const tenseLabel = "Présent";
   const stats = state.progress.perVerb;
+  const todayHist = getHistory(TODAY);
+  const allowNew = todayHist.newCount < state.settings.dailyTarget;
 
-  const unseen = verbs.filter(v => !stats[v.inf] || stats[v.inf].timesSeen === 0)
-                      .filter(v => getConjugation(v, tenseId, "je"));
-  const seen = verbs.filter(v => stats[v.inf] && stats[v.inf].timesSeen > 0)
-                    .filter(v => getConjugation(v, tenseId, "je"));
+  const candidates = verbs.filter(v => {
+    const s = stats[v.inf];
+    return !s || !s.mastered;
+  });
 
-  let pool = [];
-  if (mode === "learn") {
-    pool = unseen.length ? unseen : seen;
-  } else if (mode === "review") {
-    pool = seen.length ? seen : unseen;
-  } else {
-    // mixed
-    if (Math.random() < 0.5 && unseen.length) pool = unseen;
-    else pool = seen.length ? seen : unseen;
+  const unseen = [];
+  const seen = [];
+  const extra = [];
+
+  for (const v of candidates) {
+    const s = stats[v.inf];
+    // require that we can conjugate this verb
+    if (!getConjugation(v, "je")) continue;
+    if (s && s.needExtra) extra.push(v);
+    if (s && s.timesSeen > 0) seen.push(v);
+    else unseen.push(v);
   }
-  if (!pool.length) pool = verbs;
+
+  let pool = null;
+
+  if (extra.length) {
+    pool = extra;
+  } else {
+    if (mode === "learn") {
+      if (allowNew && unseen.length) pool = unseen;
+      else if (seen.length) pool = seen;
+      else pool = unseen;
+    } else if (mode === "review") {
+      if (seen.length) pool = seen;
+      else if (allowNew && unseen.length) pool = unseen;
+      else pool = seen;
+    } else {
+      // mixed
+      if (Math.random() < 0.5 && allowNew && unseen.length) pool = unseen;
+      else if (seen.length) pool = seen;
+      else if (allowNew && unseen.length) pool = unseen;
+      else pool = seen;
+    }
+  }
+
+  if (!pool || !pool.length) return null;
 
   const verb = randomChoice(pool);
   const pronoun = randomChoice(PRONOUNS);
-  const answer = getConjugation(verb, tenseId, pronoun);
-  if (!answer) return buildQuestion(mode); // skip unsupported verb
+  const answer = getConjugation(verb, pronoun);
+  if (!answer) return buildQuestion(mode);
   return {
     verbInf: verb.inf,
     verbEn: verb.en,
-    tenseId,
-    tenseLabel,
     pronoun,
     answer
   };
@@ -1314,7 +1298,7 @@ function normalise(str) {
   return (str || "").trim().toLowerCase();
 }
 
-// DOM
+// DOM refs
 const daysRow = document.getElementById("daysRow");
 const currentStreakEl = document.getElementById("currentStreak");
 const bestStreakEl = document.getElementById("bestStreak");
@@ -1340,8 +1324,12 @@ const questionSub = document.getElementById("questionSub");
 const answerInput = document.getElementById("answerInput");
 const checkBtn = document.getElementById("checkBtn");
 const showBtn = document.getElementById("showBtn");
+const nextBtn = document.getElementById("nextBtn");
 const feedbackEl = document.getElementById("feedback");
 const tenseNote = document.getElementById("tenseNote");
+const masteryRow = document.getElementById("masteryRow");
+const memorizeBtn = document.getElementById("memorizeBtn");
+const keepBtn = document.getElementById("keepBtn");
 
 const openGuideBtn = document.getElementById("openGuideBtn");
 const openSettingsBtn = document.getElementById("openSettingsBtn");
@@ -1350,8 +1338,6 @@ const guideCloseBtn = document.getElementById("guideCloseBtn");
 const learnRow = document.querySelector('.mode-row[data-mode="learn"]');
 const reviewRow = document.querySelector('.mode-row[data-mode="review"]');
 const mixedRow = document.querySelector('.mode-row[data-mode="mixed"]');
-
-const trainerMetaTodayPill = document.querySelector(".pill span");
 
 let currentMode = null;
 let currentQuestion = null;
@@ -1378,7 +1364,13 @@ function renderStats() {
   currentStreakEl.textContent = state.progress.streak.current;
   bestStreakEl.textContent = state.progress.streak.best;
 
-  currentTenseLabel.textContent = "Current tense: Présent (others unlock as you progress)";
+  if (histToday.newCount >= state.settings.dailyTarget) {
+    todaySubLabel.textContent = "Daily new-verb goal reached. You can still review verbs.";
+  } else {
+    todaySubLabel.textContent = "Tap a mode above to start today’s session.";
+  }
+
+  currentTenseLabel.textContent = "Current tense: Présent (more tenses later)";
 }
 
 function renderChart(rangeDays) {
@@ -1399,15 +1391,25 @@ function renderChart(rangeDays) {
   bars.forEach(b => {
     const col = document.createElement("div");
     col.className = "bar-col";
-    const totalHeight = (b.new + b.review) / max * 100;
-    const bar = document.createElement("div");
-    bar.className = "bar";
-    bar.style.height = `${totalHeight}%`;
-    col.appendChild(bar);
+
+    const stack = document.createElement("div");
+    stack.className = "bar-stack";
+    const segNew = document.createElement("div");
+    segNew.className = "bar-seg bar-new";
+    segNew.style.height = (b.new / max * 100) + "%";
+    const segReview = document.createElement("div");
+    segReview.className = "bar-seg bar-review";
+    segReview.style.height = (b.review / max * 100) + "%";
+
+    stack.appendChild(segNew);
+    stack.appendChild(segReview);
+    col.appendChild(stack);
+
     const label = document.createElement("div");
     label.className = "bar-label";
     label.textContent = b.date.slice(3);
     col.appendChild(label);
+
     chartEl.appendChild(col);
   });
 }
@@ -1416,35 +1418,33 @@ chartTabs.forEach(tab => {
   tab.addEventListener("click", () => {
     chartTabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
-    const range = parseInt(tab.dataset.range, 10);
-    renderChart(range);
+    currentChartRange = parseInt(tab.dataset.range, 10);
+    renderChart(currentChartRange);
   });
 });
 
 function updateTrainerMeta() {
   const hist = getHistory(TODAY);
-  trainerTodayCount.textContent = hist.newCount + hist.reviewCount;
+  const totalQuestions = hist.newCount + hist.reviewCount;
+  trainerTodayCount.textContent = totalQuestions;
   const total = hist.correct + hist.wrong;
   const acc = total ? Math.round(hist.correct * 100 / total) : 0;
   trainerAccuracy.textContent = acc + "%";
-  trainerUnlockedLabel.textContent = "Unlocked: Présent (more tenses later)";
+  trainerUnlockedLabel.textContent = "Unlocked: Présent";
 }
 
-function setTenseNoteFor(tenseId) {
-  if (tenseId === "present") {
-    tenseNote.textContent = "Présent: think about what is true now, in general, or very near future. Type only the verb form, without the pronoun.";
-  } else {
-    tenseNote.textContent = "";
-  }
+function setTenseNote() {
+  tenseNote.textContent = "Présent: think about what is true now, generally, or in the near future. Type only the verb form, without the pronoun.";
 }
 
 function startTrainer(mode) {
   currentMode = mode;
   trainerOverlay.classList.add("show");
   trainerFooter.textContent = "";
+  masteryRow.style.display = "none";
   if (mode === "learn") {
     trainerModeTitle.textContent = "Learn new verbs";
-    trainerModeSub.textContent = "Présent · new verbs first, then light review";
+    trainerModeSub.textContent = "Présent · new verbs first, then review";
   } else if (mode === "review") {
     trainerModeTitle.textContent = "Review verbs";
     trainerModeSub.textContent = "Présent · mostly verbs you’ve already seen";
@@ -1454,7 +1454,6 @@ function startTrainer(mode) {
   }
   updateTrainerMeta();
   nextQuestion();
-  // prevent page from scrolling behind overlay
   document.body.style.overflow = "hidden";
 }
 
@@ -1463,6 +1462,7 @@ function closeTrainer() {
   currentMode = null;
   currentQuestion = null;
   feedbackEl.style.display = "none";
+  masteryRow.style.display = "none";
   document.body.style.overflow = "";
 }
 
@@ -1470,30 +1470,34 @@ trainerBackBtn.addEventListener("click", closeTrainer);
 
 function nextQuestion() {
   if (!currentMode) return;
-  currentQuestion = buildQuestion(currentMode);
-  if (!currentQuestion) {
-    questionMain.textContent = "No question available. Something went wrong.";
-    questionSub.textContent = "";
+  const q = buildQuestion(currentMode);
+  if (!q) {
+    questionMain.textContent = "No more verbs available right now.";
+    questionSub.textContent = "You may have mastered or exhausted today’s pool.";
+    feedbackEl.style.display = "none";
+    masteryRow.style.display = "none";
     return;
   }
-  questionMain.innerHTML = `<span class="pronoun-pill">${currentQuestion.pronoun}</span> <strong>${currentQuestion.verbInf}</strong>`;
-  questionSub.textContent = (currentQuestion.verbEn ? currentQuestion.verbEn + " · " : "") + currentQuestion.tenseLabel + " – type only the verb form.";
+  currentQuestion = q;
+  questionMain.innerHTML = `<span class="pronoun-pill">${q.pronoun}</span> <strong>${q.verbInf}</strong>`;
+  questionSub.textContent = (q.verbEn ? q.verbEn + " · " : "") + "Présent – type only the verb form.";
   answerInput.value = "";
   answerInput.focus();
   feedbackEl.style.display = "none";
-  setTenseNoteFor(currentQuestion.tenseId);
+  masteryRow.style.display = "none";
+  setTenseNote();
 }
 
 function checkAnswer(showOnly) {
   if (!currentQuestion) return;
   const hist = getHistory(TODAY);
   const verbStats = getVerbStats(currentQuestion.verbInf);
-  const tenseStats = getTenseStats(currentQuestion.tenseId);
 
   if (showOnly) {
     feedbackEl.style.display = "block";
     feedbackEl.className = "feedback";
     feedbackEl.textContent = `Correct form: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
+    masteryRow.style.display = "flex";
     return;
   }
 
@@ -1502,9 +1506,16 @@ function checkAnswer(showOnly) {
 
   verbStats.timesSeen += 1;
   verbStats.lastSeen = TODAY;
+
   if (!verbStats.firstSeen) {
-    verbStats.firstSeen = TODAY;
-    hist.newCount += 1;
+    // first time ever
+    if (hist.newCount < state.settings.dailyTarget) {
+      verbStats.firstSeen = TODAY;
+      hist.newCount += 1;
+    } else {
+      verbStats.firstSeen = TODAY;
+      hist.reviewCount += 1;
+    }
   } else {
     hist.reviewCount += 1;
   }
@@ -1512,25 +1523,23 @@ function checkAnswer(showOnly) {
   if (ok) {
     verbStats.correct += 1;
     hist.correct += 1;
-    tenseStats.correct += 1;
     feedbackEl.style.display = "block";
     feedbackEl.className = "feedback correct";
     feedbackEl.textContent = `Nice ✔  ${currentQuestion.pronoun} ${currentQuestion.answer}`;
   } else {
     verbStats.wrong += 1;
     hist.wrong += 1;
-    tenseStats.wrong += 1;
     feedbackEl.style.display = "block";
     feedbackEl.className = "feedback incorrect";
     feedbackEl.textContent = `Not quite ✘  You typed "${user || "—"}". Correct: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
   }
-  tenseStats.asked += 1;
+
   updateStreak();
   saveState();
   renderStats();
   updateTrainerMeta();
-  checkUnlocks();
-  setTimeout(nextQuestion, 400);
+  renderChart(currentChartRange);
+  masteryRow.style.display = "flex";
 }
 
 checkBtn.addEventListener("click", () => checkAnswer(false));
@@ -1542,10 +1551,27 @@ answerInput.addEventListener("keydown", (e) => {
   }
 });
 
-function checkUnlocks() {
-  // For now only display gentle message placeholder; future tenses can be unlocked here.
-  trainerFooter.textContent = "Keep going in Présent. Once you reach a stable accuracy, the app can introduce Passé composé and others.";
-}
+nextBtn.addEventListener("click", () => {
+  nextQuestion();
+});
+
+memorizeBtn.addEventListener("click", () => {
+  if (!currentQuestion) return;
+  const stats = getVerbStats(currentQuestion.verbInf);
+  stats.mastered = true;
+  stats.needExtra = false;
+  trainerFooter.textContent = `Okay, "${currentQuestion.verbInf}" is marked as mastered. It will appear less often.`;
+  saveState();
+});
+
+keepBtn.addEventListener("click", () => {
+  if (!currentQuestion) return;
+  const stats = getVerbStats(currentQuestion.verbInf);
+  stats.needExtra = true;
+  stats.mastered = false;
+  trainerFooter.textContent = `Got it. We’ll keep showing "${currentQuestion.verbInf}" more often until it feels automatic.`;
+  saveState();
+});
 
 learnRow.addEventListener("click", () => startTrainer("learn"));
 reviewRow.addEventListener("click", () => startTrainer("review"));
@@ -1567,13 +1593,15 @@ openSettingsBtn.addEventListener("click", () => {
   state.settings.dailyTarget = n;
   saveState();
   renderStats();
+  renderChart(currentChartRange);
 });
 
 // initial render
 renderDaysRow();
 renderStats();
-renderChart(7);
+renderChart(currentChartRange);
 updateTrainerMeta();
+setTenseNote();
 </script>
 </body>
 </html>
