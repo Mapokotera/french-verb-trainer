@@ -3,632 +3,700 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>French Verb Conjugation Trainer (B1)</title>
+  <title>French Verbs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    * { box-sizing: border-box; }
     :root {
-      --bg: #0f172a;
-      --bg-soft: #0b1220;
-      --bg-card: #0f172a;
-      --bg-card-soft: #020617;
-      --border-subtle: #1e293b;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
+      --bg: #f3f4f6;
+      --bg-card: #ffffff;
+      --bg-soft: #f9fafb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
       --accent: #2563eb;
-      --accent-soft: rgba(37, 99, 235, 0.14);
-      --accent-strong: #1d4ed8;
+      --accent-soft: #e0ecff;
       --danger: #ef4444;
-      --success: #22c55e;
-      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.65);
+      --success: #16a34a;
+      --border: #e5e7eb;
       --radius-lg: 18px;
-      --radius-md: 999px;
+      --radius-md: 12px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
     }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    * { box-sizing: border-box; }
+    html, body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at top left, #1d4ed8 0, #0b1120 40%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: var(--bg);
       color: var(--text-main);
+      height: 100%;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
       min-height: 100vh;
+      background: linear-gradient(to bottom, #eef2ff 0, #f9fafb 80%);
+      padding-bottom: 72px;
     }
     header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: linear-gradient(to right, rgba(15,23,42,0.96), rgba(15,23,42,0.94));
-      border-bottom: 1px solid rgba(37, 99, 235, 0.35);
-      padding: 10px 16px;
+      padding: 18px 20px 10px 20px;
+    }
+    header h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      text-transform: lowercase;
+      color: #1d4ed8;
+    }
+    header small {
+      display: block;
+      text-align: center;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    main {
+      padding: 0 16px 16px 16px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 10px 4px 6px 4px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 14px 12px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      margin-bottom: 12px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .card-header span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .mode-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.08s ease;
+    }
+    .mode-row:hover {
+      background: #f3f4ff;
+      transform: translateY(-1px);
+    }
+    .mode-row + .mode-row {
+      border-top: 1px solid var(--border);
+    }
+    .mode-main {
+      display: flex;
+      align-items: center;
       gap: 10px;
     }
-    header h1 {
-      font-size: 20px;
-      margin: 0 0 2px 0;
-      letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    header h1 span.logo-dot {
-      width: 18px;
-      height: 18px;
+    .mode-icon {
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #93c5fd, #1d4ed8);
-      box-shadow: 0 0 18px rgba(59,130,246,0.9);
-      flex-shrink: 0;
-    }
-    header small {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-    nav {
+      background: #dbeafe;
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    nav button {
-      border: none;
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
-      background: rgba(15,23,42,0.85);
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text-muted);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    nav button span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: transparent;
-    }
-    nav button.active {
-      background: radial-gradient(circle at top left, rgba(59,130,246,0.55), rgba(15,23,42,0.9));
-      color: #f9fafb;
-      border-color: rgba(59,130,246,0.8);
-      box-shadow: 0 10px 30px rgba(15,23,42,0.8);
-    }
-    nav button.active span.dot {
-      background: #60a5fa;
-    }
-    .card {
-      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
-      border-radius: var(--radius-lg);
-      padding: 18px 16px 16px 16px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      margin-bottom: 18px;
-    }
-    .card h2 {
-      margin-top: 0;
-      font-size: 18px;
-      margin-bottom: 6px;
-      letter-spacing: 0.01em;
-    }
-    .subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-    .row > * {
-      flex: 1 1 auto;
-    }
-    label {
-      font-size: 11px;
-      color: #cbd5f5;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: block;
-      margin-bottom: 3px;
-    }
-    input[type="number"],
-    input[type="text"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 7px 9px;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      font-size: 13px;
-      margin-top: 0;
-      background: rgba(15,23,42,0.9);
-      color: var(--text-main);
-      outline: none;
-    }
-    input[type="number"]:focus,
-    input[type="text"]:focus,
-    textarea:focus {
-      border-color: rgba(59,130,246,0.9);
-      box-shadow: 0 0 0 1px rgba(59,130,246,0.3);
-    }
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
-    button.primary,
-    button.secondary,
-    button.danger {
-      border-radius: var(--radius-md);
-      border: none;
-      font-size: 12px;
-      padding: 7px 12px;
-      cursor: pointer;
-      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      white-space: nowrap;
+      font-size: 16px;
+      color: #1d4ed8;
+      flex-shrink: 0;
     }
-    button.primary {
-      background: linear-gradient(to right, var(--accent), var(--accent-strong));
-      color: #f9fafb;
-      box-shadow: 0 12px 30px rgba(37,99,235,0.5);
+    .mode-text-title {
+      font-size: 14px;
+      font-weight: 600;
     }
-    button.primary:hover {
-      background: linear-gradient(to right, var(--accent-strong), #1e40af);
+    .mode-text-sub {
+      font-size: 12px;
+      color: var(--text-muted);
     }
-    button.secondary {
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      color: var(--text-main);
+    .mode-chevron {
+      font-size: 16px;
+      color: var(--text-muted);
     }
-    button.secondary:hover {
-      border-color: rgba(148, 163, 184, 0.9);
-    }
-    button.danger {
-      background: linear-gradient(to right, #ef4444, #b91c1c);
-      color: #f9fafb;
-    }
-    button.small {
-      padding: 4px 9px;
-      font-size: 11px;
-      border-radius: var(--radius-md);
-    }
-    button:disabled {
-      opacity: 0.55;
-      cursor: default;
-      box-shadow: none;
-    }
-    .tag {
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 9px;
-      border-radius: var(--radius-md);
-      background: rgba(15,23,42,0.9);
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      border: 1px solid #e5e7eb;
       font-size: 11px;
-      margin-right: 4px;
-      border: 1px solid rgba(148, 163, 184, 0.3);
       color: var(--text-muted);
     }
-    .tag strong {
-      color: #e5e7eb;
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
     }
-    .tag.good {
-      background: rgba(22,163,74,0.09);
-      border-color: rgba(22,163,74,0.7);
-      color: #bbf7d0;
+    .days-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      margin-bottom: 10px;
     }
-    .tag.bad {
-      background: rgba(248,113,113,0.08);
-      border-color: rgba(239,68,68,0.8);
-      color: #fecaca;
-    }
-    .question-main {
-      font-size: 16px;
-      margin: 10px 0 6px 0;
-    }
-    .question-main span.label {
-      font-weight: 500;
+    .day-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
       color: var(--text-muted);
+      background: #f3f4ff;
+    }
+    .day-dot.active {
+      background: #1d4ed8;
+      color: #eff6ff;
+      font-weight: 600;
+    }
+    .streak-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .streak-card {
+      flex: 1;
+      background: var(--bg-soft);
+      border-radius: 14px;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+    }
+    .streak-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .streak-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .today-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .circle {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+    }
+    .today-text {
+      font-size: 13px;
+    }
+    .today-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .chart-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .chart-tab {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .chart-tab.active {
+      border-color: #c7d2fe;
+      background: #e0ecff;
+      color: #1d4ed8;
+    }
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 120px;
+      gap: 6px;
+      padding: 4px 0;
+    }
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .bar {
+      width: 14px;
+      border-radius: 999px 999px 4px 4px;
+      background: linear-gradient(to top, #f97316, #fde68a);
+      transition: height 0.2s ease;
+    }
+    .bar-label {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .legend-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .legend-color {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      margin-right: 4px;
+      display: inline-block;
+    }
+    .legend-new { background: #f97316; }
+    .legend-review { background: #60a5fa; }
+
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .link-row button {
+      border: none;
+      background: transparent;
+      color: #2563eb;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    /* Trainer overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.25);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+    .overlay.show {
+      display: flex;
+    }
+    .trainer-sheet {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      background: #f9fafb;
+      border-radius: 0;
+      box-shadow: 0 -10px 30px rgba(15,23,42,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .trainer-header {
+      padding: 10px 14px 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+    .trainer-header button {
+      border: none;
+      background: #eff6ff;
+      border-radius: 999px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #1d4ed8;
+      cursor: pointer;
+    }
+    .trainer-header-title {
+      display: flex;
+      flex-direction: column;
+    }
+    .trainer-header-title span:first-child {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .trainer-header-title span:last-child {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .trainer-body {
+      padding: 10px 14px 14px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+    }
+    .trainer-meta {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+    .trainer-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 12px 12px 10px 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: var(--shadow-soft);
+    }
+    .trainer-q-main {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    .trainer-q-main strong {
+      font-size: 17px;
+    }
+    .trainer-q-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .pronoun-pill {
+      display: inline-flex;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
       margin-right: 6px;
     }
-    .question-main span.value {
-      font-weight: 600;
-      color: #bfdbfe;
-    }
-    .pronoun {
-      font-weight: 600;
-      margin-right: 4px;
-      padding: 2px 8px;
-      border-radius: var(--radius-md);
-      background: rgba(17,24,39,0.9);
-      border: 1px solid rgba(59,130,246,0.5);
-      font-size: 13px;
-      color: #dbeafe;
-    }
     .answer-row {
-      margin-top: 12px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .answer-row input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 8px 11px;
+      font-size: 14px;
+      outline: none;
+    }
+    .answer-row input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #bfdbfe;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #1d4ed8);
+      color: #f9fafb;
+      box-shadow: 0 12px 22px rgba(37, 99, 235, 0.35);
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      box-shadow: none;
+      cursor: default;
     }
     .feedback {
       margin-top: 8px;
       font-size: 13px;
-      padding: 7px 9px;
-      border-radius: 10px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.35);
-      color: var(--text-muted);
+      padding: 6px 9px;
+      border-radius: 12px;
+      background: #f3f4ff;
+      color: #1f2937;
+      border: 1px solid #e5e7eb;
     }
     .feedback.correct {
-      border-color: rgba(34,197,94,0.85);
-      background: rgba(22,163,74,0.08);
-      color: #bbf7d0;
+      background: #ecfdf3;
+      border-color: #bbf7d0;
+      color: #166534;
     }
     .feedback.incorrect {
-      border-color: rgba(248,113,113,0.9);
-      background: rgba(127,29,29,0.55);
-      color: #fee2e2;
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    th, td {
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(30,64,175,0.4);
-      text-align: left;
-    }
-    th {
-      background: rgba(15,23,42,0.95);
-      font-weight: 600;
-      color: #c7d2fe;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-    .tense-grid {
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 8px;
-      margin-bottom: 8px;
-      background: rgba(15,23,42,0.8);
-    }
-    .tense-grid h4 {
-      margin: 0 0 6px 0;
-      font-size: 13px;
-      color: #bfdbfe;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .tense-grid h4 span.label-chip {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      background: rgba(15,23,42,0.9);
-      border-radius: var(--radius-md);
-      padding: 2px 6px;
-      border: 1px solid rgba(148,163,184,0.4);
-    }
-    .tense-grid-row {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 4px 8px;
-      margin-bottom: 4px;
-      align-items: center;
-    }
-    .tense-grid-row label {
-      margin: 0;
-      font-size: 12px;
-      text-transform: none;
-      letter-spacing: 0;
-      color: var(--text-muted);
-    }
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-    .pill-group button {
+    .tense-note {
       font-size: 11px;
-      padding: 5px 10px;
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(148,163,184,0.45);
-      cursor: pointer;
-      background: rgba(15,23,42,0.8);
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .trainer-footer {
+      padding: 8px 14px 10px 14px;
+      border-top: 1px solid #e5e7eb;
+      background: #ffffff;
+      font-size: 11px;
       color: var(--text-muted);
     }
-    .pill-group button.active {
-      background: rgba(37,99,235,0.2);
-      color: #e5edff;
-      border-color: rgba(59,130,246,0.85);
-      box-shadow: 0 8px 22px rgba(37,99,235,0.65);
+    .trainer-footer strong {
+      color: #111827;
+    }
+
+    /* Tense guide modal */
+    .guide-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.32);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .guide-modal.show {
+      display: flex;
+    }
+    .guide-sheet {
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      background: #ffffff;
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .guide-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .guide-header button {
+      border: none;
+      background: #eff6ff;
+      border-radius: 999px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #1d4ed8;
+      cursor: pointer;
+    }
+    .guide-header h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+    .guide-body {
+      padding: 10px 14px 16px 14px;
+      overflow-y: auto;
+      flex: 1;
+      font-size: 13px;
+      color: #111827;
+    }
+    .guide-block {
+      margin-bottom: 12px;
+      padding: 10px 10px 8px 10px;
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .guide-block h3 {
+      margin: 0 0 4px 0;
+      font-size: 14px;
+      color: #1d4ed8;
+    }
+    .guide-block p {
+      margin: 3px 0;
+    }
+    .code {
+      font-family: ui-monospace, Menlo, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      padding: 2px 5px;
     }
     .small-muted {
       font-size: 11px;
       color: var(--text-muted);
     }
-    .verb-list {
-      max-height: 220px;
-      overflow-y: auto;
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 8px;
-      background: rgba(15,23,42,0.8);
-    }
-    .verb-list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(30,64,175,0.5);
-    }
-    .verb-list-item:last-child {
-      border-bottom: none;
-    }
-    .muted {
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-    .chip {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin-left: 6px;
-    }
-    .guide-grid {
-      display: grid;
-      grid-template-columns: minmax(0,1.2fr) minmax(0,1fr);
-      gap: 12px;
-    }
-    .guide-block {
-      border-radius: 14px;
-      padding: 10px 12px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(30,64,175,0.7);
-    }
-    .guide-block h3 {
-      margin: 0 0 4px 0;
-      font-size: 14px;
-      color: #dbeafe;
-    }
-    .guide-block p {
-      margin: 4px 0;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .code {
-      font-family: ui-monospace, Menlo, SFMono-Regular, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      background: rgba(15,23,42,0.85);
-      border-radius: 8px;
-      padding: 4px 6px;
-      border: 1px solid rgba(30,64,175,0.8);
-      display: inline-block;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 11px;
-      color: var(--text-muted);
-      background: rgba(15,23,42,0.9);
-    }
-    .badge span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #60a5fa;
-    }
-    @media (max-width: 700px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .answer-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .row > * {
-        flex: 1 1 100%;
-      }
-      .guide-grid {
-        grid-template-columns: minmax(0,1fr);
+
+    @media (max-width: 480px) {
+      .app {
+        border-radius: 0;
       }
     }
   </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1><span class="logo-dot"></span>French Verb Trainer</h1>
-    <small>B1-focused · offline · your verbs, your pace · bleu-powered</small>
-  </div>
-</header>
-
-<div class="container">
-  <nav>
-    <button id="tab-trainer" class="active"><span class="dot"></span>Trainer</button>
-    <button id="tab-review"><span class="dot"></span>Review & History</button>
-    <button id="tab-manage"><span class="dot"></span>Verbs & Settings</button>
-    <button id="tab-guide"><span class="dot"></span>Tense Guide</button>
-  </nav>
-
-  <!-- Trainer tab -->
-  <section id="view-trainer" class="card">
-    <h2>Daily session</h2>
-    <div class="subtitle">
-      Choose how many new verbs you want to unlock today. The trainer mixes new verbs with older ones for spaced repetition.
-    </div>
-
-    <div class="row" style="margin-bottom: 10px;">
-      <div>
-        <label>Mode</label>
-        <div class="pill-group">
-          <button id="mode-mixed" class="active">Mixed (new + review)</button>
-          <button id="mode-reviewOnly">Review only</button>
-        </div>
-        <div class="small-muted">
-          Mixed mode introduces new verbs until you hit your daily target, then switches to pure review.
-        </div>
+<div class="app">
+  <header>
+    <h1>French Verbs</h1>
+    <small>Present first · unlock new tenses as you go</small>
+  </header>
+  <main>
+    <div class="section-title">Spaced repetition</div>
+    <section class="card">
+      <div class="card-header">
+        <h2>Practice</h2>
+        <span id="currentTenseLabel">Current tense: Présent</span>
       </div>
-      <div>
-        <label for="dailyTarget">New verbs target / day</label>
-        <div class="row">
-          <input type="number" id="dailyTarget" min="1" max="500" value="20" style="max-width:120px;">
-          <button id="saveSettingsBtn" class="small secondary">Save target</button>
-        </div>
-        <div class="small-muted" id="targetInfo"></div>
-      </div>
-    </div>
 
-    <div class="row" style="margin-bottom: 10px;">
-      <div>
-        <label>Tenses to include in questions</label>
-        <div id="tenseToggles" class="pill-group"></div>
-        <div class="small-muted">
-          You can, for example, start with Présent + Passé composé, then gradually add Imparfait, Futur, Conditionnel and Subjonctif présent.
-        </div>
-      </div>
-    </div>
-
-    <hr style="border:none;border-top:1px solid rgba(30,64,175,0.7);margin:12px 0;">
-
-    <div id="statsBar" style="margin-bottom: 8px;"></div>
-
-    <div id="questionCard" class="card" style="background:radial-gradient(circle at top left, rgba(30,64,175,0.60), rgba(15,23,42,0.98));box-shadow:none;border:1px solid rgba(59,130,246,0.9);">
-      <div id="questionMeta" class="small-muted"></div>
-      <div class="question-main" id="questionText"></div>
-      <div class="answer-row">
-        <div style="flex:1 1 auto;">
-          <label for="answerInput">Your answer (verb form only)</label>
-          <div class="row" style="gap:6px;align-items:center;">
-            <span id="pronounDisplay" class="pronoun"></span>
-            <input type="text" id="answerInput" placeholder="type the conjugated form (without the pronoun)">
+      <div class="mode-row" data-mode="learn">
+        <div class="mode-main">
+          <div class="mode-icon">＋</div>
+          <div>
+            <div class="mode-text-title">Learn new verbs</div>
+            <div class="mode-text-sub" id="learnSub">Unlock your daily quota of new verbs.</div>
           </div>
         </div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <button id="checkBtn" class="primary">Check</button>
-          <button id="showBtn" class="secondary">Show answer</button>
-          <button id="nextBtn" class="secondary" disabled>Next →</button>
+        <div class="mode-chevron">›</div>
+      </div>
+
+      <div class="mode-row" data-mode="review">
+        <div class="mode-main">
+          <div class="mode-icon">⟳</div>
+          <div>
+            <div class="mode-text-title">Review verbs</div>
+            <div class="mode-text-sub" id="reviewSub">Focused review of verbs you’ve already seen.</div>
+          </div>
+        </div>
+        <div class="mode-chevron">›</div>
+      </div>
+
+      <div class="mode-row" data-mode="mixed">
+        <div class="mode-main">
+          <div class="mode-icon">✦</div>
+          <div>
+            <div class="mode-text-title">Mixed mode</div>
+            <div class="mode-text-sub" id="mixedSub">Mix new verbs with review for variety.</div>
+          </div>
+        </div>
+        <div class="mode-chevron">›</div>
+      </div>
+    </section>
+
+    <div class="section-title">Stats</div>
+    <section class="card">
+      <div class="days-row" id="daysRow"></div>
+
+      <div class="streak-row">
+        <div class="streak-card">
+          <div class="streak-label">Current streak</div>
+          <div class="streak-value" id="currentStreak">0</div>
+        </div>
+        <div class="streak-card">
+          <div class="streak-label">Best streak</div>
+          <div class="streak-value" id="bestStreak">0</div>
         </div>
       </div>
-      <div id="feedback" class="feedback"></div>
-      <div class="small-muted" style="margin-top:6px;">
-        Note: for <strong>passé composé</strong>, type the auxiliary + past participle (e.g. <span class="code">ai parlé</span>). For <strong>subjonctif</strong>, we practise the verb form without the <em>que</em>.
-      </div>
-    </div>
-  </section>
 
-  <!-- Review tab -->
-  <section id="view-review" class="card" style="display:none;">
-    <h2>Review & daily history</h2>
-    <div class="subtitle">
-      Track how many new verbs and review questions you’ve done and see how each verb is going over time.
-    </div>
-
-    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);">
-      <h3 style="margin-top:0;font-size:15px;">Daily tracker</h3>
-      <p class="small-muted">
-        Each day, the trainer logs how many <strong>new verbs</strong> you met for the first time and how many <strong>review questions</strong> you answered.
-      </p>
-      <div id="historyTableWrapper"></div>
-    </div>
-
-    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);margin-top:12px;">
-      <h3 style="margin-top:0;font-size:15px;">Verb-by-verb progress</h3>
-      <p class="small-muted">
-        Accuracy is a rough indicator; don’t worry about perfection. The goal is to keep revisiting verbs over time.
-      </p>
-      <div id="verbsProgressTableWrapper"></div>
-    </div>
-  </section>
-
-  <!-- Manage tab -->
-  <section id="view-manage" class="card" style="display:none;">
-    <h2>Verbs & settings</h2>
-    <div class="subtitle">
-      Add new verbs (including irregular verbs), remove verbs, and curate the exact list you want to practise for B1.
-    </div>
-
-    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);">
-      <h3 style="margin-top:0;font-size:15px;">Add / update verb</h3>
-      <p class="small-muted">
-        This system does <strong>no automatic conjugation</strong>. Whatever you type here is what the trainer uses, so irregular verbs are fully supported.
-      </p>
-
-      <div class="row" style="margin-bottom:8px;">
+      <div class="today-progress">
+        <div class="circle" id="todayCircle">0</div>
         <div>
-          <label for="verbInfInput">Infinitive (Fr)</label>
-          <input type="text" id="verbInfInput" placeholder="parler">
-        </div>
-        <div>
-          <label for="verbEnInput">Meaning (EN, optional)</label>
-          <input type="text" id="verbEnInput" placeholder="to speak">
+          <div class="today-text">Learned today: <span id="todayLearned">0</span>/<span id="dailyGoalText">20</span></div>
+          <div class="today-sub" id="todaySubLabel">Tap a mode above to start today’s session.</div>
         </div>
       </div>
 
-      <div id="tensesEditorContainer"></div>
-
-      <div class="row" style="margin-top:8px;">
-        <button id="saveVerbBtn" class="primary">Save verb</button>
-        <button id="clearVerbFormBtn" class="secondary">Clear form</button>
+      <div class="chart-tabs">
+        <button class="chart-tab active" data-range="7">7 days</button>
+        <button class="chart-tab" data-range="30">30 days</button>
+        <button class="chart-tab" data-range="90">90 days</button>
       </div>
-      <div id="verbFormFeedback" class="feedback" style="margin-top:8px;"></div>
-    </div>
+      <div class="chart" id="chart"></div>
+      <div class="legend-row">
+        <div><span class="legend-color legend-new"></span>New verbs</div>
+        <div><span class="legend-color legend-review"></span>Review questions</div>
+      </div>
 
-    <div class="card" style="background:rgba(15,23,42,0.95);box-shadow:none;border:1px solid rgba(30,64,175,0.7);margin-top:12px;">
-      <h3 style="margin-top:0;font-size:15px;">Current verb list</h3>
-      <p class="small-muted">
-        These verbs live on this device and are available for training. Deleting a verb also removes its progress stats.
-      </p>
-      <div id="verbList" class="verb-list"></div>
-      <div class="small-muted" style="margin-top:6px;">
-        Long-term goal: build this up towards a few hundred high-frequency verbs (you can aim for ~<strong>700+</strong> to feel very comfortable at B1 and beyond).
+      <div class="link-row">
+        <button id="openGuideBtn">Tense guide</button>
+        <button id="openSettingsBtn">Daily goal & reset</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Trainer overlay -->
+<div class="overlay" id="trainerOverlay">
+  <div class="trainer-sheet">
+    <div class="trainer-header">
+      <button id="trainerBackBtn">‹</button>
+      <div class="trainer-header-title">
+        <span id="trainerModeTitle">Learn new verbs</span>
+        <span id="trainerModeSub">Présent · type the verb form only</span>
       </div>
     </div>
-  </section>
-
-  <!-- Tense Guide tab -->
-  <section id="view-guide" class="card" style="display:none;">
-    <h2>Tense guide (B1 focus)</h2>
-    <div class="subtitle">
-      Short, practical explanations for each tense you can train here, with patterns and examples. Think “cheat sheet” rather than formal grammar book.
+    <div class="trainer-body">
+      <div class="trainer-meta">
+        <span class="pill"><span class="pill-dot"></span> Today: <span id="trainerTodayCount">0</span> questions</span>
+        <span class="pill">Accuracy: <span id="trainerAccuracy">0%</span></span>
+        <span class="pill" id="trainerUnlockedLabel">Unlocked: Présent</span>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-q-main" id="questionMain">Tap a mode to start.</div>
+        <div class="trainer-q-sub" id="questionSub"></div>
+        <div class="answer-row">
+          <input type="text" id="answerInput" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="type the conjugated form (verb only)">
+          <button class="btn btn-primary" id="checkBtn">Check</button>
+          <button class="btn btn-secondary" id="showBtn">Show</button>
+        </div>
+        <div id="feedback" class="feedback" style="display:none;"></div>
+        <div class="tense-note" id="tenseNote"></div>
+      </div>
     </div>
+    <div class="trainer-footer">
+      <span id="unlockMessage"></span>
+    </div>
+  </div>
+</div>
 
-    <div class="guide-grid">
+<!-- Tense guide modal -->
+<div class="guide-modal" id="guideModal">
+  <div class="guide-sheet">
+    <div class="guide-header">
+      <button id="guideCloseBtn">‹</button>
+      <h2>Tense guide</h2>
+    </div>
+    <div class="guide-body">
       <div class="guide-block">
         <h3>Présent</h3>
-        <p><strong>Use it for:</strong> habits, facts, feelings, what’s happening now, near future with context.</p>
+        <p><strong>Use it for:</strong> habits, facts, feelings, things happening now, or very near future when the context is clear.</p>
         <p><strong>Regular -er pattern (parler):</strong></p>
         <p class="code">je parle, tu parles, il parle, nous parlons, vous parlez, ils parlent</p>
+        <p><strong>Regular -ir pattern (finir):</strong></p>
+        <p class="code">je finis, tu finis, il finit, nous finissons, vous finissez, ils finissent</p>
+        <p><strong>Regular -re pattern (vendre):</strong></p>
+        <p class="code">je vends, tu vends, il vend, nous vendons, vous vendez, ils vendent</p>
         <p><strong>Examples:</strong></p>
         <p>Je travaille à Vancouver. <span class="small-muted">(I work in Vancouver.)</span></p>
         <p>On se voit demain ? <span class="small-muted">(Are we seeing each other tomorrow?)</span></p>
@@ -636,44 +704,44 @@
 
       <div class="guide-block">
         <h3>Passé composé</h3>
-        <p><strong>Use it for:</strong> completed events in the past, “what happened”, often with a clear time.</p>
-        <p><strong>Structure:</strong> present of avoir/être + past participle</p>
+        <p><strong>Use it for:</strong> completed events in the past, “what happened”.</p>
+        <p><strong>Structure:</strong> présent of <em>avoir</em> or <em>être</em> + past participle.</p>
         <p class="code">j'ai parlé, tu as parlé, il a parlé, nous avons parlé...</p>
+        <p><strong>With être (movement / reflexive verbs):</strong></p>
+        <p class="code">je suis allé(e), elle est arrivée, nous sommes partis</p>
         <p><strong>Examples:</strong></p>
         <p>J'ai fini le projet hier. <span class="small-muted">(I finished the project yesterday.)</span></p>
         <p>Elle est arrivée en retard. <span class="small-muted">(She arrived late.)</span></p>
       </div>
-    </div>
 
-    <div class="guide-grid" style="margin-top:10px;">
       <div class="guide-block">
         <h3>Imparfait</h3>
         <p><strong>Use it for:</strong> background, descriptions, habits in the past, “was doing / used to”.</p>
-        <p><strong>Formation:</strong> nous form in présent (sans ons) + endings</p>
-        <p class="code">parler → parl- + ais, ais, ait, ions, iez, aient</p>
+        <p><strong>How to build it:</strong> take <em>nous</em> in the present, remove <em>-ons</em>, add:</p>
+        <p class="code">-ais, -ais, -ait, -ions, -iez, -aient</p>
+        <p><strong>Example (parler):</strong></p>
+        <p class="code">nous parlons → je parlais, tu parlais, il parlait, nous parlions, vous parliez, ils parlaient</p>
         <p><strong>Examples:</strong></p>
-        <p>Quand j'étais enfant, je jouais au foot tous les jours. <span class="small-muted">(When I was a child, I used to play football every day.)</span></p>
+        <p>Quand j'étais enfant, je jouais dehors tous les jours. <span class="small-muted">(When I was a child, I used to play outside every day.)</span></p>
         <p>Il faisait froid et il pleuvait. <span class="small-muted">(It was cold and it was raining.)</span></p>
       </div>
 
       <div class="guide-block">
-        <h3>Futur proche & Futur simple</h3>
-        <p><strong>Futur proche:</strong> near future, something already planned.</p>
-        <p class="code">je vais parler, tu vas parler...</p>
-        <p><strong>Futur simple:</strong> future in general, predictions, promises.</p>
-        <p class="code">parler → parler- + ai, as, a, ons, ez, ont</p>
+        <h3>Futur simple</h3>
+        <p><strong>Use it for:</strong> future in general, promises, predictions.</p>
+        <p><strong>Pattern (-er, -ir):</strong> infinitive + endings:</p>
+        <p class="code">-ai, -as, -a, -ons, -ez, -ont</p>
+        <p><strong>Example (parler):</strong></p>
+        <p class="code">je parlerai, tu parleras, il parlera, nous parlerons, vous parlerez, ils parleront</p>
         <p><strong>Examples:</strong></p>
-        <p>Je vais prendre le train à 18h. <span class="small-muted">(I’m going to take the train at 6 p.m.)</span></p>
         <p>On se reverra bientôt. <span class="small-muted">(We will see each other again soon.)</span></p>
       </div>
-    </div>
 
-    <div class="guide-grid" style="margin-top:10px;">
       <div class="guide-block">
         <h3>Conditionnel présent</h3>
         <p><strong>Use it for:</strong> politeness, wishes, hypotheses (“would”), advice.</p>
-        <p><strong>Formation:</strong> futur simple stem + imparfait endings</p>
-        <p class="code">parler → parler- + ais, ais, ait, ions, iez, aient</p>
+        <p><strong>Pattern:</strong> futur simple stem + imparfait endings.</p>
+        <p class="code">je parlerais, tu parlerais, il parlerait, nous parlerions, vous parleriez, ils parleraient</p>
         <p><strong>Examples:</strong></p>
         <p>Je voudrais un café, s'il vous plaît. <span class="small-muted">(I’d like a coffee, please.)</span></p>
         <p>Si j'avais plus de temps, je ferais plus de sport. <span class="small-muted">(If I had more time, I would do more sport.)</span></p>
@@ -682,1014 +750,830 @@
       <div class="guide-block">
         <h3>Subjonctif présent</h3>
         <p><strong>Use it for:</strong> after certain expressions of doubt, necessity, emotion, desire.</p>
-        <p><strong>Common triggers:</strong> il faut que, je veux que, bien que, pour que, avant que...</p>
+        <p><strong>Common triggers:</strong> il faut que, je veux que, je suis content que, bien que, pour que, avant que…</p>
         <p><strong>Pattern (parler):</strong></p>
         <p class="code">que je parle, que tu parles, qu'il parle, que nous parlions, que vous parliez, qu'ils parlent</p>
         <p><strong>Examples:</strong></p>
         <p>Il faut que tu finisses ce travail. <span class="small-muted">(You have to finish this work.)</span></p>
         <p>Je suis content que tu sois ici. <span class="small-muted">(I’m happy that you’re here.)</span></p>
       </div>
-    </div>
 
-    <div class="card" style="background:rgba(15,23,42,0.96);box-shadow:none;border:1px solid rgba(30,64,175,0.8);margin-top:12px;">
-      <div class="badge"><span class="dot"></span>How this app uses these tenses</div>
-      <p class="small-muted" style="margin-top:6px;">
-        In the trainer, you always see the <strong>subject</strong> (je, tu, nous, etc.) and you type only the <strong>verb part</strong>.
-        For composé forms, you type the auxiliary + participle (for example <span class="code">ai parlé</span>, <span class="code">suis allé</span>).
-        For the subjonctif, we practise the conjugated form without writing <em>que</em> in front.
-      </p>
       <p class="small-muted">
-        If you’re rusty with grammar labels, don’t stress. Just associate each tense with a <strong>time / feeling</strong> (now, habit in the past,
-        completed event, hypothesis, etc.) and keep practising until it feels natural.
+        In the trainer you always see the subject (je, tu, nous, etc.) and you type only the <strong>verb form</strong>.
+        For composé forms, type the auxiliary + past participle (for example <span class="code">ai parlé</span>).
+        For the subjonctif, we practise the conjugated form without writing <em>que</em>.
       </p>
     </div>
-  </section>
+  </div>
 </div>
 
 <script>
-(function() {
-  const STORAGE_KEY = 'frenchVerbTrainer_v1'; // same key so your existing data is kept
+const INITIAL_VERBS = [
+  { inf: 'accepter', en: 'to accept', group: 'er' },
+  { inf: 'accompagner', en: 'to accompany', group: 'er' },
+  { inf: 'accomplir', en: 'to accomplish', group: 'ir' },
+  { inf: 'acheter', en: 'to buy', group: 'er' },
+  { inf: 'adorer', en: 'to adore', group: 'er' },
+  { inf: 'afficher', en: 'to display', group: 'er' },
+  { inf: 'agir', en: 'to act', group: 'ir' },
+  { inf: 'aider', en: 'to help', group: 'er' },
+  { inf: 'aimer', en: 'to like / to love', group: 'er' },
+  { inf: 'aller', en: 'to go', group: 'irreg' },
+  { inf: 'améliorer', en: 'to improve', group: 'er' },
+  { inf: 'annoncer', en: 'to announce', group: 'er' },
+  { inf: 'annuler', en: 'to cancel', group: 'er' },
+  { inf: 'apparaître', en: 'to appear', group: 'irreg' },
+  { inf: 'appeler', en: 'to call (on the phone)', group: 'er' },
+  { inf: 'apporter', en: 'to bring (a thing)', group: 'er' },
+  { inf: 'apprendre', en: 'to learn', group: 'irreg' },
+  { inf: 'approcher', en: 'to approach', group: 'er' },
+  { inf: 'apprécier', en: 'to appreciate', group: 'er' },
+  { inf: 'arranger', en: 'to arrange', group: 'er' },
+  { inf: 'arriver', en: 'to arrive', group: 'er' },
+  { inf: 'arrêter', en: 'to stop', group: 'er' },
+  { inf: 'assister', en: 'to attend', group: 'er' },
+  { inf: 'atteindre', en: 'to reach', group: 'irreg' },
+  { inf: 'attendre', en: 'to wait', group: 're' },
+  { inf: 'attirer', en: 'to attract', group: 'er' },
+  { inf: 'avancer', en: 'to advance', group: 'er' },
+  { inf: 'avoir', en: 'to have', group: 'irreg' },
+  { inf: 'baisser', en: 'to lower', group: 'er' },
+  { inf: 'bavarder', en: 'to chat', group: 'er' },
+  { inf: 'boire', en: 'to drink', group: 'irreg' },
+  { inf: 'bouger', en: 'to move', group: 'er' },
+  { inf: 'brancher', en: 'to plug in', group: 'er' },
+  { inf: 'briller', en: 'to shine', group: 'er' },
+  { inf: 'brûler', en: 'to burn', group: 'er' },
+  { inf: 'casser', en: 'to break', group: 'er' },
+  { inf: 'changer', en: 'to change', group: 'er' },
+  { inf: 'chanter', en: 'to sing', group: 'er' },
+  { inf: 'charger', en: 'to load / to charge', group: 'er' },
+  { inf: 'chercher', en: 'to look for', group: 'er' },
+  { inf: 'choisir', en: 'to choose', group: 'ir' },
+  { inf: 'classer', en: 'to classify', group: 'er' },
+  { inf: 'cliquer', en: 'to click', group: 'er' },
+  { inf: 'collaborer', en: 'to collaborate', group: 'er' },
+  { inf: 'coller', en: 'to stick / to paste', group: 'er' },
+  { inf: 'commencer', en: 'to begin', group: 'er' },
+  { inf: 'comparer', en: 'to compare', group: 'er' },
+  { inf: 'compter', en: 'to count', group: 'er' },
+  { inf: 'conduire', en: 'to drive', group: 'irreg' },
+  { inf: 'confirmer', en: 'to confirm', group: 'er' },
+  { inf: 'confondre', en: 'to confuse', group: 're' },
+  { inf: 'connaître', en: 'to know (someone / place)', group: 'irreg' },
+  { inf: 'connecter', en: 'to connect', group: 'er' },
+  { inf: 'conseiller', en: 'to advise', group: 'er' },
+  { inf: 'construire', en: 'to build', group: 'irreg' },
+  { inf: 'continuer', en: 'to continue', group: 'er' },
+  { inf: 'coordonner', en: 'to coordinate', group: 'er' },
+  { inf: 'correspondre', en: 'to correspond', group: 're' },
+  { inf: 'corriger', en: 'to correct', group: 'er' },
+  { inf: 'coûter', en: 'to cost', group: 'er' },
+  { inf: 'croire', en: 'to believe', group: 'irreg' },
+  { inf: 'créer', en: 'to create', group: 'er' },
+  { inf: 'cuisiner', en: 'to cook', group: 'er' },
+  { inf: 'danser', en: 'to dance', group: 'er' },
+  { inf: 'demander', en: 'to ask', group: 'er' },
+  { inf: 'descendre', en: 'to go down / to descend', group: 're' },
+  { inf: 'dessiner', en: 'to draw', group: 'er' },
+  { inf: 'devenir', en: 'to become', group: 'irreg' },
+  { inf: 'devoir', en: 'to have to / must', group: 'irreg' },
+  { inf: 'dire', en: 'to say / to tell', group: 'irreg' },
+  { inf: 'diriger', en: 'to lead / to manage', group: 'er' },
+  { inf: 'discuter', en: 'to discuss', group: 'er' },
+  { inf: 'disparaître', en: 'to disappear', group: 'irreg' },
+  { inf: 'donner', en: 'to give', group: 'er' },
+  { inf: 'dormir', en: 'to sleep', group: 'irreg' },
+  { inf: 'durer', en: 'to last', group: 'er' },
+  { inf: 'débrancher', en: 'to unplug', group: 'er' },
+  { inf: 'décider', en: 'to decide', group: 'er' },
+  { inf: 'découvrir', en: 'to discover', group: 'irreg' },
+  { inf: 'détester', en: 'to hate', group: 'er' },
+  { inf: 'développer', en: 'to develop', group: 'er' },
+  { inf: 'emmener', en: 'to take (someone)', group: 'er' },
+  { inf: 'emprunter', en: 'to borrow', group: 'er' },
+  { inf: 'empêcher', en: 'to prevent', group: 'er' },
+  { inf: 'enlever', en: 'to remove', group: 'er' },
+  { inf: 'enseigner', en: 'to teach', group: 'er' },
+  { inf: 'entendre', en: 'to hear', group: 're' },
+  { inf: 'entrainer', en: 'to train / to coach', group: 'er' },
+  { inf: 'entrer', en: 'to enter', group: 'er' },
+  { inf: 'envoyer', en: 'to send', group: 'er' },
+  { inf: 'espérer', en: 'to hope', group: 'er' },
+  { inf: 'essayer', en: 'to try', group: 'er' },
+  { inf: 'examiner', en: 'to examine', group: 'er' },
+  { inf: 'exister', en: 'to exist', group: 'er' },
+  { inf: 'expliquer', en: 'to explain', group: 'er' },
+  { inf: 'exprimer', en: 'to express', group: 'er' },
+  { inf: 'faire', en: 'to do / to make', group: 'irreg' },
+  { inf: 'fermer', en: 'to close', group: 'er' },
+  { inf: 'filmer', en: 'to film', group: 'er' },
+  { inf: 'finir', en: 'to finish', group: 'ir' },
+  { inf: 'fondre', en: 'to melt', group: 're' },
+  { inf: 'former', en: 'to train / to form', group: 'er' },
+  { inf: 'fumer', en: 'to smoke', group: 'er' },
+  { inf: 'gagner', en: 'to win / to earn', group: 'er' },
+  { inf: 'garder', en: 'to keep', group: 'er' },
+  { inf: 'grandir', en: 'to grow', group: 'ir' },
+  { inf: 'grossir', en: 'to gain weight', group: 'ir' },
+  { inf: 'gérer', en: 'to manage', group: 'er' },
+  { inf: 'habiter', en: 'to live (somewhere)', group: 'er' },
+  { inf: 'imaginer', en: 'to imagine', group: 'er' },
+  { inf: 'imposer', en: 'to impose', group: 'er' },
+  { inf: 'imprimer', en: 'to print', group: 'er' },
+  { inf: 'indiquer', en: 'to indicate', group: 'er' },
+  { inf: 'informer', en: 'to inform', group: 'er' },
+  { inf: 'installer', en: 'to install', group: 'er' },
+  { inf: 'invite', en: 'to invite', group: 'er' },
+  { inf: 'inviter', en: 'to invite', group: 'er' },
+  { inf: 'joindre', en: 'to attach / join', group: 'irreg' },
+  { inf: 'jouer', en: 'to play', group: 'er' },
+  { inf: 'lancer', en: 'to launch / to throw', group: 'er' },
+  { inf: 'laver', en: 'to wash', group: 'er' },
+  { inf: 'limiter', en: 'to limit', group: 'er' },
+  { inf: 'lire', en: 'to read', group: 'irreg' },
+  { inf: 'maigrir', en: 'to lose weight', group: 'ir' },
+  { inf: 'manger', en: 'to eat', group: 'er' },
+  { inf: 'manquer', en: 'to miss', group: 'er' },
+  { inf: 'marcher', en: 'to walk', group: 'er' },
+  { inf: 'mesurer', en: 'to measure', group: 'er' },
+  { inf: 'mettre', en: 'to put / to place', group: 'irreg' },
+  { inf: 'monter', en: 'to go up / to climb', group: 'er' },
+  { inf: 'montrer', en: 'to show', group: 'er' },
+  { inf: 'mourir', en: 'to die', group: 'irreg' },
+  { inf: 'nager', en: 'to swim', group: 'er' },
+  { inf: 'naître', en: 'to be born', group: 'irreg' },
+  { inf: 'nettoyer', en: 'to clean', group: 'er' },
+  { inf: 'noter', en: 'to note / to grade', group: 'er' },
+  { inf: 'obéir', en: 'to obey', group: 'ir' },
+  { inf: 'offrir', en: 'to offer', group: 'irreg' },
+  { inf: 'organiser', en: 'to organize', group: 'er' },
+  { inf: 'oublier', en: 'to forget', group: 'er' },
+  { inf: 'ouvrir', en: 'to open', group: 'irreg' },
+  { inf: 'pardonner', en: 'to forgive', group: 'er' },
+  { inf: 'parler', en: 'to speak', group: 'er' },
+  { inf: 'participer', en: 'to take part', group: 'er' },
+  { inf: 'partir', en: 'to leave', group: 'irreg' },
+  { inf: 'passer', en: 'to pass / to spend (time)', group: 'er' },
+  { inf: 'payer', en: 'to pay', group: 'er' },
+  { inf: 'penser', en: 'to think', group: 'er' },
+  { inf: 'perdre', en: 'to lose', group: 're' },
+  { inf: 'permettre', en: 'to allow', group: 'irreg' },
+  { inf: 'plaisanter', en: 'to joke', group: 'er' },
+  { inf: 'planifier', en: 'to plan', group: 'er' },
+  { inf: 'plier', en: 'to fold', group: 'er' },
+  { inf: 'pointer', en: 'to point', group: 'er' },
+  { inf: 'porter', en: 'to wear / to carry', group: 'er' },
+  { inf: 'poser', en: 'to put down / to pose', group: 'er' },
+  { inf: 'pousser', en: 'to push', group: 'er' },
+  { inf: 'pouvoir', en: 'to be able to / can', group: 'irreg' },
+  { inf: 'prendre', en: 'to take', group: 'irreg' },
+  { inf: 'produire', en: 'to produce', group: 'irreg' },
+  { inf: 'progresser', en: 'to progress', group: 'er' },
+  { inf: 'prolonger', en: 'to extend / to prolong', group: 'er' },
+  { inf: 'promettre', en: 'to promise', group: 'irreg' },
+  { inf: 'proposer', en: 'to propose / to suggest', group: 'er' },
+  { inf: 'protéger', en: 'to protect', group: 'er' },
+  { inf: 'préparer', en: 'to prepare', group: 'er' },
+  { inf: 'prévenir', en: 'to warn', group: 'irreg' },
+  { inf: 'prévoir', en: 'to plan / to foresee', group: 'irreg' },
+  { inf: 'prêter', en: 'to lend', group: 'er' },
+  { inf: 'publier', en: 'to publish', group: 'er' },
+  { inf: 'punir', en: 'to punish', group: 'ir' },
+  { inf: 'raconter', en: 'to tell (a story)', group: 'er' },
+  { inf: 'ranger', en: 'to tidy / to put away', group: 'er' },
+  { inf: 'recevoir', en: 'to receive', group: 'irreg' },
+  { inf: 'reconnaître', en: 'to recognize', group: 'irreg' },
+  { inf: 'refuser', en: 'to refuse', group: 'er' },
+  { inf: 'regarder', en: 'to look at', group: 'er' },
+  { inf: 'rejoindre', en: 'to join', group: 'irreg' },
+  { inf: 'relier', en: 'to link', group: 'er' },
+  { inf: 'remarquer', en: 'to notice', group: 'er' },
+  { inf: 'remettre', en: 'to put back', group: 'irreg' },
+  { inf: 'remonter', en: 'to go back up', group: 'er' },
+  { inf: 'remplacer', en: 'to replace', group: 'er' },
+  { inf: 'remplir', en: 'to fill', group: 'ir' },
+  { inf: 'rencontrer', en: 'to meet', group: 'er' },
+  { inf: 'rendre', en: 'to give back', group: 're' },
+  { inf: 'rentrer', en: 'to return (home)', group: 'er' },
+  { inf: 'renvoyer', en: 'to send back', group: 'er' },
+  { inf: 'respecter', en: 'to respect', group: 'er' },
+  { inf: 'respirer', en: 'to breathe', group: 'er' },
+  { inf: 'rester', en: 'to stay', group: 'er' },
+  { inf: 'retourner', en: 'to return', group: 'er' },
+  { inf: 'revenir', en: 'to come back', group: 'irreg' },
+  { inf: 'rire', en: 'to laugh', group: 'irreg' },
+  { inf: 'réagir', en: 'to react', group: 'ir' },
+  { inf: 'réfléchir', en: 'to think / to reflect', group: 'ir' },
+  { inf: 'réparer', en: 'to repair', group: 'er' },
+  { inf: 'répondre', en: 'to answer', group: 're' },
+  { inf: 'réserver', en: 'to book / to reserve', group: 'er' },
+  { inf: 'réussir', en: 'to succeed', group: 'ir' },
+  { inf: 'rêver', en: 'to dream', group: 'er' },
+  { inf: 'sauter', en: 'to jump', group: 'er' },
+  { inf: 'sauver', en: 'to save', group: 'er' },
+  { inf: 'savoir', en: 'to know (a fact)', group: 'irreg' },
+  { inf: 'se coucher', en: 'to go to bed', group: 'er' },
+  { inf: 'se dépêcher', en: 'to hurry', group: 'er' },
+  { inf: 'se laver', en: 'to wash oneself', group: 'er' },
+  { inf: 'se lever', en: 'to get up', group: 'er' },
+  { inf: 'se promener', en: 'to go for a walk', group: 'er' },
+  { inf: 'se préparer', en: 'to get ready', group: 'er' },
+  { inf: 'se rappeler', en: 'to remember', group: 'er' },
+  { inf: 'se reposer', en: 'to rest', group: 'er' },
+  { inf: 'se souvenir', en: 'to remember', group: 'irreg' },
+  { inf: 'servir', en: 'to serve', group: 'irreg' },
+  { inf: 'signaler', en: 'to signal / to report', group: 'er' },
+  { inf: 'signer', en: 'to sign', group: 'er' },
+  { inf: 'sortir', en: 'to go out', group: 'irreg' },
+  { inf: 'souhaiter', en: 'to wish', group: 'er' },
+  { inf: 'sourire', en: 'to smile', group: 'irreg' },
+  { inf: 'soutenir', en: 'to support', group: 'irreg' },
+  { inf: 'souvenir', en: 'to remember', group: 'irreg' },
+  { inf: 'suggérer', en: 'to suggest', group: 'er' },
+  { inf: 'supporter', en: 'to support', group: 'er' },
+  { inf: 'sélectionner', en: 'to select', group: 'er' },
+  { inf: 'séparer', en: 'to separate', group: 'er' },
+  { inf: 's’amuser', en: 'to have fun', group: 'er' },
+  { inf: 'terminer', en: 'to finish', group: 'er' },
+  { inf: 'tester', en: 'to test', group: 'er' },
+  { inf: 'tirer', en: 'to pull / to shoot', group: 'er' },
+  { inf: 'tomber', en: 'to fall', group: 'er' },
+  { inf: 'toucher', en: 'to touch', group: 'er' },
+  { inf: 'tourner', en: 'to turn', group: 'er' },
+  { inf: 'traduire', en: 'to translate', group: 'irreg' },
+  { inf: 'travailler', en: 'to work', group: 'er' },
+  { inf: 'trouver', en: 'to find', group: 'er' },
+  { inf: 'télécharger', en: 'to download', group: 'er' },
+  { inf: 'utiliser', en: 'to use', group: 'er' },
+  { inf: 'vendre', en: 'to sell', group: 're' },
+  { inf: 'venir', en: 'to come', group: 'irreg' },
+  { inf: 'visiter', en: 'to visit', group: 'er' },
+  { inf: 'voir', en: 'to see', group: 'irreg' },
+  { inf: 'voler', en: 'to steal / to fly', group: 'er' },
+  { inf: 'vouloir', en: 'to want', group: 'irreg' },
+  { inf: 'vérifier', en: 'to check', group: 'er' },
+  { inf: 'économiser', en: 'to save (money)', group: 'er' },
+  { inf: 'écouter', en: 'to listen', group: 'er' },
+  { inf: 'écrire', en: 'to write', group: 'irreg' },
+  { inf: 'étudier', en: 'to study', group: 'er' },
+  { inf: 'éviter', en: 'to avoid', group: 'er' },
+  { inf: 'être', en: 'to be', group: 'irreg' },
+];
 
-  const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
-  const TENSES = [
-    { id: "present", label: "Présent" },
-    { id: "passe_compose", label: "Passé composé" },
-    { id: "imparfait", label: "Imparfait" },
-    { id: "futur_proche", label: "Futur proche" },
-    { id: "futur_simple", label: "Futur simple" },
-    { id: "conditionnel_present", label: "Conditionnel présent" },
-    { id: "subjonctif_present", label: "Subjonctif présent" }
-  ];
+const STORAGE_KEY = 'frenchVerbApp_v1';
 
-  const SEED_VERBS = [
-    {
-      inf: "être",
-      en: "to be",
-      tenses: {
-        present: {
-          "je": "suis",
-          "tu": "es",
-          "il/elle": "est",
-          "nous": "sommes",
-          "vous": "êtes",
-          "ils/elles": "sont"
-        },
-        passe_compose: {
-          "je": "ai été",
-          "tu": "as été",
-          "il/elle": "a été",
-          "nous": "avons été",
-          "vous": "avez été",
-          "ils/elles": "ont été"
-        },
-        imparfait: {
-          "je": "étais",
-          "tu": "étais",
-          "il/elle": "était",
-          "nous": "étions",
-          "vous": "étiez",
-          "ils/elles": "étaient"
-        },
-        futur_simple: {
-          "je": "serai",
-          "tu": "seras",
-          "il/elle": "sera",
-          "nous": "serons",
-          "vous": "serez",
-          "ils/elles": "seront"
-        },
-        conditionnel_present: {
-          "je": "serais",
-          "tu": "serais",
-          "il/elle": "serait",
-          "nous": "serions",
-          "vous": "seriez",
-          "ils/elles": "seraient"
-        },
-        subjonctif_present: {
-          "je": "sois",
-          "tu": "sois",
-          "il/elle": "soit",
-          "nous": "soyons",
-          "vous": "soyez",
-          "ils/elles": "soient"
-        }
+const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
+const DAY_LABELS = ["S","M","T","W","T","F","S"];
+
+const TENSES = [
+  { id: "present", label: "Présent" },
+  { id: "passe_compose", label: "Passé composé" },
+  { id: "imparfait", label: "Imparfait" },
+  { id: "futur_simple", label: "Futur simple" },
+  { id: "conditionnel_present", label: "Conditionnel présent" },
+  { id: "subjonctif_present", label: "Subjonctif présent" }
+];
+
+const TENSE_UNLOCK_RULES = {
+  passe_compose: { require: "present", minQuestions: 80, minAccuracy: 0.8 },
+  imparfait: { require: "passe_compose", minQuestions: 80, minAccuracy: 0.8 },
+  futur_simple: { require: "imparfait", minQuestions: 60, minAccuracy: 0.8 },
+  conditionnel_present: { require: "futur_simple", minQuestions: 60, minAccuracy: 0.8 },
+  subjonctif_present: { require: "conditionnel_present", minQuestions: 60, minAccuracy: 0.75 }
+};
+
+// irregular present forms for key verbs
+const IRREGULAR_PRESENT = {
+  "être": { "je":"suis","tu":"es","il/elle":"est","nous":"sommes","vous":"êtes","ils/elles":"sont" },
+  "avoir": { "je":"ai","tu":"as","il/elle":"a","nous":"avons","vous":"avez","ils/elles":"ont" },
+  "aller": { "je":"vais","tu":"vas","il/elle":"va","nous":"allons","vous":"allez","ils/elles":"vont" },
+  "faire": { "je":"fais","tu":"fais","il/elle":"fait","nous":"faisons","vous":"faites","ils/elles":"font" },
+  "dire": { "je":"dis","tu":"dis","il/elle":"dit","nous":"disons","vous":"dites","ils/elles":"disent" },
+  "pouvoir": { "je":"peux","tu":"peux","il/elle":"peut","nous":"pouvons","vous":"pouvez","ils/elles":"peuvent" },
+  "vouloir": { "je":"veux","tu":"veux","il/elle":"veut","nous":"voulons","vous":"voulez","ils/elles":"veulent" },
+  "devoir": { "je":"dois","tu":"dois","il/elle":"doit","nous":"devons","vous":"devez","ils/elles":"doivent" },
+  "savoir": { "je":"sais","tu":"sais","il/elle":"sait","nous":"savons","vous":"savez","ils/elles":"savent" },
+  "connaître": { "je":"connais","tu":"connais","il/elle":"connaît","nous":"connaissons","vous":"connaissez","ils/elles":"connaissent" },
+  "venir": { "je":"viens","tu":"viens","il/elle":"vient","nous":"venons","vous":"venez","ils/elles":"viennent" },
+  "prendre": { "je":"prends","tu":"prends","il/elle":"prend","nous":"prenons","vous":"prenez","ils/elles":"prennent" },
+  "mettre": { "je":"mets","tu":"mets","il/elle":"met","nous":"mettons","vous":"mettez","ils/elles":"mettent" },
+  "voir": { "je":"vois","tu":"vois","il/elle":"voit","nous":"voyons","vous":"voyez","ils/elles":"voient" },
+  "croire": { "je":"crois","tu":"crois","il/elle":"croit","nous":"croyons","vous":"croyez","ils/elles":"croient" },
+  "sortir": { "je":"sors","tu":"sors","il/elle":"sort","nous":"sortons","vous":"sortez","ils/elles":"sortent" },
+  "partir": { "je":"pars","tu":"pars","il/elle":"part","nous":"partons","vous":"partez","ils/elles":"partent" },
+  "dormir": { "je":"dors","tu":"dors","il/elle":"dort","nous":"dormons","vous":"dormez","ils/elles":"dorment" },
+  "servir": { "je":"sers","tu":"sers","il/elle":"sert","nous":"servons","vous":"servez","ils/elles":"servent" },
+  "écrire": { "je":"écris","tu":"écris","il/elle":"écrit","nous":"écrivons","vous":"écrivez","ils/elles":"écrivent" },
+  "lire": { "je":"lis","tu":"lis","il/elle":"lit","nous":"lisons","vous":"lisez","ils/elles":"lisent" },
+  "boire": { "je":"bois","tu":"bois","il/elle":"boit","nous":"buvons","vous":"buvez","ils/elles":"boivent" },
+  "ouvrir": { "je":"ouvre","tu":"ouvres","il/elle":"ouvre","nous":"ouvrons","vous":"ouvrez","ils/elles":"ouvrent" },
+  "offrir": { "je":"offre","tu":"offres","il/elle":"offre","nous":"offrons","vous":"offrez","ils/elles":"offrent" },
+  "recevoir": { "je":"reçois","tu":"reçois","il/elle":"reçoit","nous":"recevons","vous":"recevez","ils/elles":"reçoivent" },
+  "naître": { "je":"nais","tu":"nais","il/elle":"naît","nous":"naissons","vous":"naissez","ils/elles":"naissent" },
+  "mourir": { "je":"meurs","tu":"meurs","il/elle":"meurt","nous":"mourons","vous":"mourez","ils/elles":"meurent" },
+  "devenir": { "je":"deviens","tu":"deviens","il/elle":"devient","nous":"devenons","vous":"devenez","ils/elles":"deviennent" },
+  "rire": { "je":"ris","tu":"ris","il/elle":"rit","nous":"rions","vous":"riez","ils/elles":"rient" },
+  "sourire": { "je":"souris","tu":"souris","il/elle":"sourit","nous":"sourions","vous":"souriez","ils/elles":"sourient" },
+  "conduire": { "je":"conduis","tu":"conduis","il/elle":"conduit","nous":"conduisons","vous":"conduisez","ils/elles":"conduisent" },
+  "construire": { "je":"construis","tu":"construis","il/elle":"construit","nous":"construisons","vous":"construisez","ils/elles":"construisent" },
+  "produire": { "je":"produis","tu":"produis","il/elle":"produit","nous":"produisons","vous":"produisez","ils/elles":"produisent" },
+  "traduire": { "je":"traduis","tu":"traduis","il/elle":"traduit","nous":"traduisons","vous":"traduisez","ils/elles":"traduisent" },
+  "joindre": { "je":"joins","tu":"joins","il/elle":"joint","nous":"joignons","vous":"joignez","ils/elles":"joignent" },
+  "rejoindre": { "je":"rejoins","tu":"rejoins","il/elle":"rejoint","nous":"rejoignons","vous":"rejoignez","ils/elles":"rejoignent" },
+  "reconnaître": { "je":"reconnais","tu":"reconnais","il/elle":"reconnaît","nous":"reconnaissons","vous":"reconnaissez","ils/elles":"reconnaissent" },
+  "apparaître": { "je":"apparais","tu":"apparais","il/elle":"apparaît","nous":"apparaissons","vous":"apparaissez","ils/elles":"apparaissent" },
+  "disparaître": { "je":"disparais","tu":"disparais","il/elle":"disparaît","nous":"disparaissons","vous":"disparaissez","ils/elles":"disparaissent" },
+  "atteindre": { "je":"atteins","tu":"atteins","il/elle":"atteint","nous":"atteignons","vous":"atteignez","ils/elles":"atteignent" },
+  "apprendre": { "je":"apprends","tu":"apprends","il/elle":"apprend","nous":"apprenons","vous":"apprenez","ils/elles":"apprennent" },
+  "promettre": { "je":"promets","tu":"promets","il/elle":"promet","nous":"promettons","vous":"promettez","ils/elles":"promettent" },
+  "permettre": { "je":"permets","tu":"permets","il/elle":"permet","nous":"permettons","vous":"permettez","ils/elles":"permettent" },
+  "remettre": { "je":"remets","tu":"remets","il/elle":"remet","nous":"remettons","vous":"remettez","ils/elles":"remettent" },
+  "prévenir": { "je":"préviens","tu":"préviens","il/elle":"prévient","nous":"prévenons","vous":"prévenez","ils/elles":"préviennent" },
+  "prévoir": { "je":"prévois","tu":"prévois","il/elle":"prévoit","nous":"prévoyons","vous":"prévoyez","ils/elles":"prévoient" }
+};
+
+// NOTE: some irregulars above (prévenir / prévoir) may not be perfect in every form;
+// if a form looks strange, you can correct it by adding your own verb entry later.
+
+function todayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    return {
+      verbs: INITIAL_VERBS,
+      progress: {
+        perVerb: {},
+        historyByDate: {},
+        tenseStats: {},
+        streak: { current: 0, best: 0, lastDate: null },
+        unlockedTenses: ["present"]
+      },
+      settings: {
+        dailyTarget: 20
       }
-    },
-    {
-      inf: "avoir",
-      en: "to have",
-      tenses: {
-        present: {
-          "je": "ai",
-          "tu": "as",
-          "il/elle": "a",
-          "nous": "avons",
-          "vous": "avez",
-          "ils/elles": "ont"
-        },
-        passe_compose: {
-          "je": "ai eu",
-          "tu": "as eu",
-          "il/elle": "a eu",
-          "nous": "avons eu",
-          "vous": "avez eu",
-          "ils/elles": "ont eu"
-        },
-        imparfait: {
-          "je": "avais",
-          "tu": "avais",
-          "il/elle": "avait",
-          "nous": "avions",
-          "vous": "aviez",
-          "ils/elles": "avaient"
-        },
-        futur_simple: {
-          "je": "aurai",
-          "tu": "auras",
-          "il/elle": "aura",
-          "nous": "aurons",
-          "vous": "aurez",
-          "ils/elles": "auront"
-        },
-        conditionnel_present: {
-          "je": "aurais",
-          "tu": "aurais",
-          "il/elle": "aurait",
-          "nous": "aurions",
-          "vous": "auriez",
-          "ils/elles": "auraient"
-        },
-        subjonctif_present: {
-          "je": "aie",
-          "tu": "aies",
-          "il/elle": "ait",
-          "nous": "ayons",
-          "vous": "ayez",
-          "ils/elles": "aient"
-        }
+    };
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed.verbs) parsed.verbs = INITIAL_VERBS;
+    if (!parsed.progress) parsed.progress = { perVerb:{}, historyByDate:{}, tenseStats:{}, streak:{current:0,best:0,lastDate:null}, unlockedTenses:["present"] };
+    if (!parsed.progress.perVerb) parsed.progress.perVerb = {};
+    if (!parsed.progress.historyByDate) parsed.progress.historyByDate = {};
+    if (!parsed.progress.tenseStats) parsed.progress.tenseStats = {};
+    if (!parsed.progress.streak) parsed.progress.streak = { current:0,best:0,lastDate:null };
+    if (!parsed.progress.unlockedTenses) parsed.progress.unlockedTenses = ["present"];
+    if (!parsed.settings) parsed.settings = { dailyTarget: 20 };
+    return parsed;
+  } catch (e) {
+    console.warn("Failed to parse saved state, resetting.", e);
+    return {
+      verbs: INITIAL_VERBS,
+      progress: {
+        perVerb: {},
+        historyByDate: {},
+        tenseStats: {},
+        streak: { current: 0, best: 0, lastDate: null },
+        unlockedTenses: ["present"]
+      },
+      settings: {
+        dailyTarget: 20
       }
-    },
-    {
-      inf: "aller",
-      en: "to go",
-      tenses: {
-        present: {
-          "je": "vais",
-          "tu": "vas",
-          "il/elle": "va",
-          "nous": "allons",
-          "vous": "allez",
-          "ils/elles": "vont"
-        },
-        passe_compose: {
-          "je": "suis allé",
-          "tu": "es allé",
-          "il/elle": "est allé",
-          "nous": "sommes allés",
-          "vous": "êtes allés",
-          "ils/elles": "sont allés"
-        },
-        imparfait: {
-          "je": "allais",
-          "tu": "allais",
-          "il/elle": "allait",
-          "nous": "allions",
-          "vous": "alliez",
-          "ils/elles": "allaient"
-        },
-        futur_proche: {
-          "je": "vais aller",
-          "tu": "vas aller",
-          "il/elle": "va aller",
-          "nous": "allons aller",
-          "vous": "allez aller",
-          "ils/elles": "vont aller"
-        },
-        futur_simple: {
-          "je": "irai",
-          "tu": "iras",
-          "il/elle": "ira",
-          "nous": "irons",
-          "vous": "irez",
-          "ils/elles": "iront"
-        },
-        conditionnel_present: {
-          "je": "irais",
-          "tu": "irais",
-          "il/elle": "irait",
-          "nous": "irions",
-          "vous": "iriez",
-          "ils/elles": "iraient"
-        },
-        subjonctif_present: {
-          "je": "aille",
-          "tu": "ailles",
-          "il/elle": "aille",
-          "nous": "allions",
-          "vous": "alliez",
-          "ils/elles": "aillent"
-        }
-      }
-    },
-    {
-      inf: "faire",
-      en: "to do / to make",
-      tenses: {
-        present: {
-          "je": "fais",
-          "tu": "fais",
-          "il/elle": "fait",
-          "nous": "faisons",
-          "vous": "faites",
-          "ils/elles": "font"
-        },
-        passe_compose: {
-          "je": "ai fait",
-          "tu": "as fait",
-          "il/elle": "a fait",
-          "nous": "avons fait",
-          "vous": "avez fait",
-          "ils/elles": "ont fait"
-        },
-        imparfait: {
-          "je": "faisais",
-          "tu": "faisais",
-          "il/elle": "faisait",
-          "nous": "faisions",
-          "vous": "faisiez",
-          "ils/elles": "faisaient"
-        },
-        futur_simple: {
-          "je": "ferai",
-          "tu": "feras",
-          "il/elle": "fera",
-          "nous": "ferons",
-          "vous": "ferez",
-          "ils/elles": "feront"
-        },
-        conditionnel_present: {
-          "je": "ferais",
-          "tu": "ferais",
-          "il/elle": "ferait",
-          "nous": "ferions",
-          "vous": "feriez",
-          "ils/elles": "feraient"
-        },
-        subjonctif_present: {
-          "je": "fasse",
-          "tu": "fasses",
-          "il/elle": "fasse",
-          "nous": "fassions",
-          "vous": "fassiez",
-          "ils/elles": "fassent"
-        }
-      }
-    },
-    {
-      inf: "parler",
-      en: "to speak",
-      tenses: {
-        present: {
-          "je": "parle",
-          "tu": "parles",
-          "il/elle": "parle",
-          "nous": "parlons",
-          "vous": "parlez",
-          "ils/elles": "parlent"
-        },
-        passe_compose: {
-          "je": "ai parlé",
-          "tu": "as parlé",
-          "il/elle": "a parlé",
-          "nous": "avons parlé",
-          "vous": "avez parlé",
-          "ils/elles": "ont parlé"
-        },
-        imparfait: {
-          "je": "parlais",
-          "tu": "parlais",
-          "il/elle": "parlait",
-          "nous": "parlions",
-          "vous": "parliez",
-          "ils/elles": "parlaient"
-        },
-        futur_proche: {
-          "je": "vais parler",
-          "tu": "vas parler",
-          "il/elle": "va parler",
-          "nous": "allons parler",
-          "vous": "allez parler",
-          "ils/elles": "vont parler"
-        },
-        futur_simple: {
-          "je": "parlerai",
-          "tu": "parleras",
-          "il/elle": "parlera",
-          "nous": "parlerons",
-          "vous": "parlerez",
-          "ils/elles": "parleront"
-        },
-        conditionnel_present: {
-          "je": "parlerais",
-          "tu": "parlerais",
-          "il/elle": "parlerait",
-          "nous": "parlerions",
-          "vous": "parleriez",
-          "ils/elles": "parleraient"
-        },
-        subjonctif_present: {
-          "je": "parle",
-          "tu": "parles",
-          "il/elle": "parle",
-          "nous": "parlions",
-          "vous": "parliez",
-          "ils/elles": "parlent"
-        }
-      }
-    },
-    {
-      inf: "finir",
-      en: "to finish",
-      tenses: {
-        present: {
-          "je": "finis",
-          "tu": "finis",
-          "il/elle": "finit",
-          "nous": "finissons",
-          "vous": "finissez",
-          "ils/elles": "finissent"
-        },
-        passe_compose: {
-          "je": "ai fini",
-          "tu": "as fini",
-          "il/elle": "a fini",
-          "nous": "avons fini",
-          "vous": "avez fini",
-          "ils/elles": "ont fini"
-        },
-        imparfait: {
-          "je": "finissais",
-          "tu": "finissais",
-          "il/elle": "finissait",
-          "nous": "finissions",
-          "vous": "finissiez",
-          "ils/elles": "finissaient"
-        },
-        futur_simple: {
-          "je": "finirai",
-          "tu": "finiras",
-          "il/elle": "finira",
-          "nous": "finirons",
-          "vous": "finirez",
-          "ils/elles": "finiront"
-        },
-        conditionnel_present: {
-          "je": "finirais",
-          "tu": "finirais",
-          "il/elle": "finirait",
-          "nous": "finirions",
-          "vous": "finiriez",
-          "ils/elles": "finiraient"
-        },
-        subjonctif_present: {
-          "je": "finisse",
-          "tu": "finisses",
-          "il/elle": "finisse",
-          "nous": "finissions",
-          "vous": "finissiez",
-          "ils/elles": "finissent"
-        }
-      }
+    };
+  }
+}
+
+let state = loadState();
+const TODAY = todayStr();
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error("Failed to save state:", e);
+  }
+}
+
+function getHistory(dateStr) {
+  if (!state.progress.historyByDate[dateStr]) {
+    state.progress.historyByDate[dateStr] = {
+      newCount: 0,
+      reviewCount: 0,
+      correct: 0,
+      wrong: 0
+    };
+  }
+  return state.progress.historyByDate[dateStr];
+}
+
+function getTenseStats(tenseId) {
+  if (!state.progress.tenseStats[tenseId]) {
+    state.progress.tenseStats[tenseId] = { asked: 0, correct: 0, wrong: 0 };
+  }
+  return state.progress.tenseStats[tenseId];
+}
+
+function getVerbStats(inf) {
+  if (!state.progress.perVerb[inf]) {
+    state.progress.perVerb[inf] = { timesSeen: 0, correct: 0, wrong: 0, firstSeen: null, lastSeen: null };
+  }
+  return state.progress.perVerb[inf];
+}
+
+function updateStreak() {
+  const streak = state.progress.streak;
+  const last = streak.lastDate;
+  const today = TODAY;
+  if (last === today) {
+    return;
+  }
+  if (!last) {
+    streak.current = 1;
+  } else {
+    const lastDateObj = new Date(last);
+    const todayDateObj = new Date(today);
+    const diff = (todayDateObj - lastDateObj) / (1000*60*60*24);
+    if (diff <= 1.5 && diff >= 0.5) {
+      streak.current += 1;
+    } else {
+      streak.current = 1;
     }
-  ];
+  }
+  if (streak.current > streak.best) streak.best = streak.current;
+  streak.lastDate = today;
+}
 
-  function todayStr() {
-    const d = new Date();
+function conjugatePresent(verb, pronoun) {
+  const inf = verb.inf;
+  if (IRREGULAR_PRESENT[inf]) {
+    return IRREGULAR_PRESENT[inf][pronoun] || null;
+  }
+  // ignore reflexive verbs for now
+  if (inf.startsWith("se ") || inf.startsWith("s'") || inf.startsWith("s’")) {
+    return null;
+  }
+  const group = verb.group;
+  if (group === "er") {
+    // remove -er
+    const stem = inf.slice(0, -2);
+    if (pronoun === "je") return stem + "e";
+    if (pronoun === "tu") return stem + "es";
+    if (pronoun === "il/elle") return stem + "e";
+    if (pronoun === "nous") return stem + "ons";
+    if (pronoun === "vous") return stem + "ez";
+    if (pronoun === "ils/elles") return stem + "ent";
+  } else if (group === "ir") {
+    // finir-type
+    const stem = inf.slice(0, -2);
+    if (pronoun === "je") return stem + "is";
+    if (pronoun === "tu") return stem + "is";
+    if (pronoun === "il/elle") return stem + "it";
+    if (pronoun === "nous") return stem + "issons";
+    if (pronoun === "vous") return stem + "issez";
+    if (pronoun === "ils/elles") return stem + "issent";
+  } else if (group === "re") {
+    const stem = inf.slice(0, -2);
+    if (pronoun === "je") return stem + "s";
+    if (pronoun === "tu") return stem + "s";
+    if (pronoun === "il/elle") return stem;
+    if (pronoun === "nous") return stem + "ons";
+    if (pronoun === "vous") return stem + "ez";
+    if (pronoun === "ils/elles") return stem + "ent";
+  }
+  return null;
+}
+
+// For now we only actually ask Présent questions; future tenses can be added later
+function getConjugation(verb, tenseId, pronoun) {
+  if (tenseId === "present") {
+    return conjugatePresent(verb, pronoun);
+  }
+  // other tenses can be added gradually here
+  return null;
+}
+
+function availableTenses() {
+  return state.progress.unlockedTenses.slice();
+}
+
+function randomChoice(arr) {
+  if (!arr.length) return null;
+  const idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+}
+
+function buildQuestion(mode) {
+  const verbs = state.verbs;
+  const unlocked = availableTenses();
+  if (!unlocked.length) return null;
+  // for now, pick only present even if more unlocked,
+  // but structure already supports future tenses
+  const tenseId = "present";
+  const tenseLabel = "Présent";
+  const stats = state.progress.perVerb;
+
+  const unseen = verbs.filter(v => !stats[v.inf] || stats[v.inf].timesSeen === 0)
+                      .filter(v => getConjugation(v, tenseId, "je"));
+  const seen = verbs.filter(v => stats[v.inf] && stats[v.inf].timesSeen > 0)
+                    .filter(v => getConjugation(v, tenseId, "je"));
+
+  let pool = [];
+  if (mode === "learn") {
+    pool = unseen.length ? unseen : seen;
+  } else if (mode === "review") {
+    pool = seen.length ? seen : unseen;
+  } else {
+    // mixed
+    if (Math.random() < 0.5 && unseen.length) pool = unseen;
+    else pool = seen.length ? seen : unseen;
+  }
+  if (!pool.length) pool = verbs;
+
+  const verb = randomChoice(pool);
+  const pronoun = randomChoice(PRONOUNS);
+  const answer = getConjugation(verb, tenseId, pronoun);
+  if (!answer) return buildQuestion(mode); // skip unsupported verb
+  return {
+    verbInf: verb.inf,
+    verbEn: verb.en,
+    tenseId,
+    tenseLabel,
+    pronoun,
+    answer
+  };
+}
+
+function normalise(str) {
+  return (str || "").trim().toLowerCase();
+}
+
+// DOM
+const daysRow = document.getElementById("daysRow");
+const currentStreakEl = document.getElementById("currentStreak");
+const bestStreakEl = document.getElementById("bestStreak");
+const todayCircle = document.getElementById("todayCircle");
+const todayLearnedEl = document.getElementById("todayLearned");
+const dailyGoalText = document.getElementById("dailyGoalText");
+const todaySubLabel = document.getElementById("todaySubLabel");
+const chartEl = document.getElementById("chart");
+const chartTabs = document.querySelectorAll(".chart-tab");
+const currentTenseLabel = document.getElementById("currentTenseLabel");
+
+const trainerOverlay = document.getElementById("trainerOverlay");
+const trainerBackBtn = document.getElementById("trainerBackBtn");
+const trainerModeTitle = document.getElementById("trainerModeTitle");
+const trainerModeSub = document.getElementById("trainerModeSub");
+const trainerTodayCount = document.getElementById("trainerTodayCount");
+const trainerAccuracy = document.getElementById("trainerAccuracy");
+const trainerUnlockedLabel = document.getElementById("trainerUnlockedLabel");
+const trainerFooter = document.getElementById("unlockMessage");
+
+const questionMain = document.getElementById("questionMain");
+const questionSub = document.getElementById("questionSub");
+const answerInput = document.getElementById("answerInput");
+const checkBtn = document.getElementById("checkBtn");
+const showBtn = document.getElementById("showBtn");
+const feedbackEl = document.getElementById("feedback");
+const tenseNote = document.getElementById("tenseNote");
+
+const openGuideBtn = document.getElementById("openGuideBtn");
+const openSettingsBtn = document.getElementById("openSettingsBtn");
+const guideModal = document.getElementById("guideModal");
+const guideCloseBtn = document.getElementById("guideCloseBtn");
+const learnRow = document.querySelector('.mode-row[data-mode="learn"]');
+const reviewRow = document.querySelector('.mode-row[data-mode="review"]');
+const mixedRow = document.querySelector('.mode-row[data-mode="mixed"]');
+
+const trainerMetaTodayPill = document.querySelector(".pill span");
+
+let currentMode = null;
+let currentQuestion = null;
+
+function renderDaysRow() {
+  const todayIndex = new Date().getDay(); // 0 Sunday
+  daysRow.innerHTML = "";
+  for (let i = 0; i < 7; i++) {
+    const d = document.createElement("div");
+    d.className = "day-dot" + (i === todayIndex ? " active" : "");
+    d.textContent = DAY_LABELS[i];
+    daysRow.appendChild(d);
+  }
+}
+
+function renderStats() {
+  const histToday = getHistory(TODAY);
+  todayLearnedEl.textContent = histToday.newCount;
+  dailyGoalText.textContent = state.settings.dailyTarget;
+  const pct = Math.min(100, (histToday.newCount / state.settings.dailyTarget) * 100);
+  todayCircle.textContent = histToday.newCount;
+  todayCircle.style.borderTopColor = pct >= 100 ? "#16a34a" : "#2563eb";
+
+  currentStreakEl.textContent = state.progress.streak.current;
+  bestStreakEl.textContent = state.progress.streak.best;
+
+  currentTenseLabel.textContent = "Current tense: Présent (others unlock as you progress)";
+}
+
+function renderChart(rangeDays) {
+  const bars = [];
+  const todayDate = new Date(TODAY);
+  for (let i = rangeDays - 1; i >= 0; i--) {
+    const d = new Date(todayDate);
+    d.setDate(d.getDate() - i);
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    const key = `${y}-${m}-${day}`;
+    const h = state.progress.historyByDate[key] || { newCount:0, reviewCount:0 };
+    bars.push({ date:key.slice(5), new:h.newCount || 0, review:h.reviewCount || 0 });
   }
+  const max = Math.max(1, ...bars.map(b => b.new + b.review));
+  chartEl.innerHTML = "";
+  bars.forEach(b => {
+    const col = document.createElement("div");
+    col.className = "bar-col";
+    const totalHeight = (b.new + b.review) / max * 100;
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.height = `${totalHeight}%`;
+    col.appendChild(bar);
+    const label = document.createElement("div");
+    label.className = "bar-label";
+    label.textContent = b.date.slice(3);
+    col.appendChild(label);
+    chartEl.appendChild(col);
+  });
+}
 
-  function loadState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    let state;
-    if (!raw) {
-      state = {
-        data: { verbs: {} },
-        progress: {
-          statsByVerb: {},
-          historyByDate: {}
-        },
-        settings: {
-          dailyNewTarget: 20,
-          activeTenses: TENSES.map(t => t.id),
-          mode: "mixed"
-        }
-      };
-    } else {
-      try {
-        state = JSON.parse(raw);
-      } catch (e) {
-        console.warn("Failed to parse saved state, resetting.", e);
-        state = {
-          data: { verbs: {} },
-          progress: {
-            statsByVerb: {},
-            historyByDate: {}
-          },
-          settings: {
-            dailyNewTarget: 20,
-            activeTenses: TENSES.map(t => t.id),
-            mode: "mixed"
-          }
-        };
-      }
-    }
-    if (!state.data) state.data = { verbs: {} };
-    if (!state.data.verbs) state.data.verbs = {};
-    if (!state.progress) state.progress = { statsByVerb: {}, historyByDate: {} };
-    if (!state.progress.statsByVerb) state.progress.statsByVerb = {};
-    if (!state.progress.historyByDate) state.progress.historyByDate = {};
-    if (!state.settings) state.settings = {
-      dailyNewTarget: 20,
-      activeTenses: TENSES.map(t => t.id),
-      mode: "mixed"
-    };
-    if (!Array.isArray(state.settings.activeTenses)) {
-      state.settings.activeTenses = TENSES.map(t => t.id);
-    }
-    if (!state.settings.mode) state.settings.mode = "mixed";
-    return state;
+chartTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    chartTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    const range = parseInt(tab.dataset.range, 10);
+    renderChart(range);
+  });
+});
+
+function updateTrainerMeta() {
+  const hist = getHistory(TODAY);
+  trainerTodayCount.textContent = hist.newCount + hist.reviewCount;
+  const total = hist.correct + hist.wrong;
+  const acc = total ? Math.round(hist.correct * 100 / total) : 0;
+  trainerAccuracy.textContent = acc + "%";
+  trainerUnlockedLabel.textContent = "Unlocked: Présent (more tenses later)";
+}
+
+function setTenseNoteFor(tenseId) {
+  if (tenseId === "present") {
+    tenseNote.textContent = "Présent: think about what is true now, in general, or very near future. Type only the verb form, without the pronoun.";
+  } else {
+    tenseNote.textContent = "";
   }
+}
 
-  function saveState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) {
-      console.error("Failed to save state:", e);
-    }
+function startTrainer(mode) {
+  currentMode = mode;
+  trainerOverlay.classList.add("show");
+  trainerFooter.textContent = "";
+  if (mode === "learn") {
+    trainerModeTitle.textContent = "Learn new verbs";
+    trainerModeSub.textContent = "Présent · new verbs first, then light review";
+  } else if (mode === "review") {
+    trainerModeTitle.textContent = "Review verbs";
+    trainerModeSub.textContent = "Présent · mostly verbs you’ve already seen";
+  } else {
+    trainerModeTitle.textContent = "Mixed mode";
+    trainerModeSub.textContent = "Présent · mix of new and review";
   }
+  updateTrainerMeta();
+  nextQuestion();
+  // prevent page from scrolling behind overlay
+  document.body.style.overflow = "hidden";
+}
 
-  let state = loadState();
-  const TODAY = todayStr();
+function closeTrainer() {
+  trainerOverlay.classList.remove("show");
+  currentMode = null;
+  currentQuestion = null;
+  feedbackEl.style.display = "none";
+  document.body.style.overflow = "";
+}
 
-  function seedVerbsIfEmpty() {
-    if (Object.keys(state.data.verbs).length === 0) {
-      SEED_VERBS.forEach(v => {
-        state.data.verbs[v.inf] = v;
-      });
-      saveState();
-    }
+trainerBackBtn.addEventListener("click", closeTrainer);
+
+function nextQuestion() {
+  if (!currentMode) return;
+  currentQuestion = buildQuestion(currentMode);
+  if (!currentQuestion) {
+    questionMain.textContent = "No question available. Something went wrong.";
+    questionSub.textContent = "";
+    return;
   }
+  questionMain.innerHTML = `<span class="pronoun-pill">${currentQuestion.pronoun}</span> <strong>${currentQuestion.verbInf}</strong>`;
+  questionSub.textContent = (currentQuestion.verbEn ? currentQuestion.verbEn + " · " : "") + currentQuestion.tenseLabel + " – type only the verb form.";
+  answerInput.value = "";
+  answerInput.focus();
+  feedbackEl.style.display = "none";
+  setTenseNoteFor(currentQuestion.tenseId);
+}
 
-  seedVerbsIfEmpty();
+function checkAnswer(showOnly) {
+  if (!currentQuestion) return;
+  const hist = getHistory(TODAY);
+  const verbStats = getVerbStats(currentQuestion.verbInf);
+  const tenseStats = getTenseStats(currentQuestion.tenseId);
 
-  function getAllVerbs() {
-    return Object.values(state.data.verbs);
-  }
-
-  function getHistoryFor(dateStr) {
-    if (!state.progress.historyByDate[dateStr]) {
-      state.progress.historyByDate[dateStr] = {
-        newCount: 0,
-        reviewCount: 0
-      };
-    }
-    return state.progress.historyByDate[dateStr];
-  }
-
-  function getStatsForVerb(inf) {
-    if (!state.progress.statsByVerb[inf]) {
-      state.progress.statsByVerb[inf] = {
-        firstSeen: null,
-        lastSeen: null,
-        timesSeen: 0,
-        correct: 0,
-        wrong: 0
-      };
-    }
-    return state.progress.statsByVerb[inf];
-  }
-
-  function randomChoice(arr) {
-    if (!arr.length) return null;
-    const idx = Math.floor(Math.random() * arr.length);
-    return arr[idx];
-  }
-
-  function getActiveTenses() {
-    return TENSES.filter(t => state.settings.activeTenses.includes(t.id));
-  }
-
-  let currentQuestion = null;
-  let lastAnswered = null;
-
-  function buildQuestion() {
-    const verbs = getAllVerbs();
-    const activeTenses = getActiveTenses();
-    const statsByVerb = state.progress.statsByVerb;
-
-    if (!verbs.length) return null;
-    if (!activeTenses.length) return null;
-
-    const unseen = verbs.filter(v => !statsByVerb[v.inf] || statsByVerb[v.inf].timesSeen === 0);
-    const seen = verbs.filter(v => statsByVerb[v.inf] && statsByVerb[v.inf].timesSeen > 0);
-
-    const historyToday = getHistoryFor(TODAY);
-    const canIntroduceNew = (historyToday.newCount < state.settings.dailyNewTarget) && unseen.length > 0;
-
-    let candidateVerbs = [];
-
-    if (state.settings.mode === "reviewOnly") {
-      candidateVerbs = seen.length ? seen : verbs;
-    } else {
-      if (canIntroduceNew) {
-        if (Math.random() < 0.5 || seen.length === 0) {
-          candidateVerbs = unseen;
-        } else {
-          candidateVerbs = seen;
-        }
-      } else {
-        candidateVerbs = seen.length ? seen : verbs;
-      }
-    }
-
-    let verb = randomChoice(candidateVerbs);
-    if (!verb) verb = randomChoice(verbs);
-
-    const availableTenses = activeTenses.filter(t => verb.tenses && verb.tenses[t.id]);
-    if (!availableTenses.length) {
-      const verbTenseIds = Object.keys(verb.tenses || {});
-      if (!verbTenseIds.length) return null;
-      const tId = randomChoice(verbTenseIds);
-      const tenseDef = TENSES.find(t => t.id === tId) || { id: tId, label: tId };
-      const persons = Object.keys(verb.tenses[tId]);
-      const pronoun = randomChoice(persons);
-      const correct = verb.tenses[tId][pronoun];
-      return {
-        verbInf: verb.inf,
-        verbEn: verb.en || "",
-        tenseId: tId,
-        tenseLabel: tenseDef.label,
-        pronoun: pronoun,
-        answer: correct,
-        isNewVerb: !statsByVerb[verb.inf] || statsByVerb[verb.inf].timesSeen === 0,
-        isReviewVerb: statsByVerb[verb.inf] && statsByVerb[verb.inf].timesSeen > 0
-      };
-    }
-
-    const tense = randomChoice(availableTenses);
-    const persons = Object.keys(verb.tenses[tense.id]);
-    const pronoun = randomChoice(persons);
-    const correct = verb.tenses[tense.id][pronoun];
-
-    return {
-      verbInf: verb.inf,
-      verbEn: verb.en || "",
-      tenseId: tense.id,
-      tenseLabel: tense.label,
-      pronoun: pronoun,
-      answer: correct,
-      isNewVerb: !statsByVerb[verb.inf] || statsByVerb[verb.inf].timesSeen === 0,
-      isReviewVerb: statsByVerb[verb.inf] && statsByVerb[verb.inf].timesSeen > 0
-    };
-  }
-
-  function normaliseAnswer(str) {
-    return (str || "").trim().toLowerCase();
-  }
-
-  const tabTrainerBtn = document.getElementById("tab-trainer");
-  const tabReviewBtn = document.getElementById("tab-review");
-  const tabManageBtn = document.getElementById("tab-manage");
-  const tabGuideBtn = document.getElementById("tab-guide");
-
-  const viewTrainer = document.getElementById("view-trainer");
-  const viewReview = document.getElementById("view-review");
-  const viewManage = document.getElementById("view-manage");
-  const viewGuide = document.getElementById("view-guide");
-
-  const dailyTargetInput = document.getElementById("dailyTarget");
-  const saveSettingsBtn = document.getElementById("saveSettingsBtn");
-  const targetInfo = document.getElementById("targetInfo");
-
-  const tenseTogglesContainer = document.getElementById("tenseToggles");
-
-  const statsBar = document.getElementById("statsBar");
-  const questionMeta = document.getElementById("questionMeta");
-  const questionText = document.getElementById("questionText");
-  const pronounDisplay = document.getElementById("pronounDisplay");
-  const answerInput = document.getElementById("answerInput");
-  const checkBtn = document.getElementById("checkBtn");
-  const showBtn = document.getElementById("showBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const feedbackEl = document.getElementById("feedback");
-
-  const historyTableWrapper = document.getElementById("historyTableWrapper");
-  const verbsProgressTableWrapper = document.getElementById("verbsProgressTableWrapper");
-
-  const modeMixedBtn = document.getElementById("mode-mixed");
-  const modeReviewOnlyBtn = document.getElementById("mode-reviewOnly");
-
-  const tensesEditorContainer = document.getElementById("tensesEditorContainer");
-  const verbInfInput = document.getElementById("verbInfInput");
-  const verbEnInput = document.getElementById("verbEnInput");
-  const saveVerbBtn = document.getElementById("saveVerbBtn");
-  const clearVerbFormBtn = document.getElementById("clearVerbFormBtn");
-  const verbFormFeedback = document.getElementById("verbFormFeedback");
-  const verbListDiv = document.getElementById("verbList");
-
-  function switchTab(tab) {
-    const tabs = [
-      { btn: tabTrainerBtn, view: viewTrainer, id: "trainer" },
-      { btn: tabReviewBtn, view: viewReview, id: "review" },
-      { btn: tabManageBtn, view: viewManage, id: "manage" },
-      { btn: tabGuideBtn, view: viewGuide, id: "guide" }
-    ];
-    tabs.forEach(t => {
-      const active = (t.id === tab);
-      t.btn.classList.toggle("active", active);
-      t.view.style.display = active ? "block" : "none";
-    });
-    if (tab === "review") {
-      renderHistory();
-      renderVerbsProgress();
-    }
-    if (tab === "manage") {
-      renderVerbList();
-    }
-  }
-
-  tabTrainerBtn.addEventListener("click", () => switchTab("trainer"));
-  tabReviewBtn.addEventListener("click", () => switchTab("review"));
-  tabManageBtn.addEventListener("click", () => switchTab("manage"));
-  tabGuideBtn.addEventListener("click", () => switchTab("guide"));
-
-  function renderTenseToggles() {
-    tenseTogglesContainer.innerHTML = "";
-    TENSES.forEach(t => {
-      const btn = document.createElement("button");
-      btn.textContent = t.label;
-      btn.type = "button";
-      btn.className = state.settings.activeTenses.includes(t.id) ? "active" : "";
-      btn.addEventListener("click", () => {
-        const idx = state.settings.activeTenses.indexOf(t.id);
-        if (idx >= 0) {
-          state.settings.activeTenses.splice(idx, 1);
-        } else {
-          state.settings.activeTenses.push(t.id);
-        }
-        saveState();
-        renderTenseToggles();
-      });
-      tenseTogglesContainer.appendChild(btn);
-    });
-  }
-
-  function renderStatsBar() {
-    const historyToday = getHistoryFor(TODAY);
-    const verbs = getAllVerbs();
-    const seenCount = Object.values(state.progress.statsByVerb).filter(s => s.timesSeen > 0).length;
-
-    statsBar.innerHTML = `
-      <span class="tag">Today: <strong>${TODAY}</strong></span>
-      <span class="tag good">New verbs today: <strong>${historyToday.newCount}</strong> / ${state.settings.dailyNewTarget}</span>
-      <span class="tag">Review questions today: <strong>${historyToday.reviewCount}</strong></span>
-      <span class="tag">Total verbs stored: <strong>${verbs.length}</strong></span>
-      <span class="tag">Verbs seen at least once: <strong>${seenCount}</strong></span>
-    `;
-    targetInfo.textContent = `Aim: ${state.settings.dailyNewTarget} new verbs unlocked today. Adjust this to match your energy.`;
-  }
-
-  function renderQuestion() {
-    if (!currentQuestion) {
-      questionMeta.textContent = "No question available. Add some verbs with at least one tense in the Verbs & Settings tab.";
-      questionText.textContent = "";
-      pronounDisplay.textContent = "";
-      feedbackEl.textContent = "";
-      feedbackEl.className = "feedback";
-      checkBtn.disabled = true;
-      showBtn.disabled = true;
-      nextBtn.disabled = false;
-      return;
-    }
-    questionMeta.innerHTML = `
-      Infinitive: <strong>${currentQuestion.verbInf}</strong>
-      ${currentQuestion.verbEn ? ` · Meaning: <strong>${currentQuestion.verbEn}</strong>` : ""}
-      · Tense: <strong>${currentQuestion.tenseLabel}</strong>
-    `;
-    questionText.innerHTML = `
-      <span class="label">Conjugate for:</span>
-      <span class="value">${currentQuestion.pronoun}</span>
-    `;
-    pronounDisplay.textContent = currentQuestion.pronoun;
-    answerInput.value = "";
-    answerInput.focus();
-    feedbackEl.textContent = "";
+  if (showOnly) {
+    feedbackEl.style.display = "block";
     feedbackEl.className = "feedback";
-    checkBtn.disabled = false;
-    showBtn.disabled = false;
-    nextBtn.disabled = true;
+    feedbackEl.textContent = `Correct form: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
+    return;
   }
 
-  function newQuestion() {
-    currentQuestion = buildQuestion();
-    renderStatsBar();
-    renderQuestion();
+  const user = answerInput.value;
+  const ok = normalise(user) === normalise(currentQuestion.answer);
+
+  verbStats.timesSeen += 1;
+  verbStats.lastSeen = TODAY;
+  if (!verbStats.firstSeen) {
+    verbStats.firstSeen = TODAY;
+    hist.newCount += 1;
+  } else {
+    hist.reviewCount += 1;
   }
 
-  function handleCheck(showOnly) {
-    if (!currentQuestion) return;
-    const userAns = answerInput.value;
-    const correctAns = currentQuestion.answer;
-
-    const stats = getStatsForVerb(currentQuestion.verbInf);
-    const history = getHistoryFor(TODAY);
-
-    const wasFirst = !stats.firstSeen;
-    stats.timesSeen += 1;
-    stats.lastSeen = TODAY;
-    if (!stats.firstSeen) {
-      stats.firstSeen = TODAY;
-      history.newCount += 1;
-    } else {
-      history.reviewCount += 1;
-    }
-
-    saveState();
-    renderStatsBar();
-
-    if (showOnly) {
-      feedbackEl.textContent = `Answer: ${currentQuestion.pronoun} ${correctAns}`;
-      feedbackEl.className = "feedback";
-      checkBtn.disabled = true;
-      showBtn.disabled = true;
-      nextBtn.disabled = false;
-      lastAnswered = { correct: null };
-      return;
-    }
-
-    const ok = normaliseAnswer(userAns) === normaliseAnswer(correctAns);
-    if (ok) {
-      stats.correct += 1;
-      feedbackEl.textContent = `Correct ✔  ${currentQuestion.pronoun} ${correctAns}`;
-      feedbackEl.className = "feedback correct";
-    } else {
-      stats.wrong += 1;
-      feedbackEl.textContent = `Not quite ✘  Your answer: "${userAns || "—"}" · Correct: ${currentQuestion.pronoun} ${correctAns}`;
-      feedbackEl.className = "feedback incorrect";
-    }
-    saveState();
-    lastAnswered = { correct: ok };
-    checkBtn.disabled = true;
-    showBtn.disabled = true;
-    nextBtn.disabled = false;
+  if (ok) {
+    verbStats.correct += 1;
+    hist.correct += 1;
+    tenseStats.correct += 1;
+    feedbackEl.style.display = "block";
+    feedbackEl.className = "feedback correct";
+    feedbackEl.textContent = `Nice ✔  ${currentQuestion.pronoun} ${currentQuestion.answer}`;
+  } else {
+    verbStats.wrong += 1;
+    hist.wrong += 1;
+    tenseStats.wrong += 1;
+    feedbackEl.style.display = "block";
+    feedbackEl.className = "feedback incorrect";
+    feedbackEl.textContent = `Not quite ✘  You typed "${user || "—"}". Correct: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
   }
+  tenseStats.asked += 1;
+  updateStreak();
+  saveState();
+  renderStats();
+  updateTrainerMeta();
+  checkUnlocks();
+  setTimeout(nextQuestion, 400);
+}
 
-  checkBtn.addEventListener("click", () => handleCheck(false));
-  showBtn.addEventListener("click", () => handleCheck(true));
-  nextBtn.addEventListener("click", () => {
-    newQuestion();
-  });
-
-  answerInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (!checkBtn.disabled) {
-        handleCheck(false);
-      } else if (!nextBtn.disabled) {
-        newQuestion();
-      }
-    }
-  });
-
-  dailyTargetInput.value = state.settings.dailyNewTarget;
-  saveSettingsBtn.addEventListener("click", () => {
-    const val = parseInt(dailyTargetInput.value, 10);
-    if (!isFinite(val) || val <= 0) {
-      alert("Please enter a positive number for the daily target.");
-      return;
-    }
-    state.settings.dailyNewTarget = val;
-    saveState();
-    renderStatsBar();
-  });
-
-  function updateModeButtons() {
-    const mode = state.settings.mode;
-    modeMixedBtn.classList.toggle("active", mode === "mixed");
-    modeReviewOnlyBtn.classList.toggle("active", mode === "reviewOnly");
+checkBtn.addEventListener("click", () => checkAnswer(false));
+showBtn.addEventListener("click", () => checkAnswer(true));
+answerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    checkAnswer(false);
   }
-  modeMixedBtn.addEventListener("click", () => {
-    state.settings.mode = "mixed";
-    saveState();
-    updateModeButtons();
-    newQuestion();
-  });
-  modeReviewOnlyBtn.addEventListener("click", () => {
-    state.settings.mode = "reviewOnly";
-    saveState();
-    updateModeButtons();
-    newQuestion();
-  });
+});
 
-  function renderHistory() {
-    const entries = Object.entries(state.progress.historyByDate);
-    if (!entries.length) {
-      historyTableWrapper.innerHTML = "<p class='muted'>No history yet. Start a session in the Trainer tab.</p>";
-      return;
-    }
-    entries.sort((a, b) => a[0] < b[0] ? 1 : -1);
-    const rows = entries.map(([date, h]) => `
-      <tr>
-        <td>${date}</td>
-        <td>${h.newCount}</td>
-        <td>${h.reviewCount}</td>
-      </tr>
-    `).join("");
-    historyTableWrapper.innerHTML = `
-      <div style="max-height:220px;overflow:auto;border-radius:10px;border:1px solid rgba(30,64,175,0.7);">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>New verbs introduced</th>
-              <th>Review questions</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    `;
-  }
+function checkUnlocks() {
+  // For now only display gentle message placeholder; future tenses can be unlocked here.
+  trainerFooter.textContent = "Keep going in Présent. Once you reach a stable accuracy, the app can introduce Passé composé and others.";
+}
 
-  function renderVerbsProgress() {
-    const verbs = getAllVerbs();
-    if (!verbs.length) {
-      verbsProgressTableWrapper.innerHTML = "<p class='muted'>No verbs stored yet.</p>";
-      return;
-    }
-    const rows = verbs.map(v => {
-      const st = state.progress.statsByVerb[v.inf] || { firstSeen: null, lastSeen: null, timesSeen: 0, correct: 0, wrong: 0 };
-      const total = st.correct + st.wrong;
-      const acc = total ? Math.round(st.correct * 100 / total) : 0;
-      return `
-        <tr>
-          <td>${v.inf}${v.en ? ` <span class="small-muted">(${v.en})</span>` : ""}</td>
-          <td>${st.firstSeen || "—"}</td>
-          <td>${st.lastSeen || "—"}</td>
-          <td>${st.timesSeen}</td>
-          <td>${st.correct}</td>
-          <td>${st.wrong}</td>
-          <td>${total ? acc + "%" : "—"}</td>
-        </tr>
-      `;
-    }).join("");
-    verbsProgressTableWrapper.innerHTML = `
-      <div style="max-height:220px;overflow:auto;border-radius:10px;border:1px solid rgba(30,64,175,0.7);">
-        <table>
-          <thead>
-            <tr>
-              <th>Verb</th>
-              <th>First seen</th>
-              <th>Last seen</th>
-              <th>Times asked</th>
-              <th>Correct</th>
-              <th>Wrong</th>
-              <th>Accuracy</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    `;
-  }
+learnRow.addEventListener("click", () => startTrainer("learn"));
+reviewRow.addEventListener("click", () => startTrainer("review"));
+mixedRow.addEventListener("click", () => startTrainer("mixed"));
 
-  function renderTensesEditor() {
-    tensesEditorContainer.innerHTML = "";
-    TENSES.forEach(t => {
-      const wrapper = document.createElement("div");
-      wrapper.className = "tense-grid";
-      wrapper.dataset.tenseId = t.id;
+openGuideBtn.addEventListener("click", () => {
+  guideModal.classList.add("show");
+});
+guideCloseBtn.addEventListener("click", () => {
+  guideModal.classList.remove("show");
+});
 
-      const title = document.createElement("h4");
-      title.innerHTML = `${t.label} <span class="label-chip">Optional</span>`;
-      wrapper.appendChild(title);
+openSettingsBtn.addEventListener("click", () => {
+  const current = state.settings.dailyTarget || 20;
+  const val = prompt("Daily goal – how many new verbs per day?", String(current));
+  if (!val) return;
+  const n = parseInt(val, 10);
+  if (!isFinite(n) || n <= 0) return;
+  state.settings.dailyTarget = n;
+  saveState();
+  renderStats();
+});
 
-      PRONOUNS.forEach(p => {
-        const row = document.createElement("div");
-        row.className = "tense-grid-row";
-        const lab = document.createElement("label");
-        lab.textContent = p;
-        const inp = document.createElement("input");
-        inp.type = "text";
-        inp.placeholder = "leave blank if you don’t want this form";
-        inp.dataset.tenseId = t.id;
-        inp.dataset.pronoun = p;
-        row.appendChild(lab);
-        row.appendChild(inp);
-        wrapper.appendChild(row);
-      });
-
-      tensesEditorContainer.appendChild(wrapper);
-    });
-  }
-
-  function clearVerbForm() {
-    verbInfInput.value = "";
-    verbEnInput.value = "";
-    const inputs = tensesEditorContainer.querySelectorAll("input[type='text']");
-    inputs.forEach(inp => {
-      if (inp !== verbInfInput && inp !== verbEnInput) {
-        inp.value = "";
-      }
-    });
-    verbFormFeedback.textContent = "";
-    verbFormFeedback.className = "feedback";
-  }
-
-  function saveVerbFromForm() {
-    const inf = verbInfInput.value.trim();
-    if (!inf) {
-      verbFormFeedback.textContent = "Please enter at least the infinitive.";
-      verbFormFeedback.className = "feedback incorrect";
-      return;
-    }
-    const en = verbEnInput.value.trim();
-
-    const tenseInputs = tensesEditorContainer.querySelectorAll("input[data-tense-id]");
-    const tenses = {};
-    tenseInputs.forEach(inp => {
-      const val = inp.value.trim();
-      const tid = inp.dataset.tenseId;
-      const p = inp.dataset.pronoun;
-      if (val) {
-        if (!tenses[tid]) tenses[tid] = {};
-        tenses[tid][p] = val;
-      }
-    });
-
-    if (Object.keys(tenses).length === 0) {
-      verbFormFeedback.textContent = "You didn’t fill any conjugations. Add at least one tense/person so it can be used in training.";
-      verbFormFeedback.className = "feedback incorrect";
-      return;
-    }
-
-    state.data.verbs[inf] = {
-      inf,
-      en,
-      tenses
-    };
-    saveState();
-    renderVerbList();
-    verbFormFeedback.textContent = `Saved "${inf}". It is now available in the trainer.`;
-    verbFormFeedback.className = "feedback correct";
-  }
-
-  saveVerbBtn.addEventListener("click", saveVerbFromForm);
-  clearVerbFormBtn.addEventListener("click", clearVerbForm);
-
-  function renderVerbList() {
-    const verbs = getAllVerbs().sort((a, b) => a.inf.localeCompare(b.inf));
-    if (!verbs.length) {
-      verbListDiv.innerHTML = "<p class='muted'>No verbs stored yet. Add your first verbs above.</p>";
-      return;
-    }
-    verbListDiv.innerHTML = "";
-    verbs.forEach(v => {
-      const item = document.createElement("div");
-      item.className = "verb-list-item";
-      const left = document.createElement("div");
-      left.innerHTML = `<strong>${v.inf}</strong>${v.en ? ` <span class="small-muted">(${v.en})</span>` : ""}`;
-      const right = document.createElement("div");
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "Delete";
-      delBtn.className = "small danger";
-      delBtn.addEventListener("click", () => {
-        if (confirm(`Remove verb "${v.inf}" and its progress?`)) {
-          delete state.data.verbs[v.inf];
-          delete state.progress.statsByVerb[v.inf];
-          saveState();
-          renderVerbList();
-          renderStatsBar();
-        }
-      });
-      right.appendChild(delBtn);
-      item.appendChild(left);
-      item.appendChild(right);
-      verbListDiv.appendChild(item);
-    });
-  }
-
-  renderTenseToggles();
-  renderStatsBar();
-  renderTensesEditor();
-  renderVerbList();
-  updateModeButtons();
-  newQuestion();
-})();
+// initial render
+renderDaysRow();
+renderStats();
+renderChart(7);
+updateTrainerMeta();
 </script>
 </body>
 </html>
