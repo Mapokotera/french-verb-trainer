@@ -819,6 +819,7 @@
 </div>
 
 <script>
+// --- data ---
 const INITIAL_VERBS = [
   { inf: 'être', en: 'to be', group: 'irreg' },
   { inf: 'avoir', en: 'to have', group: 'irreg' },
@@ -858,7 +859,7 @@ const INITIAL_VERBS = [
   { inf: 'souffrir', en: 'to suffer', group: 'irreg' },
   { inf: 'recevoir', en: 'to receive', group: 'irreg' },
   { inf: 'apercevoir', en: 'to notice', group: 'irreg' },
-  { inf: 's'asseoir', en: 'to sit down', group: 'irreg' },
+  { inf: 's\'asseoir', en: 'to sit down', group: 'irreg' },
   { inf: 'rire', en: 'to laugh', group: 'irreg' },
   { inf: 'sourire', en: 'to smile', group: 'irreg' },
   { inf: 'conduire', en: 'to drive', group: 'irreg' },
@@ -940,13 +941,13 @@ const INITIAL_VERBS = [
   { inf: 'appeler', en: 'to call (on the phone)', group: 'er' },
   { inf: 'rappeler', en: 'to call back / remind', group: 'er' },
   { inf: 'essayer', en: 'to try', group: 'er' },
-  { inf: 's'arrêter', en: 'to stop (oneself)', group: 'er' },
+  { inf: 's\'arrêter', en: 'to stop (oneself)', group: 'er' },
   { inf: 'se lever', en: 'to get up', group: 'er' },
   { inf: 'se coucher', en: 'to go to bed', group: 'er' },
   { inf: 'se laver', en: 'to wash oneself', group: 'er' },
   { inf: 'se préparer', en: 'to get ready', group: 'er' },
   { inf: 'se promener', en: 'to go for a walk', group: 'er' },
-  { inf: 's'amuser', en: 'to have fun', group: 'er' },
+  { inf: 's\'amuser', en: 'to have fun', group: 'er' },
   { inf: 'se rappeler', en: 'to remember', group: 'er' },
   { inf: 'travailler', en: 'to work', group: 'er' },
   { inf: 'réparer', en: 'to repair', group: 'er' },
@@ -1017,12 +1018,20 @@ const INITIAL_VERBS = [
   { inf: 'fondre', en: 'to melt', group: 're' },
 ];
 
-const STORAGE_KEY = 'frenchVerbApp_overhaul_v2';
+// --- core helpers ---
+function todayStr() {
+  var d = new Date();
+  var y = d.getFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var day = String(d.getDate()).padStart(2, '0');
+  return y + "-" + m + "-" + day;
+}
 
-const PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
-const DAY_LABELS = ["S","M","T","W","T","F","S"];
+var STORAGE_KEY = "frenchVerbApp_simple_v4";
+var PRONOUNS = ["je","tu","il/elle","nous","vous","ils/elles"];
+var DAY_LABELS = ["S","M","T","W","T","F","S"];
 
-const IRREGULAR_PRESENT = {
+var IRREGULAR_PRESENT = {
   "être": { "je":"suis","tu":"es","il/elle":"est","nous":"sommes","vous":"êtes","ils/elles":"sont" },
   "avoir": { "je":"ai","tu":"as","il/elle":"a","nous":"avons","vous":"avez","ils/elles":"ont" },
   "aller": { "je":"vais","tu":"vas","il/elle":"va","nous":"allons","vous":"allez","ils/elles":"vont" },
@@ -1061,7 +1070,6 @@ const IRREGULAR_PRESENT = {
   "souffrir": { "je":"souffre","tu":"souffres","il/elle":"souffre","nous":"souffrons","vous":"souffrez","ils/elles":"souffrent" },
   "recevoir": { "je":"reçois","tu":"reçois","il/elle":"reçoit","nous":"recevons","vous":"recevez","ils/elles":"reçoivent" },
   "apercevoir": { "je":"aperçois","tu":"aperçois","il/elle":"aperçoit","nous":"apercevons","vous":"apercevez","ils/elles":"aperçoivent" },
-  "s'asseoir": { "je":"m'assieds","tu":"t'assieds","il/elle":"s'assied","nous":"nous asseyons","vous":"vous asseyez","ils/elles":"s'asseyent" },
   "rire": { "je":"ris","tu":"ris","il/elle":"rit","nous":"rions","vous":"riez","ils/elles":"rient" },
   "sourire": { "je":"souris","tu":"souris","il/elle":"sourit","nous":"sourions","vous":"souriez","ils/elles":"sourient" },
   "conduire": { "je":"conduis","tu":"conduis","il/elle":"conduit","nous":"conduisons","vous":"conduisez","ils/elles":"conduisent" },
@@ -1073,35 +1081,24 @@ const IRREGULAR_PRESENT = {
   "naître": { "je":"nais","tu":"nais","il/elle":"naît","nous":"naissons","vous":"naissez","ils/elles":"naissent" },
   "mourir": { "je":"meurs","tu":"meurs","il/elle":"meurt","nous":"mourons","vous":"mourez","ils/elles":"meurent" },
   "falloir": { "il/elle":"faut" },
-  "pleuvoir": { "il/elle":"pleut" },
-  "soutenir": { "je":"soutiens","tu":"soutiens","il/elle":"soutient","nous":"soutenons","vous":"soutenez","ils/elles":"soutiennent" },
-  "prévoir": { "je":"prévois","tu":"prévois","il/elle":"prévoit","nous":"prévoyons","vous":"prévoyez","ils/elles":"prévoient" },
-  "prévenir": { "je":"préviens","tu":"préviens","il/elle":"prévient","nous":"prévenons","vous":"prévenez","ils/elles":"préviennent" }
+  "pleuvoir": { "il/elle":"pleut" }
 };
 
-function todayStr() {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
 function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return {
-      verbs: INITIAL_VERBS,
-      progress: {
-        perVerb: {},
-        historyByDate: {},
-        streak: { current: 0, best: 0, lastDate: null }
-      },
-      settings: { dailyTarget: 20 }
-    };
-  }
   try {
-    const parsed = JSON.parse(raw);
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return {
+        verbs: INITIAL_VERBS,
+        progress: {
+          perVerb: {},
+          historyByDate: {},
+          streak: { current: 0, best: 0, lastDate: null }
+        },
+        settings: { dailyTarget: 20 }
+      };
+    }
+    var parsed = JSON.parse(raw);
     if (!parsed.verbs) parsed.verbs = INITIAL_VERBS;
     if (!parsed.progress) parsed.progress = { perVerb:{}, historyByDate:{}, streak:{current:0,best:0,lastDate:null} };
     if (!parsed.progress.perVerb) parsed.progress.perVerb = {};
@@ -1110,7 +1107,6 @@ function loadState() {
     if (!parsed.settings) parsed.settings = { dailyTarget: 20 };
     return parsed;
   } catch (e) {
-    console.warn("Failed to parse saved state, resetting.", e);
     return {
       verbs: INITIAL_VERBS,
       progress: {
@@ -1123,16 +1119,10 @@ function loadState() {
   }
 }
 
-let state = loadState();
-const TODAY = todayStr();
-let currentChartRange = 7;
-
 function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) {
-    console.error("Failed to save state:", e);
-  }
+  } catch (e) {}
 }
 
 function getHistory(dateStr) {
@@ -1163,16 +1153,16 @@ function getVerbStats(inf) {
 }
 
 function updateStreak() {
-  const streak = state.progress.streak;
-  const last = streak.lastDate;
-  const today = TODAY;
+  var streak = state.progress.streak;
+  var last = streak.lastDate;
+  var today = TODAY;
   if (last === today) return;
   if (!last) {
     streak.current = 1;
   } else {
-    const lastDateObj = new Date(last);
-    const todayDateObj = new Date(today);
-    const diff = (todayDateObj - lastDateObj) / (1000*60*60*24);
+    var lastDateObj = new Date(last);
+    var todayDateObj = new Date(today);
+    var diff = (todayDateObj - lastDateObj) / (1000*60*60*24);
     if (diff <= 1.5 && diff >= 0.5) {
       streak.current += 1;
     } else {
@@ -1184,20 +1174,16 @@ function updateStreak() {
 }
 
 function conjugatePresent(verb, pronoun) {
-  const inf = verb.inf;
-  // ignore reflexive for now in auto rules
-  if (inf.startsWith("se ") || inf.startsWith("s'") || inf.startsWith("s’") || inf.startsWith("s ")) {
-    return null;
-  }
+  var inf = verb.inf;
   if (IRREGULAR_PRESENT[inf]) {
-    const m = IRREGULAR_PRESENT[inf];
+    var m = IRREGULAR_PRESENT[inf];
     if (m[pronoun]) return m[pronoun];
     if (pronoun === "il/elle" && m["il"]) return m["il"];
     return null;
   }
-  const group = verb.group;
+  var group = verb.group;
   if (group === "er") {
-    const stem = inf.slice(0, -2);
+    var stem = inf.slice(0, -2);
     if (pronoun === "je") return stem + "e";
     if (pronoun === "tu") return stem + "es";
     if (pronoun === "il/elle") return stem + "e";
@@ -1205,21 +1191,21 @@ function conjugatePresent(verb, pronoun) {
     if (pronoun === "vous") return stem + "ez";
     if (pronoun === "ils/elles") return stem + "ent";
   } else if (group === "ir") {
-    const stem = inf.slice(0, -2);
-    if (pronoun === "je") return stem + "is";
-    if (pronoun === "tu") return stem + "is";
-    if (pronoun === "il/elle") return stem + "it";
-    if (pronoun === "nous") return stem + "issons";
-    if (pronoun === "vous") return stem + "issez";
-    if (pronoun === "ils/elles") return stem + "issent";
+    var stem2 = inf.slice(0, -2);
+    if (pronoun === "je") return stem2 + "is";
+    if (pronoun === "tu") return stem2 + "is";
+    if (pronoun === "il/elle") return stem2 + "it";
+    if (pronoun === "nous") return stem2 + "issons";
+    if (pronoun === "vous") return stem2 + "issez";
+    if (pronoun === "ils/elles") return stem2 + "issent";
   } else if (group === "re") {
-    const stem = inf.slice(0, -2);
-    if (pronoun === "je") return stem + "s";
-    if (pronoun === "tu") return stem + "s";
-    if (pronoun === "il/elle") return stem;
-    if (pronoun === "nous") return stem + "ons";
-    if (pronoun === "vous") return stem + "ez";
-    if (pronoun === "ils/elles") return stem + "ent";
+    var stem3 = inf.slice(0, -2);
+    if (pronoun === "je") return stem3 + "s";
+    if (pronoun === "tu") return stem3 + "s";
+    if (pronoun === "il/elle") return stem3;
+    if (pronoun === "nous") return stem3 + "ons";
+    if (pronoun === "vous") return stem3 + "ez";
+    if (pronoun === "ils/elles") return stem3 + "ent";
   }
   return null;
 }
@@ -1230,388 +1216,402 @@ function getConjugation(verb, pronoun) {
 
 function randomChoice(arr) {
   if (!arr.length) return null;
-  const idx = Math.floor(Math.random() * arr.length);
+  var idx = Math.floor(Math.random() * arr.length);
   return arr[idx];
-}
-
-function buildQuestion(mode) {
-  const verbs = state.verbs;
-  const stats = state.progress.perVerb;
-  const todayHist = getHistory(TODAY);
-  const allowNew = todayHist.newCount < state.settings.dailyTarget;
-
-  const candidates = verbs.filter(v => {
-    const s = stats[v.inf];
-    return !s || !s.mastered;
-  });
-
-  const unseen = [];
-  const seen = [];
-  const extra = [];
-
-  for (const v of candidates) {
-    const s = stats[v.inf];
-    // require that we can conjugate this verb
-    if (!getConjugation(v, "je")) continue;
-    if (s && s.needExtra) extra.push(v);
-    if (s && s.timesSeen > 0) seen.push(v);
-    else unseen.push(v);
-  }
-
-  let pool = null;
-
-  if (extra.length) {
-    pool = extra;
-  } else {
-    if (mode === "learn") {
-      if (allowNew && unseen.length) pool = unseen;
-      else if (seen.length) pool = seen;
-      else pool = unseen;
-    } else if (mode === "review") {
-      if (seen.length) pool = seen;
-      else if (allowNew && unseen.length) pool = unseen;
-      else pool = seen;
-    } else {
-      // mixed
-      if (Math.random() < 0.5 && allowNew && unseen.length) pool = unseen;
-      else if (seen.length) pool = seen;
-      else if (allowNew && unseen.length) pool = unseen;
-      else pool = seen;
-    }
-  }
-
-  if (!pool || !pool.length) return null;
-
-  const verb = randomChoice(pool);
-  const pronoun = randomChoice(PRONOUNS);
-  const answer = getConjugation(verb, pronoun);
-  if (!answer) return buildQuestion(mode);
-  return {
-    verbInf: verb.inf,
-    verbEn: verb.en,
-    pronoun,
-    answer
-  };
 }
 
 function normalise(str) {
   return (str || "").trim().toLowerCase();
 }
 
-// DOM refs
-const daysRow = document.getElementById("daysRow");
-const currentStreakEl = document.getElementById("currentStreak");
-const bestStreakEl = document.getElementById("bestStreak");
-const todayCircle = document.getElementById("todayCircle");
-const todayLearnedEl = document.getElementById("todayLearned");
-const dailyGoalText = document.getElementById("dailyGoalText");
-const todaySubLabel = document.getElementById("todaySubLabel");
-const chartEl = document.getElementById("chart");
-const chartTabs = document.querySelectorAll(".chart-tab");
-const currentTenseLabel = document.getElementById("currentTenseLabel");
+// global state
+var state = loadState();
+var TODAY = todayStr();
+var currentMode = null;
+var currentQuestion = null;
+var currentChartRange = 7;
 
-const trainerOverlay = document.getElementById("trainerOverlay");
-const trainerBackBtn = document.getElementById("trainerBackBtn");
-const trainerModeTitle = document.getElementById("trainerModeTitle");
-const trainerModeSub = document.getElementById("trainerModeSub");
-const trainerTodayCount = document.getElementById("trainerTodayCount");
-const trainerAccuracy = document.getElementById("trainerAccuracy");
-const trainerUnlockedLabel = document.getElementById("trainerUnlockedLabel");
-const trainerFooter = document.getElementById("unlockMessage");
+// DOM + logic after load
+window.onload = function() {
+  var daysRow = document.getElementById("daysRow");
+  var currentStreakEl = document.getElementById("currentStreak");
+  var bestStreakEl = document.getElementById("bestStreak");
+  var todayCircle = document.getElementById("todayCircle");
+  var todayLearnedEl = document.getElementById("todayLearned");
+  var dailyGoalText = document.getElementById("dailyGoalText");
+  var todaySubLabel = document.getElementById("todaySubLabel");
+  var chartEl = document.getElementById("chart");
+  var chartTabs = document.querySelectorAll(".chart-tab");
+  var currentTenseLabel = document.getElementById("currentTenseLabel");
 
-const questionMain = document.getElementById("questionMain");
-const questionSub = document.getElementById("questionSub");
-const answerInput = document.getElementById("answerInput");
-const checkBtn = document.getElementById("checkBtn");
-const showBtn = document.getElementById("showBtn");
-const nextBtn = document.getElementById("nextBtn");
-const feedbackEl = document.getElementById("feedback");
-const tenseNote = document.getElementById("tenseNote");
-const masteryRow = document.getElementById("masteryRow");
-const memorizeBtn = document.getElementById("memorizeBtn");
-const keepBtn = document.getElementById("keepBtn");
+  var trainerOverlay = document.getElementById("trainerOverlay");
+  var trainerBackBtn = document.getElementById("trainerBackBtn");
+  var trainerModeTitle = document.getElementById("trainerModeTitle");
+  var trainerModeSub = document.getElementById("trainerModeSub");
+  var trainerTodayCount = document.getElementById("trainerTodayCount");
+  var trainerAccuracy = document.getElementById("trainerAccuracy");
+  var trainerUnlockedLabel = document.getElementById("trainerUnlockedLabel");
+  var trainerFooter = document.getElementById("unlockMessage");
 
-const openGuideBtn = document.getElementById("openGuideBtn");
-const openSettingsBtn = document.getElementById("openSettingsBtn");
-const guideModal = document.getElementById("guideModal");
-const guideCloseBtn = document.getElementById("guideCloseBtn");
-const learnRow = document.querySelector('.mode-row[data-mode="learn"]');
-const reviewRow = document.querySelector('.mode-row[data-mode="review"]');
-const mixedRow = document.querySelector('.mode-row[data-mode="mixed"]');
+  var questionMain = document.getElementById("questionMain");
+  var questionSub = document.getElementById("questionSub");
+  var answerInput = document.getElementById("answerInput");
+  var checkBtn = document.getElementById("checkBtn");
+  var showBtn = document.getElementById("showBtn");
+  var nextBtn = document.getElementById("nextBtn");
+  var feedbackEl = document.getElementById("feedback");
+  var tenseNote = document.getElementById("tenseNote");
+  var masteryRow = document.getElementById("masteryRow");
+  var memorizeBtn = document.getElementById("memorizeBtn");
+  var keepBtn = document.getElementById("keepBtn");
 
-let currentMode = null;
-let currentQuestion = null;
+  var openGuideBtn = document.getElementById("openGuideBtn");
+  var openSettingsBtn = document.getElementById("openSettingsBtn");
+  var guideModal = document.getElementById("guideModal");
+  var guideCloseBtn = document.getElementById("guideCloseBtn");
+  var learnRow = document.querySelector('.mode-row[data-mode="learn"]');
+  var reviewRow = document.querySelector('.mode-row[data-mode="review"]');
+  var mixedRow = document.querySelector('.mode-row[data-mode="mixed"]');
 
-function renderDaysRow() {
-  const todayIndex = new Date().getDay(); // 0 Sunday
-  daysRow.innerHTML = "";
-  for (let i = 0; i < 7; i++) {
-    const d = document.createElement("div");
-    d.className = "day-dot" + (i === todayIndex ? " active" : "");
-    d.textContent = DAY_LABELS[i];
-    daysRow.appendChild(d);
-  }
-}
-
-function renderStats() {
-  const histToday = getHistory(TODAY);
-  todayLearnedEl.textContent = histToday.newCount;
-  dailyGoalText.textContent = state.settings.dailyTarget;
-  const pct = Math.min(100, (histToday.newCount / state.settings.dailyTarget) * 100);
-  todayCircle.textContent = histToday.newCount;
-  todayCircle.style.borderTopColor = pct >= 100 ? "#16a34a" : "#2563eb";
-
-  currentStreakEl.textContent = state.progress.streak.current;
-  bestStreakEl.textContent = state.progress.streak.best;
-
-  if (histToday.newCount >= state.settings.dailyTarget) {
-    todaySubLabel.textContent = "Daily new-verb goal reached. You can still review verbs.";
-  } else {
-    todaySubLabel.textContent = "Tap a mode above to start today’s session.";
+  function renderDaysRow() {
+    var todayIndex = new Date().getDay(); // 0 Sunday
+    daysRow.innerHTML = "";
+    for (var i = 0; i < 7; i++) {
+      var d = document.createElement("div");
+      d.className = "day-dot" + (i === todayIndex ? " active" : "");
+      d.textContent = DAY_LABELS[i];
+      daysRow.appendChild(d);
+    }
   }
 
-  currentTenseLabel.textContent = "Current tense: Présent (more tenses later)";
-}
+  function renderStats() {
+    var histToday = getHistory(TODAY);
+    todayLearnedEl.textContent = histToday.newCount;
+    dailyGoalText.textContent = state.settings.dailyTarget;
+    var pct = Math.min(100, (histToday.newCount / state.settings.dailyTarget) * 100);
+    todayCircle.textContent = histToday.newCount;
+    todayCircle.style.borderTopColor = pct >= 100 ? "#16a34a" : "#2563eb";
 
-function renderChart(rangeDays) {
-  const bars = [];
-  const todayDate = new Date(TODAY);
-  for (let i = rangeDays - 1; i >= 0; i--) {
-    const d = new Date(todayDate);
-    d.setDate(d.getDate() - i);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const key = `${y}-${m}-${day}`;
-    const h = state.progress.historyByDate[key] || { newCount:0, reviewCount:0 };
-    bars.push({ date:key.slice(5), new:h.newCount || 0, review:h.reviewCount || 0 });
+    currentStreakEl.textContent = state.progress.streak.current;
+    bestStreakEl.textContent = state.progress.streak.best;
+
+    if (histToday.newCount >= state.settings.dailyTarget) {
+      todaySubLabel.textContent = "Daily new-verb goal reached. You can still review verbs.";
+    } else {
+      todaySubLabel.textContent = "Tap a mode above to start today’s session.";
+    }
+
+    currentTenseLabel.textContent = "Current tense: Présent (more tenses later)";
   }
-  const max = Math.max(1, ...bars.map(b => b.new + b.review));
-  chartEl.innerHTML = "";
-  bars.forEach(b => {
-    const col = document.createElement("div");
-    col.className = "bar-col";
 
-    const stack = document.createElement("div");
-    stack.className = "bar-stack";
-    const segNew = document.createElement("div");
-    segNew.className = "bar-seg bar-new";
-    segNew.style.height = (b.new / max * 100) + "%";
-    const segReview = document.createElement("div");
-    segReview.className = "bar-seg bar-review";
-    segReview.style.height = (b.review / max * 100) + "%";
-
-    stack.appendChild(segNew);
-    stack.appendChild(segReview);
-    col.appendChild(stack);
-
-    const label = document.createElement("div");
-    label.className = "bar-label";
-    label.textContent = b.date.slice(3);
-    col.appendChild(label);
-
-    chartEl.appendChild(col);
-  });
-}
-
-chartTabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    chartTabs.forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-    currentChartRange = parseInt(tab.dataset.range, 10);
-    renderChart(currentChartRange);
-  });
-});
-
-function updateTrainerMeta() {
-  const hist = getHistory(TODAY);
-  const totalQuestions = hist.newCount + hist.reviewCount;
-  trainerTodayCount.textContent = totalQuestions;
-  const total = hist.correct + hist.wrong;
-  const acc = total ? Math.round(hist.correct * 100 / total) : 0;
-  trainerAccuracy.textContent = acc + "%";
-  trainerUnlockedLabel.textContent = "Unlocked: Présent";
-}
-
-function setTenseNote() {
-  tenseNote.textContent = "Présent: think about what is true now, generally, or in the near future. Type only the verb form, without the pronoun.";
-}
-
-function startTrainer(mode) {
-  currentMode = mode;
-  trainerOverlay.classList.add("show");
-  trainerFooter.textContent = "";
-  masteryRow.style.display = "none";
-  if (mode === "learn") {
-    trainerModeTitle.textContent = "Learn new verbs";
-    trainerModeSub.textContent = "Présent · new verbs first, then review";
-  } else if (mode === "review") {
-    trainerModeTitle.textContent = "Review verbs";
-    trainerModeSub.textContent = "Présent · mostly verbs you’ve already seen";
-  } else {
-    trainerModeTitle.textContent = "Mixed mode";
-    trainerModeSub.textContent = "Présent · mix of new and review";
+  function renderChart(rangeDays) {
+    var bars = [];
+    var todayDate = new Date(TODAY);
+    var i;
+    for (i = rangeDays - 1; i >= 0; i--) {
+      var d = new Date(todayDate);
+      d.setDate(d.getDate() - i);
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      var key = y + "-" + m + "-" + day;
+      var h = state.progress.historyByDate[key] || { newCount:0, reviewCount:0 };
+      bars.push({ date:key.slice(5), new:h.newCount || 0, review:h.reviewCount || 0 });
+    }
+    var max = 1;
+    for (i = 0; i < bars.length; i++) {
+      var total = bars[i].new + bars[i].review;
+      if (total > max) max = total;
+    }
+    chartEl.innerHTML = "";
+    for (i = 0; i < bars.length; i++) {
+      var b = bars[i];
+      var col = document.createElement("div");
+      col.className = "bar-col";
+      var stack = document.createElement("div");
+      stack.className = "bar-stack";
+      var segNew = document.createElement("div");
+      segNew.className = "bar-seg bar-new";
+      segNew.style.height = (b.new / max * 100) + "%";
+      var segReview = document.createElement("div");
+      segReview.className = "bar-seg bar-review";
+      segReview.style.height = (b.review / max * 100) + "%";
+      stack.appendChild(segNew);
+      stack.appendChild(segReview);
+      col.appendChild(stack);
+      var label = document.createElement("div");
+      label.className = "bar-label";
+      label.textContent = b.date.slice(3);
+      col.appendChild(label);
+      chartEl.appendChild(col);
+    }
   }
-  updateTrainerMeta();
-  nextQuestion();
-  document.body.style.overflow = "hidden";
-}
 
-function closeTrainer() {
-  trainerOverlay.classList.remove("show");
-  currentMode = null;
-  currentQuestion = null;
-  feedbackEl.style.display = "none";
-  masteryRow.style.display = "none";
-  document.body.style.overflow = "";
-}
+  function updateTrainerMeta() {
+    var hist = getHistory(TODAY);
+    var totalQuestions = hist.newCount + hist.reviewCount;
+    trainerTodayCount.textContent = totalQuestions;
+    var total = hist.correct + hist.wrong;
+    var acc = total ? Math.round(hist.correct * 100 / total) : 0;
+    trainerAccuracy.textContent = acc + "%";
+    trainerUnlockedLabel.textContent = "Unlocked: Présent";
+  }
 
-trainerBackBtn.addEventListener("click", closeTrainer);
+  function setTenseNote() {
+    tenseNote.textContent = "Présent: think about what is true now, generally, or in the near future. Type only the verb form, without the pronoun.";
+  }
 
-function nextQuestion() {
-  if (!currentMode) return;
-  const q = buildQuestion(currentMode);
-  if (!q) {
-    questionMain.textContent = "No more verbs available right now.";
-    questionSub.textContent = "You may have mastered or exhausted today’s pool.";
+  function buildQuestion(mode) {
+    var verbs = state.verbs;
+    var stats = state.progress.perVerb;
+    var todayHist = getHistory(TODAY);
+    var allowNew = todayHist.newCount < state.settings.dailyTarget;
+
+    var candidates = verbs.slice();
+    var unseen = [];
+    var seen = [];
+    var extra = [];
+    var i;
+
+    for (i = 0; i < candidates.length; i++) {
+      var v = candidates[i];
+      if (!getConjugation(v, "je")) continue;
+      var s = stats[v.inf];
+      if (s && s.needExtra) extra.push(v);
+      if (s && s.timesSeen > 0) seen.push(v);
+      else if (!s || s.timesSeen === 0) unseen.push(v);
+    }
+
+    var pool = null;
+    if (extra.length) {
+      pool = extra;
+    } else {
+      if (mode === "learn") {
+        if (allowNew && unseen.length) pool = unseen;
+        else if (seen.length) pool = seen;
+        else pool = unseen;
+      } else if (mode === "review") {
+        if (seen.length) pool = seen;
+        else if (allowNew && unseen.length) pool = unseen;
+        else pool = seen;
+      } else {
+        if (Math.random() < 0.5 && allowNew && unseen.length) pool = unseen;
+        else if (seen.length) pool = seen;
+        else if (allowNew && unseen.length) pool = unseen;
+        else pool = seen;
+      }
+    }
+
+    if (!pool || !pool.length) return null;
+    var verb = randomChoice(pool);
+    var pronoun = randomChoice(PRONOUNS);
+    var answer = getConjugation(verb, pronoun);
+    if (!answer) return buildQuestion(mode);
+    return {
+      verbInf: verb.inf,
+      verbEn: verb.en,
+      pronoun: pronoun,
+      answer: answer
+    };
+  }
+
+  function startTrainer(mode) {
+    currentMode = mode;
+    if (trainerOverlay) {
+      trainerOverlay.classList.add("show");
+    }
+    if (mode === "learn") {
+      trainerModeTitle.textContent = "Learn new verbs";
+      trainerModeSub.textContent = "Présent · new verbs first, then review";
+    } else if (mode === "review") {
+      trainerModeTitle.textContent = "Review verbs";
+      trainerModeSub.textContent = "Présent · mostly verbs you’ve already seen";
+    } else {
+      trainerModeTitle.textContent = "Mixed mode";
+      trainerModeSub.textContent = "Présent · mix of new and review";
+    }
+    if (trainerFooter) trainerFooter.textContent = "";
+    masteryRow.style.display = "none";
+    updateTrainerMeta();
+    nextQuestion();
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeTrainer() {
+    currentMode = null;
+    currentQuestion = null;
+    if (trainerOverlay) trainerOverlay.classList.remove("show");
     feedbackEl.style.display = "none";
     masteryRow.style.display = "none";
-    return;
-  }
-  currentQuestion = q;
-  questionMain.innerHTML = `<span class="pronoun-pill">${q.pronoun}</span> <strong>${q.verbInf}</strong>`;
-  questionSub.textContent = (q.verbEn ? q.verbEn + " · " : "") + "Présent – type only the verb form.";
-  answerInput.value = "";
-  answerInput.focus();
-  feedbackEl.style.display = "none";
-  masteryRow.style.display = "none";
-  setTenseNote();
-}
-
-function checkAnswer(showOnly) {
-  if (!currentQuestion) return;
-  const hist = getHistory(TODAY);
-  const verbStats = getVerbStats(currentQuestion.verbInf);
-
-  if (showOnly) {
-    feedbackEl.style.display = "block";
-    feedbackEl.className = "feedback";
-    feedbackEl.textContent = `Correct form: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
-    masteryRow.style.display = "flex";
-    return;
+    document.body.style.overflow = "";
   }
 
-  const user = answerInput.value;
-  const ok = normalise(user) === normalise(currentQuestion.answer);
+  function nextQuestion() {
+    if (!currentMode) return;
+    var q = buildQuestion(currentMode);
+    if (!q) {
+      questionMain.textContent = "No more verbs available right now.";
+      questionSub.textContent = "You may have mastered or exhausted today’s pool.";
+      feedbackEl.style.display = "none";
+      masteryRow.style.display = "none";
+      return;
+    }
+    currentQuestion = q;
+    questionMain.innerHTML = '<span class="pronoun-pill">' + q.pronoun + '</span> <strong>' + q.verbInf + '</strong>';
+    questionSub.textContent = (q.verbEn ? q.verbEn + " · " : "") + "Présent – type only the verb form.";
+    answerInput.value = "";
+    answerInput.focus();
+    feedbackEl.style.display = "none";
+    masteryRow.style.display = "none";
+    setTenseNote();
+  }
 
-  verbStats.timesSeen += 1;
-  verbStats.lastSeen = TODAY;
+  function checkAnswer(showOnly) {
+    if (!currentQuestion) return;
+    var hist = getHistory(TODAY);
+    var verbStats = getVerbStats(currentQuestion.verbInf);
 
-  if (!verbStats.firstSeen) {
-    // first time ever
-    if (hist.newCount < state.settings.dailyTarget) {
-      verbStats.firstSeen = TODAY;
-      hist.newCount += 1;
+    if (showOnly) {
+      feedbackEl.style.display = "block";
+      feedbackEl.className = "feedback";
+      feedbackEl.textContent = "Correct form: " + currentQuestion.pronoun + " " + currentQuestion.answer;
+      masteryRow.style.display = "flex";
+      return;
+    }
+
+    var user = answerInput.value;
+    var ok = normalise(user) === normalise(currentQuestion.answer);
+
+    verbStats.timesSeen += 1;
+    verbStats.lastSeen = TODAY;
+
+    if (!verbStats.firstSeen) {
+      if (hist.newCount < state.settings.dailyTarget) {
+        verbStats.firstSeen = TODAY;
+        hist.newCount += 1;
+      } else {
+        verbStats.firstSeen = TODAY;
+        hist.reviewCount += 1;
+      }
     } else {
-      verbStats.firstSeen = TODAY;
       hist.reviewCount += 1;
     }
-  } else {
-    hist.reviewCount += 1;
+
+    if (ok) {
+      verbStats.correct += 1;
+      hist.correct += 1;
+      feedbackEl.style.display = "block";
+      feedbackEl.className = "feedback correct";
+      feedbackEl.textContent = "Nice ✔  " + currentQuestion.pronoun + " " + currentQuestion.answer;
+    } else {
+      verbStats.wrong += 1;
+      hist.wrong += 1;
+      feedbackEl.style.display = "block";
+      feedbackEl.className = "feedback incorrect";
+      feedbackEl.textContent = 'Not quite ✘  You typed "' + (user || "—") + '". Correct: ' + currentQuestion.pronoun + " " + currentQuestion.answer;
+    }
+
+    updateStreak();
+    saveState();
+    renderStats();
+    updateTrainerMeta();
+    renderChart(currentChartRange);
+    masteryRow.style.display = "flex";
   }
 
-  if (ok) {
-    verbStats.correct += 1;
-    hist.correct += 1;
-    feedbackEl.style.display = "block";
-    feedbackEl.className = "feedback correct";
-    feedbackEl.textContent = `Nice ✔  ${currentQuestion.pronoun} ${currentQuestion.answer}`;
-  } else {
-    verbStats.wrong += 1;
-    hist.wrong += 1;
-    feedbackEl.style.display = "block";
-    feedbackEl.className = "feedback incorrect";
-    feedbackEl.textContent = `Not quite ✘  You typed "${user || "—"}". Correct: ${currentQuestion.pronoun} ${currentQuestion.answer}`;
+  // attach events (with guards)
+  if (trainerBackBtn) {
+    trainerBackBtn.onclick = closeTrainer;
+  }
+  if (checkBtn) {
+    checkBtn.onclick = function() { checkAnswer(false); };
+  }
+  if (showBtn) {
+    showBtn.onclick = function() { checkAnswer(true); };
+  }
+  if (nextBtn) {
+    nextBtn.onclick = function() { nextQuestion(); };
+  }
+  if (answerInput) {
+    answerInput.onkeydown = function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        checkAnswer(false);
+      }
+    };
+  }
+  if (memorizeBtn) {
+    memorizeBtn.onclick = function() {
+      if (!currentQuestion) return;
+      var stats = getVerbStats(currentQuestion.verbInf);
+      stats.mastered = true;
+      stats.needExtra = false;
+      if (trainerFooter) trainerFooter.textContent = '"' + currentQuestion.verbInf + '" is marked as mastered. It will appear less often.';
+      saveState();
+    };
+  }
+  if (keepBtn) {
+    keepBtn.onclick = function() {
+      if (!currentQuestion) return;
+      var stats = getVerbStats(currentQuestion.verbInf);
+      stats.needExtra = true;
+      stats.mastered = false;
+      if (trainerFooter) trainerFooter.textContent = 'We’ll keep showing "' + currentQuestion.verbInf + '" more often until it feels automatic.';
+      saveState();
+    };
   }
 
-  updateStreak();
-  saveState();
+  if (learnRow) {
+    learnRow.onclick = function() { startTrainer("learn"); };
+  }
+  if (reviewRow) {
+    reviewRow.onclick = function() { startTrainer("review"); };
+  }
+  if (mixedRow) {
+    mixedRow.onclick = function() { startTrainer("mixed"); };
+  }
+
+  if (openGuideBtn && guideModal && guideCloseBtn) {
+    openGuideBtn.onclick = function() { guideModal.classList.add("show"); };
+    guideCloseBtn.onclick = function() { guideModal.classList.remove("show"); };
+  }
+
+  if (openSettingsBtn) {
+    openSettingsBtn.onclick = function() {
+      var current = state.settings.dailyTarget || 20;
+      var val = prompt("Daily goal – how many new verbs per day?", String(current));
+      if (!val) return;
+      var n = parseInt(val, 10);
+      if (!isFinite(n) || n <= 0) return;
+      state.settings.dailyTarget = n;
+      saveState();
+      renderStats();
+      renderChart(currentChartRange);
+    };
+  }
+
+  if (chartTabs && chartTabs.length) {
+    for (var i = 0; i < chartTabs.length; i++) {
+      chartTabs[i].onclick = (function(tab) {
+        return function() {
+          for (var j = 0; j < chartTabs.length; j++) {
+            chartTabs[j].classList.remove("active");
+          }
+          tab.classList.add("active");
+          currentChartRange = parseInt(tab.getAttribute("data-range"), 10);
+          renderChart(currentChartRange);
+        };
+      })(chartTabs[i]);
+    }
+  }
+
+  // initial render
+  renderDaysRow();
   renderStats();
+  renderChart(currentChartRange);
   updateTrainerMeta();
-  renderChart(currentChartRange);
-  masteryRow.style.display = "flex";
-}
-
-checkBtn.addEventListener("click", () => checkAnswer(false));
-showBtn.addEventListener("click", () => checkAnswer(true));
-answerInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    checkAnswer(false);
-  }
-});
-
-nextBtn.addEventListener("click", () => {
-  nextQuestion();
-});
-
-memorizeBtn.addEventListener("click", () => {
-  if (!currentQuestion) return;
-  const stats = getVerbStats(currentQuestion.verbInf);
-  stats.mastered = true;
-  stats.needExtra = false;
-  trainerFooter.textContent = `Okay, "${currentQuestion.verbInf}" is marked as mastered. It will appear less often.`;
-  saveState();
-});
-
-keepBtn.addEventListener("click", () => {
-  if (!currentQuestion) return;
-  const stats = getVerbStats(currentQuestion.verbInf);
-  stats.needExtra = true;
-  stats.mastered = false;
-  trainerFooter.textContent = `Got it. We’ll keep showing "${currentQuestion.verbInf}" more often until it feels automatic.`;
-  saveState();
-});
-
-if (learnRow) {
-  learnRow.addEventListener("click", function() { startTrainer("learn"); });
-}
-if (reviewRow) {
-  reviewRow.addEventListener("click", function() { startTrainer("review"); });
-}
-if (mixedRow) {
-  mixedRow.addEventListener("click", function() { startTrainer("mixed"); });
-}
-
-if (openGuideBtn && guideModal) {
-  openGuideBtn.addEventListener("click", function() {
-    guideModal.classList.add("show");
-  });
-}
-if (guideCloseBtn && guideModal) {
-  guideCloseBtn.addEventListener("click", function() {
-    guideModal.classList.remove("show");
-  });
-}
-
-if (openSettingsBtn) openSettingsBtn.addEventListener("click", function() {
-  const current = state.settings.dailyTarget || 20;
-  const val = prompt("Daily goal – how many new verbs per day?", String(current));
-  if (!val) return;
-  const n = parseInt(val, 10);
-  if (!isFinite(n) || n <= 0) return;
-  state.settings.dailyTarget = n;
-  saveState();
-  renderStats();
-  renderChart(currentChartRange);
-});
-
-// initial render
-renderDaysRow();
-renderStats();
-renderChart(currentChartRange);
-updateTrainerMeta();
-setTenseNote();
+  setTenseNote();
+};
 </script>
 </body>
 </html>
